@@ -9,6 +9,11 @@
 @import "variables";
 // Syntax highlighting @import is at the bottom of this file
 
+@font-face {
+  font-family: Inconsolata;
+  src: url("assets/font/Inconsolata.otf") format("opentype");
+}
+
 /**************/
 /* BASE RULES */
 /**************/
@@ -19,7 +24,8 @@ html {
 
 body {
 	background: $white;
-  font: 18px/1.4 $helvetica;
+  /* font: 18px/1.4 $helvetica; */
+  font: 18px/1.4 Inconsolata;
   color: $darkGray;
 }
 
@@ -31,7 +37,8 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $helveticaNeue;
+  /* font-family: $helveticaNeue; */
+  font-family: Inconsolata;
   color: $darkerGray;
   font-weight: bold;
 
@@ -194,7 +201,8 @@ img {
   margin: 0;
   color: $darkGray;
   cursor: pointer;
-  font-family: $helveticaNeue;
+  /* font-family: $helveticaNeue; */
+  font-family: Inconsolata;
   font-weight: 300;
   font-size: 28px;
   letter-spacing: 1px;
@@ -213,7 +221,8 @@ img {
 nav {
   float: right;
   margin-top: 23px; // @TODO: Vertically middle align
-  font-family: $helveticaNeue;
+  /* font-family: $helveticaNeue; */
+  font-family: Inconsolata;
   font-size: 18px;
 
   @include mobile {

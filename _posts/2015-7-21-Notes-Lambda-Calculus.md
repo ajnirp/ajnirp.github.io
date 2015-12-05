@@ -251,7 +251,7 @@ This function is known as the **Y combinator**. What makes it special? Pass it a
 
 Look at the first and last lines. `Y R = R (Y R)`. The right hand side is what we were looking for - a way to call R from within itself. This is what makes the Y combinator useful. It lets us use recursion in the untyped lambda calculus. If we want to recursively call a function from within itself, we simply pass it as an argument to the Y combinator.
 
-What could be an example of a function that we might want to call recursively? When college students are taught about recursion a common pedagogical example is the `factorial` function mentioned above. Let's set that aside in favour of an even simpler example that the [paper](http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf) uses - **summing the first `n` numbers**.
+What could be an example of a function that we might want to call recursively? When college students are taught about recursion a common pedagogical example is the `factorial` function mentioned above. Let's set that aside in favour of an even simpler example that the [reference paper for this article](http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf) uses - **summing the first `n` numbers**.
 
 The sum of the first `n` numbers is `n` plus the sum of the first `n-1` numbers. The base case is when `n` is `0`, in which case the sum is simply `0`.
 
@@ -283,7 +283,7 @@ which is what we want. Nice. Now let's think of what we should put in the body. 
 
     λ r n → Z n 0 (n S r)
 
-...er, wait a minute. `r` isn't a number. It's a function, so it needs an argument of its own. In this case, the argument to the recursive call is `n-1`, which in our lambda calculus is `P n`. So let's do that.
+...er, wait a minute. `r` isn't the *result* of our recursive call, it's just the function that makes the recursive call. So it needs an argument of its own. In this case, the argument should be `n-1`, which in our lambda calculus is `P n`. And so we get:
 
     λ r n → Z n 0 (n S (r (P n)))
 
@@ -326,7 +326,7 @@ For kicks, let's also do **division**. Again, the pattern is the same, with only
 
     λ r x y → (GT x y) 0 S (r x (x P y))
 
-`x` and `y` are the two arguments, and we want to find the quotient when `y` is divided by `x`. The base case is that `x` is greater than `y` - in this case, the quotient is zero. Otherwise, the quotient equals `1` plus the quotient when `y - x` is divided by `x`.  
+`x` and `y` are the two arguments, and we want to find the quotient when `y` is divided by `x`. The base case is that `x` is greater than `y` - in this case, the quotient is zero. Otherwise, the quotient equals `1` plus the quotient when `y - x` is divided by `x`.
 
 ##Negative numbers
 

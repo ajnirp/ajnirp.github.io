@@ -54,7 +54,7 @@ Now, back to our end result:
 
 This is interesting. `F` is a function that takes a number argument (bear in mind that numbers in the lambda calculus are just functions). `G` is a function that takes as input two arguments: a function `F` and a number argument `x`. `G F` is therefore a partially applied function that takes one more argument as input. This function `G F` is equal [1] to `F`, which is the input to `G`.
 
-In other words, `F` is a fixed point of `G`. So if we know `G`, we can find `F` by finding its fixed point. How do we do that? Ideally we would have a function `Y` which would take as input another function and returns its fixed point. This is of course the Y combinator that is the subject of this blog post. Givens such a function, we could then pass `G` to it and get back `G`'s fixed point `F`. In other words:
+In other words, `F` is a fixed point of `G`. So if we know `G`, we can find `F` by finding its fixed point. How do we do that? Ideally we would have a function `Y` which would take as input another function and returns its fixed point. This is of course the Y combinator that is the subject of this blog post. Given such a function, we could then pass `G` to it and get back `G`'s fixed point `F`. In other words:
 
     F := Y G
 
@@ -63,7 +63,7 @@ and so
     Y G = G (Y G)
     Y = λ G → G (Y G)
 
-Note that the above line doesn't constitute a formal definition of the Y combinator. Why? Because `Y` appears on the left hand side, and so we have the same issue as we did with `F`.
+Note that the above line doesn't constitute a formal definition of the Y combinator. Why? Because `Y` appears on the right hand side, and so we have the same issue as we did with `F`.
 
 We need to get rid of this. How?
 
@@ -76,7 +76,7 @@ Here we have a function `Y` calling itself. It's tempting to use the U combinato
     Y G = U H
     Y G = H H
 
-where `H` is chosen such that the property `Y G = G (Y G)` is satisfied. Now let's find `H`.s
+where `H` is chosen such that the property `Y G = G (Y G)` is satisfied. Now let's find `H`.
 
     Y G = G (Y G)
     H H = G (H H)

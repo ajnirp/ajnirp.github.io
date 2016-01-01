@@ -34,7 +34,7 @@ Let's start with our old friend the factorial function.
 
 (*please read the [previous post](http://wenderen.github.io/Notes-Lambda-Calculus) if you aren't sure what this means*)
 
-The problem with this is that `F` is not defined until the expression on the right is fully evaluated, which requires an application of `F`, which requires that `F` is fully evaluated to begin with. Let's break this cycle. Observe that the right hand side can be seen as a function of `F`. Sure, it's actually a lambda taking a single input `x`, but it could just as well be seen as a function which accepts a single input `F'`, like so:
+The problem with this is that `F` is not defined until the expression on the right is fully evaluated, which requires an application of `F`, which requires that `F` is fully evaluated to begin with. Let's break this cycle. Observe that the right hand side can be seen as a function of `F`. Sure, it's a lambda taking a single input `x`, but it could just as well be seen as a function which accepts a single input `F'`, like so:
 
     G = λ F' → (λ x → Z n 1 (M n (F' (P n))))
     G = λ F' x → Z n 1 (M n (F' (P n)))
@@ -43,10 +43,10 @@ and so our previous expression can be written as:
 
     F = G F
 
-A few things to note about this derivation.
+A few things to note about this.
 
-1. There was nothing special about the factorial function in our derivation. We could just as well have written the above derivation for any other recursive function.
-2. The arity of `F` wasn't relevant in our derivation either. `F` could have taken 17 arguments and it wouldn't have made a difference to the logic above.
+1. There was nothing special about the factorial function. We could just as well have written the above derivation for any other recursive function.
+2. The arity of `F` wasn't relevant in our derivation either. `F` could have taken, say, 17 arguments and it wouldn't have made a difference to the logic above.
 
 Now, back to our end result:
 
@@ -54,7 +54,7 @@ Now, back to our end result:
 
 This is interesting. `F` is a function that takes a number argument (bear in mind that numbers in the lambda calculus are just functions). `G` is a function that takes as input two arguments: a function `F` and a number argument `x`. `G F` is therefore a partially applied function that takes one more argument as input. This function `G F` is equal [1] to `F`, which is the input to `G`.
 
-In other words, `F` is a fixed point of `G`. So if we know `G`, we can find `F` by finding its fixed point. How do we do that? Ideally we would have a function `Y` which would take as input another function and returns its fixed point. This is of course the Y combinator that is the subject of this blog post. Given such a function, we could then pass `G` to it and get back `G`'s fixed point `F`. In other words:
+In other words, `F` is a fixed point of `G`. So if we know `G`, we can find `F` by finding `G`'s fixed point. How do we do that? Ideally we would have a function `Y` which would take as input another function and returns its fixed point. This is of course the Y combinator that is the subject of this blog post. Given such a function, we could then pass `G` to it and get back `G`'s fixed point `F`. In other words:
 
     F := Y G
 
@@ -65,13 +65,13 @@ and so
 
 Note that the above line doesn't constitute a formal definition of the Y combinator. Why? Because `Y` appears on the right hand side, and so we have the same issue as we did with `F`.
 
-We need to get rid of this. How?
+We need to get rid of `Y` appearing on the right hand side. How?
 
 Well, one example of a function that calls its input on itself is the **U combinator**, which we encountered in the [previous post](http://wenderen.github.io/Notes-Lambda-Calculus).
 
     U := λ x → x x
 
-Here we have a function `Y` calling itself. It's tempting to use the U combinator in this setting. But then what should we apply the U combinator to? Let's call our unknown argument `H` and try to figure out what it could be. We have:
+Here we have a function `Y` calling itself. It's tempting to use the U combinator in this setting. But then what should we apply the U combinator to? Let's call the unknown argument to the `U` combinator `H`, and try to derive an expression for it. We have:
 
     Y G = U H
     Y G = H H
@@ -83,7 +83,7 @@ where `H` is chosen such that the property `Y G = G (Y G)` is satisfied. Now let
     H x = G (x x)
     H = λ x → (G (x x))
 
-The key step here was going from the first line above to the second line. We noticed that the second `H` in `H H` was reappearing in `G (H H)` and could therefore be treated as a parameter of the first `H` in `H H`. We then replaced it by a formal parameter `x` and rearranged things some more.
+The key step here was going from the second line above to the third line. We noticed that the second `H` in `H H` was reappearing in `G (H H)` and could therefore be treated as a parameter of the first `H` in `H H`. We then replaced it by a formal parameter `x` and rearranged things some more.
 
 Let's check that `Y G = H H` and `H = λ x → G (x x)` is enough to satisfy our original constraint `Y G = G (Y G)`.
 

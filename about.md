@@ -9,9 +9,11 @@ published: true
 
 Hi! Welcome to my website. My name is Rohan Prinja. I was born in Mumbai in India, but I spent most of my early life in the peaceful and quiet neighbouring town of Pune. In 2015 I graduated from the Indian Institute of Technology Bombay with a Bachelor of Technology degree (with Honours) in Computer Science and Engineering. I am currently an associate software engineer at Samsung Electronics HQ in Suwon, Korea, where I help develop Samsung's Android phone browser.
 
-###Interests
+###Academic Interests
 
 I love computer graphics! I am excited and awed by the capacity of computers to model and simulate the real world. In particular, my interests are physical simulation and rendering because I'm attracted to the algorithmic and mathematical problems associated with photorealistically and efficiently simulating natural phenomena. I'm also interested in computational geometry.
+
+My other interests include functional programming, type theory and formal logic. I don't know much about these fields beyond the introductory courses I took in university, but I love reading about them in my spare time and teaching myself concepts from them.
 
 ###Hobbies
 

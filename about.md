@@ -33,4 +33,4 @@ My email ID is my first name, followed by a dot, followed by my last name. The d
 
 ###Resume/CV
 
-[Link to my CV, PDF format](todo)
+Please email me if you would like to view a PDF copy of my resumé.

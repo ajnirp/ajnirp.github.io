@@ -18,7 +18,7 @@ avatar: https://avatars2.githubusercontent.com/u/1688456?v=3&s=460
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble:
-  email: rohan.prinja@gmail.com
+  email:
   facebook:
   flickr:
   github: wenderen/
@@ -28,7 +28,7 @@ footer-links:
   rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
   twitter:
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
-  youtube: user/ajnirp
+  youtube:
 
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account

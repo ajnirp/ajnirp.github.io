@@ -48,7 +48,7 @@ The only question now is, what is `<???>`. This isn't too hard to answer. If we 
 
     1, 2, 1, 3, 1, 2, 1, 4, ...
 
-which is just the `ruler` sequence with `1` added to every element - in other words, `streamMap (+1) ruler`!
+which, if you look at it carefully, is just the original `ruler` series with `1` added to every element - in other words, `streamMap (+1) ruler`!
 
 We now have a definition for `ruler`:
 

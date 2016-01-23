@@ -58,10 +58,10 @@ We now have a definition (that doesn't work yet) for `ruler`:
     ruler :: Stream Integer
     ruler = interleaveStreams (repeat 0) (map (+1) ruler)
 
-It doesn't work because we haven't defined `interleaveStreams` - which, for the sake of brevity, we will now refer to as `iStr`. How do we do that? My first instinct was to define it like so:
+It doesn't work because we haven't yet defined `interleaveStreams` - which, for the sake of brevity, we will now refer to as `interleave`. How do we do that? My first instinct was to define it like so:
 
-    iStr :: Stream a -> Stream a -> Stream a
-    iStr (S x y) (S x' y') = S x (S x' (iStr y y'))
+    interleave :: Stream a -> Stream a -> Stream a
+    interleave (S x y) (S x' y') = S x (S x' (interleave y y'))
 
 Then I headed over to the `ghci` prompt, loaded my definitions in, entered `ruler` and waited expectantly.
 
@@ -80,30 +80,30 @@ And waited. And waited some more.
 Off we go!
 
     ruler
-    iStr (repeat 0) (map (+1) ruler)
+    interleave (repeat 0) (map (+1) ruler)
 
-`iStr` expects two arguments of the form `(S x y)` and `(S x' y')`. Since this is not the case, it attempts to evaluate each of its arguments until they can be represented in this form.
+`interleave` expects two arguments of the form `(S x y)` and `(S x' y')`. Since this is not the case, it attempts to evaluate each of its arguments until they can be represented in this form.
 
-    iStr (repeat 0) (map (+1) ruler)
-    iStr (S 0 (repeat 0)) (map (+1) ruler)
-    iStr (S 0 (repeat 0)) (map (+1) (iStr (repeat 0) (map (+1) ruler)))
+    interleave (repeat 0) (map (+1) ruler)
+    interleave (S 0 (repeat 0)) (map (+1) ruler)
+    interleave (S 0 (repeat 0)) (map (+1) (interleave (repeat 0) (map (+1) ruler)))
 
-We've made partial progress. The first argument to the outermost `iStr` is of the form `(S x y)`. The second argument isn't, though. So we must evaluate it.
+We've made partial progress. The first argument to the outermost `interleave` is of the form `(S x y)`. The second argument isn't, though. So we must evaluate it.
 
-    map (+1) (iStr (repeat 0) (map (+1) ruler))
+    map (+1) (interleave (repeat 0) (map (+1) ruler))
 
 `map` also expects its second argument to be of the form `(S x y)`. Again, it isn't. So we must evaluate it first before we can evaluate the call to `map`.
 
-    iStr (repeat 0) (map (+1) ruler)
+    interleave (repeat 0) (map (+1) ruler)
 
 Wait a minute, didn't we just see this *exact* expression? How do we fix this?
 
-Well, the main reason we ran into an infinite loop above is that we were forced to evaluate the second argument to `iStr`, which eventually ended up regenerating the original expression. It would be nice if we could recurse **without** evaluating the second argument. We can't realy avoid evaluating the first argument, since intuitively, *something* needs to be destructured in order for things to move forward. In any case, the first argument to `iStr` is `repeat 0` - and that is trivially easy to destructure.
+Well, the main reason we ran into an infinite loop above is that we were forced to evaluate the second argument to `interleave`, which eventually ended up regenerating the original expression. It would be nice if we could recurse **without** evaluating the second argument. We can't realy avoid evaluating the first argument, since intuitively, *something* needs to be destructured in order for things to move forward. In any case, the first argument to `interleave` is `repeat 0` - and that is trivially easy to destructure.
 
-So we need to write a definition for `iStr` that forces evaluation of *only* the first argument. In other words, our definition is constrained to look like this:
+So we need to write a definition for `interleave` that forces evaluation of *only* the first argument. In other words, our definition is constrained to look like this:
 
-    iStr :: Stream a -> Stream a -> Stream a
-    iStr (S x y) w = <???>
+    interleave :: Stream a -> Stream a -> Stream a
+    interleave (S x y) w = <???>
 
 How do we complete the definition? Observe that interleaving the stream `(S a1 x)` into the stream `w`...
 
@@ -115,27 +115,27 @@ How do we complete the definition? Observe that interleaving the stream `(S a1 x
     b1    b2    b3    b4
        a2    a3    a4
 
-In the above text diagrams, `x` is the stream `[a2, a3, a4, ...]`, and `w` is the stream `[b1, b2, b3, ...]`. It's easy to see that `(S a1 x)` spliced into `w` is the same as `w` spliced into `x`. with the only difference being that the former has an extra `a1` at the beginning. So our new definition for `iStr` is:
+In the above text diagrams, `x` is the stream `[a2, a3, a4, ...]`, and `w` is the stream `[b1, b2, b3, ...]`. It's easy to see that `(S a1 x)` spliced into `w` is the same as `w` spliced into `x`. with the only difference being that the former has an extra `a1` at the beginning. So our new definition for `interleave` is:
 
-    iStr :: Stream a -> Stream a -> Stream a
-    iStr (S x y) w = S x (iStr w y)
+    interleave :: Stream a -> Stream a -> Stream a
+    interleave (S x y) w = S x (interleave w y)
 
 This recursive definition is better than our previous one because it doesn't force Haskell to evaluate the second argument right away. Yay!
 
 We can verify that this definition "works" - that is, the interpreter is able to lazily evaluate the `ruler` stream without invoking an infinite loop. Let's re-run the evaluation procedure again and see how things have changed.
 
     ruler
-    iStr (repeat 0) (map (+1) ruler)
-    iStr (S 0 (repeat 0)) (map (+1) ruler)
-    S 0 (iStr (map (+1) ruler) (repeat 0))
-    S 0 (iStr (map (+1) (iStr (repeat 0) (map (+1) ruler))) (repeat 0))
-    S 0 (iStr (map (+1) (iStr (S 0 (repeat 0)) (map (+1) ruler))) (repeat 0))
-    S 0 (iStr (map (+1) (S 0 (iStr (map (+1) ruler) (repeat 0)))) (repeat 0))
-    S 0 (iStr (S (+1 0) (map (+1) (iStr (map (+1) ruler) (repeat 0)))) (repeat 0))
-    S 0 (iStr (S 1 (map (+1) (iStr (map (+1) ruler) (repeat 0)))) (repeat 0))
-    S 0 (S 1 (iStr (repeat 0) (map (+1) (iStr (map (+1) ruler) (repeat 0)))))
-    S 0 (S 1 (iStr (S 0 (repeat 0)) (map (+1) (iStr (map (+1) ruler) (repeat 0)))))
-    S 0 (S 1 (S 0 (map (+1) (iStr (map (+1) ruler) (repeat 0))) (repeat 0)))
+    interleave (repeat 0) (map (+1) ruler)
+    interleave (S 0 (repeat 0)) (map (+1) ruler)
+    S 0 (interleave (map (+1) ruler) (repeat 0))
+    S 0 (interleave (map (+1) (interleave (repeat 0) (map (+1) ruler))) (repeat 0))
+    S 0 (interleave (map (+1) (interleave (S 0 (repeat 0)) (map (+1) ruler))) (repeat 0))
+    S 0 (interleave (map (+1) (S 0 (interleave (map (+1) ruler) (repeat 0)))) (repeat 0))
+    S 0 (interleave (S (+1 0) (map (+1) (interleave (map (+1) ruler) (repeat 0)))) (repeat 0))
+    S 0 (interleave (S 1 (map (+1) (interleave (map (+1) ruler) (repeat 0)))) (repeat 0))
+    S 0 (S 1 (interleave (repeat 0) (map (+1) (interleave (map (+1) ruler) (repeat 0)))))
+    S 0 (S 1 (interleave (S 0 (repeat 0)) (map (+1) (interleave (map (+1) ruler) (repeat 0)))))
+    S 0 (S 1 (S 0 (map (+1) (interleave (map (+1) ruler) (repeat 0))) (repeat 0)))
 
 and so on and so forth. There's a lot of substitution going on, but notice the general pattern emerging: we obtain an expression of the form `S 0 (S 1 (S 0 (...)))` - the `ruler` series. Since it is of the form `S x (S y (S z (...)))` where `x`, `y`, `z` and so on are all literals, it can be lazily evaluated upto whatever point we need.
 

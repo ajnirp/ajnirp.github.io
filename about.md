@@ -5,7 +5,7 @@ permalink: /hello/
 published: true
 ---
 
-![At Namiseom](https://wenderen.github.io/images/nami.jpg)
+<!-- ![At Namiseom](https://wenderen.github.io/images/nami.jpg) -->
 
 Hi! Welcome to my website. My name is Rohan Prinja. I was born in Mumbai in India, but I spent most of my early life in the peaceful and quiet neighbouring town of Pune. In 2015 I graduated from the Indian Institute of Technology Bombay with a Bachelor of Technology degree (with Honours) in Computer Science and Engineering. I am currently an associate software engineer at Samsung Electronics HQ in Suwon, Korea, where I help develop Samsung's Android phone browser.
 
@@ -19,9 +19,7 @@ My other interests include functional programming, type theory and formal logic.
 
 In my free time, I like to go long-distance cycling and trekking, or read books - mostly science fiction and fantasy. I'm also an avid music listener, and spend a lot of time tracking down new artists and discovering new genres. I use [last.fm](http://last.fm/user/wenderen) to organise my music collection.
 
-###Languages
-
-My native language is Hindi.
+###Foreign Languages
 
 I've always been fascinated by the differences between languages across the world, and so I like learning foreign languages. I know some very basic French and German. I studied Mandarin for a year in college, but I've been out of touch with it for a while. Currently, I'm learning Korean. In the future, I hope to return to Mandarin and pick up where I left off.
 

@@ -35,9 +35,9 @@ Table of Contents
 * [Conclusion](#conclusion)
 * [Reference](#reference)
 
-##Introduction
+## Introduction
 
-###What is the lambda calculus?
+### What is the lambda calculus?
 
 The lambda calculus is a minimal model of computation. It specifies how to define functions and how to apply them to other arguments - which are themselves functions by virtue of the fact that the lambda calculus doesn't specify how to define anything *other than* a function. Despite this minimalism, the lambda calculus is equivalent to a Turing machine.
 
@@ -47,7 +47,7 @@ What is an expression? An **expression** is either a name (defined above), a lam
 
 A **application** is two expressions written with a space in between. The first expression is said to be applied to the second. In lambda calculus, the convention is to associate from the left. So the application `x y z` is read as "`x` applied to `y`, and the result is then applied to `z`". Alternatively, this can be read as "`x` is applied to both `y` and `z`". Both interpretations are valid and in fact the same. Note that both these interpretations are *different* from this one: `x (y z)`. Can you say why?
 
-###Examples
+### Examples
 
 `λ x y → x y y` is an example of a lambda. The `x y` after the `λ` is the argument list. The `x y y` after the arrow is the body of the lambda. If you were to describe this function in words, you might say "a lambda that takes two arguments, duplicates the second and applies the first to them".
 
@@ -74,19 +74,19 @@ So `x` must be substituted by `(λ y → y y)` in the body of the first `U` - wh
 
 which is the `U` combinator applied to itself again. So `U U` is an infinite program - and in fact, since it regenerates itself at every step, it is a [quine](https://en.wikipedia.org/wiki/Quine_(computing))!
 
-###About this article
+### About this article
 
 In this article, we'll look at how the lambda calculus implements some concepts that we expect from programming languages - numbers, arithmetic, logic, control flow, and recursion. It's really interesting to see how in spite of being an extremely minimal language, the lambda calculus is able to support all these concepts by building abstraction upon abstraction. Along the way, we'll try to understand the intuition behind some of these implementations.
 
-##Numbers
+## Numbers
 
 `0` is **`λ s z → z`**. It ignores its first argument and returns the second one unmodified. `1` is **`λ s → s (s z)`**. `2` is **`λ s z → s (s (s z))`**. And so on. Essentially, a number in the untyped lambda calculus says "give me a function and another argument, and I'll apply the function this many times to that argument." This is why `0` ignores its first argument - applying a function zero times to a value means simply not changing the value at all.
 
 That's just the whole numbers, though. What about negative integers? We'll get there.
 
-##Arithmetic
+## Arithmetic
 
-###Successor
+### Successor
 
 The successor function is **`S = λ w y x → y (w y x)`**. When applied to a number, it returns the next number, like so:
 
@@ -101,11 +101,11 @@ The successor function is **`S = λ w y x → y (w y x)`**. When applied to a nu
 
 Ok, great, it works out. But why does the successor function need three arguments? As it turns, the difference between M and M+1 is a single extra application of the `s` parameter. So we need one parameter for that - this is the `w` parameter - and two more parameters `y` and `x` to consume the two formal parameters of M! This is the importance of the `(w y x)` bit - we are resolving `M` in the context of `y` and `x` and then applying `y` once more outside the brackets.
 
-###Addition
+### Addition
 
 The successor function also works as an addition operator, because `M S N`, as per our intuition about numbers, is `S applied M times to N`. Adding `M` to `N` is therefore the same as incrementing the number `N` a total of `M` times. Nice - we got two functions for the price of one.
 
-###Multiplication
+### Multiplication
 
 Multiplication is **`M = λ x y z → x (y z)`**. This is also called the [B combinator](https://en.wikipedia.org/wiki/B,C,K,W_system), but never mind that. How does it work?
 
@@ -128,7 +128,7 @@ So, we have: "apply `z` to `t` a total of `A * B` times". And that's just anothe
 
 which in turn is the number `A * B` in our representation.
 
-##Logic
+## Logic
 
 Yay logic! Specifically, Boolean logic.
 
@@ -146,7 +146,7 @@ What else do we need? Right, Boolean operations.
 
 (Side note: `F` and `0` have the same definition, but you probably already noticed this :) )
 
-##Control flow
+## Control flow
 
 We get `if` conditions via the `Z` predicate. The `Z` stands for `zero?` - it takes a single whole number input and returns `T` if the input is `0`, and `F` otherwise. The predicate itself is **`λ x → x F NOT F`** and the way it works is pretty cool. Recall that in our lambda calculus, numbers specify the number of times to apply a function. If we pass `0` to `Z`, we get `0 F NOT F`, which is `NOT F` - since `0` ignores its first argument - which in turn is `T`. If we pass any *other* whole number `M`, we get `M F NOT F`, which resolves as
 
@@ -158,7 +158,7 @@ We get `if` conditions via the `Z` predicate. The `Z` stands for `zero?` - it ta
 
 We didn't have to worry about the contents of that `something` - after all, `F` is defined as `λ x y → y`, meaning that it simply discards its first argument and returns the second one.
 
-##Tuples
+## Tuples
 
 To represent a pair `(a, b)`, we use the function `λ z → z a b`. We extract its first element with `T` like so:
 
@@ -176,11 +176,11 @@ and its second element with `F` like so:
 
 Also, since a pair is just a 2-tuple and there is nothing special about the number 2 in this context, we could very well define an n-tuple `(a1, a2, a3, ..., an)` with the function `z → z a1 a2 a3 ... an`. This is a digression, though. Pairs are enough for what we're about to do next, which is...
 
-##More arithmetic
+## More arithmetic
 
 ...subtraction!
 
-###Predecessor
+### Predecessor
 
 How do you subtract `1` from a number `N` using *only* the tools we've defined thus far? We have addition, multiplication, tuples and boolean logic in our toolkit. Multiplication doesn't seem to be a good choice. Boolean logic would help with branching, as we've seen above, but it's unlikely we'd need to branch just to define subtraction. Addition seems like a good bet - it is after all the inverse of subtraction. And tuples? Let's see.
 
@@ -196,15 +196,15 @@ Let's call it `PHI`. Given a pair `λ z → z a b`, it returns the pair `λ z �
 
 Also note that if `n` is `0`, we get `P 0 = F`, and `F` is really `0` in disguise. So the predecessor of `0` is `0` itself. This seems like a silly property, but it will be useful soon.
 
-###Subtraction
+### Subtraction
 
 Just like addition and the successor operator, subtraction is achieved by repeatedly applying the predecessor operator. `M P N` is "apply `P` to `N` a total of `M` times" - in other words, `N - M`. Note that since the predecessor of `0` is `0`, if `M` is greater than `N` we will at some point be repeatedly applying `P` to `0`, and our final result will be just `0`.
 
-###Division
+### Division
 
 There isn't a short combinator for division analogous to multiplication that I know of, but division can be formulated as a recursive problem - and we'll see how in a later section.
 
-##Comparisons
+## Comparisons
 
 To test if a number `x` is greater than or equal to `y`, subtract `x` from `y` by decreasing `y` a total of `x` times. If you're left with `0`, `x` must have been at least as large as `y`. So our function `GE` is:
 
@@ -224,7 +224,7 @@ What about equality? If and only if `x >= y` and `y >= x` both hold, then `x = y
 
 Our not equal (`NE`) function is `NOT EQ`.
 
-##Recursion
+## Recursion
 
 In recursion as we know it in most programming languages, a function calls itself within its definition, and an edge case terminates the recursion. Like so:
 
@@ -328,11 +328,11 @@ For kicks, let's also do **division**. Again, the pattern is the same, with only
 
 `x` and `y` are the two arguments, and we want to find the quotient when `y` is divided by `x`. The base case is that `x` is greater than `y` - in this case, the quotient is zero. Otherwise, the quotient equals `1` plus the quotient when `y - x` is divided by `x`.
 
-##Negative numbers
+## Negative numbers
 
 Negative integers are represented with pairs: we use a pair `λ z → z a b` to represent the number `a - b`. This of course requires that we change the definitions of our successor / addition and predecessor / subtraction functions so that they can work with pairs. Let's do that.
 Raúl Rojas wrote a beautiful [paper](http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf) back in 1997 introducing the [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus). The paper explains the **untyped lambda calculus** from first principles in very plain language and was the only text that really made me understand the basics. This blog post is a **collection of notes to accompany the paper** - essentially, a summary of the paper mixed in with the insights I had while trying to understand it, as well as solutions to a couple of the easier problems posed at the end.
-###Successor
+### Successor
 
     S' = λ p → (λ z → z (S (p T)) (p F))
        = λ p z → z (S (p T)) (p F)
@@ -341,31 +341,31 @@ The meaning is clear enough. The successor of `a - b` is `(a + 1) - b`. Also, no
 
 What else? Right, predecessor. Here we go:
 
-###Predecessor
+### Predecessor
 
     P' = λ p → (λ z → z (p T) (S (p F)))
        = λ p z → z (p T) (S (p F))
 
 Pretty much the same as above. By the way - would `λ p z → z (P (p T)) (p F)` be a valid definition for `P'`? *(Hint: consider what happens when the first element of the pair is `0`)*
 
-###Addition
+### Addition
 
 `(a - b) + (c - d) = (a + c) - (b + d)`, so:
 
     ADD = λ p q → (λ z → z ((p T) S (q T)) ((p F) S (q F)))
         = λ p q λ z → z ((p T) S (q T)) ((p F) S (q F))
 
-###Subtraction
+### Subtraction
 
 Similar logic. `(a - b) - (c - d) = (a - c) - (b - d)`, so:
 
     SUB = λ p q → (λ z → z ((p T) P (q T)) ((p F) P (q F)))
         = λ p q λ z → z ((p T) P (q T)) ((p F) P (q F))
 
-##Conclusion
+## Conclusion
 
 The above was a brief introduction to the lambda calculus. We haven't touched upon some other interesting topics, like how lists are represented in the lambda calculus, and how one can write functions to operate on such lists. More on this to come!
 
-##Reference
+## Reference
 
 Raúl Rojas wrote a beautiful [paper](http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf) back in 1997 introducing the [lambda calculus](https://en.wikipedia.org/wiki/Lambda_calculus). The paper explained the **untyped lambda calculus** from first principles in very plain language and was the only text that really made me understand the basics. This blog post began as a collection of notes to accompany the paper, and grew as I added in insights I had while trying to understand the paper, as well as solutions to a couple of the easier problems posed at the end.

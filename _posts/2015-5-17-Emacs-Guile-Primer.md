@@ -61,7 +61,7 @@ Note: Geiser supports Racket and Chicken Scheme too, but those aren't relevant t
 Dealing with sexps
 ------------------
 
-##Moving around
+## Moving around
 
 * `C-M-f` (f = forward) jumps to the end of the sexp in front of the current edit point.
 * `C-M-b` (b = backward) jumps to the beginning of the sexp behind the current edit point.
@@ -69,12 +69,12 @@ Dealing with sexps
 * `C-M-S-b`: same thing, but for the sexp behind the current edit point.
 * `C-i` intelligently indents the selected region. If no region is selected, it indents only the current line.
 
-##Guile and sexps
+## Guile and sexps
 
 * `C-x C-e` evaluates the sexp behind the current edit point.
 * `C-c C-b` evaluates the entire buffer.
 
-##Commenting
+## Commenting
 * Putting "*;" before a sexp comments it out (as well as all contained sexps), while leaving the containing sexps intact.
 
 Buffers

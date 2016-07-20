@@ -10,7 +10,7 @@ This article is a primer on hackathons - what they are, what participating in on
 
 Firstly: what are hackathons, and why should you take part in one?
 
-##What is a hackthon?
+## What is a hackthon?
 
 A typical hackathon takes place over a span of 24 or 48 hours. You compete either alone or as part of a team, and build "something". Typically there is a lot of leeway in what that "something" is. Most hackathons have a theme. Some restrict the "something" to be a mobile app, or maybe a web app. Others go further and provide you with an API that you must make use of when making your "something". Once the 24 (or 48) hours are over, you are expected to stand in front of a panel of judges and present your "something". Exactly how long you get to speak depends. Some hackathons allow you only 90 seconds. Others are kinder and give you a whole 3 minutes.
 
@@ -18,7 +18,7 @@ A typical hackathon takes place over a span of 24 or 48 hours. You compete eithe
 
 So that's what a hackathon is, broadly. Why would you want to take part in one? Who wants to stay awake for nearly 24 hours, anyway?
 
-##Why take part in one?
+## Why take part in one?
 
 An obvious couple of reasons to take part in hackathons is because
 
@@ -48,7 +48,7 @@ In the next section, I'll talk about my various hackathon experiences, and then 
 Experiences
 -----------
 
-###Yahoo! Hack Hyderabad
+### Yahoo! Hack Hyderabad
 
 My first brush with the hackathon world was in the summer of my second year. I was interning at Chronus, a SAAS company in Chennai that wrote mentoring software. One evening, when I was checking my mail, I saw an announcement posted on (I think) the WNCC group. Yahoo! was conducting an all-India hackathon in Hyderabad, and luckily enough, it was being held in the summer after intern got over. To sign up, I had to solve a couple of questions on Hackerrank. I did so and promptly forgot about it.
 
@@ -70,7 +70,7 @@ With the presentations over, the judges retreated to a separate room to delibera
 
 The aftermath was unreal. We had people coming up to us, introducing themselves and trading contact numbers - including a software engineer who worked at Google Hyderabad, and a journalist. There were the obligatory photographs: us standing awkwardly with silly, plastered-on grins as the shock of it all washed over us. None of us had had any experience with this sort of thing. But somehow, we had won.
 
-###Observations
+### Observations
 
 Today, when I look back on that experience, I realise that we had done many things well. And we had also done many things incorrectly, things that would not become apparent until I participated in other hackathons and messed up.
 
@@ -86,13 +86,13 @@ For now, here are the things that made our hack a success, as evidenced by *this
 
 5. **Avoid in-hackathon training sessions** - even though point 4 is crucial, 24 hours isn't all that much time. A significant chunk of this time will be spent discussing refinements to your idea, discussing fallback plans for when some part of your idea doesn't pan out, figuring out how to deliver a really good presentation, and yeah, sleeping :) So save your time, and ditch these sessions. Instead, make sure that you already have a working knowledge of the technologies you will use, or alternatively, grab one of the hackathon mentors and ask for help *while you're coding* rather than passively sit in a session and take notes.
 
-###Yahoo! HackU, IIT Bombay
+### Yahoo! HackU, IIT Bombay
 
 My next hackathon was another Yahoo! event, this time a university-level event. I was partnered with Anil Shanbhag, Rahul Singhal and Ashwin Paranjpe. To increase our chances of winning, we split into two sub-teams, each working on a single hack. If either of the two hacks would win, we would all claim credit. Rahul and I successfully used this trick later in another event. More on this later.
 
 Anil and I made a dead-simple app: given a search query, we would search through a database of news articles and format the results as an interactive, scrollable timeline of news articles relevant to the query. Ashwin and Rahul made a tagger and recommender for Yahoo! Answers. We won second place with the timeline idea. The judges cited the "beautiful user interface" as one of the reasons for our win. This kind of amused me, because the timeline library we used did all of that. All we did was connect together a few libraries - in our case, Apache Solr, Python NLTK (for news article summarization) and the timeline JS library.
 
-###Observations
+### Observations
 
 1. **Make your hack look pretty** - this was already noted before, but it's so important that I'm going to repeat it. A good UI helps your cause enormously! You may have a strong and novel idea, but if your demo looks ugly or confusing, the judges might not like your hack, or worse, fail to see the point of your hack entirely. Conversely, with a good UI, a not-so-cool idea suddenly looks promising.
 
@@ -133,7 +133,7 @@ This defeat would however prove to be a blessing in disguise. It's easy to analy
 
 So... what went wrong?
 
-###Microsoft Code.Fun.Do. 2015: victory
+### Microsoft Code.Fun.Do. 2015: victory
 
 When the 2015 edition of Microsoft's Code.Fun.Do. began to draw close, Rahul and I sat together and brainstormed heavily. We were acutely aware that we had messed up last year. Too many things had gone wrong, and more importantly, Manish and co. had done many, many things right. We were in the final semester of our final year and there was no scope for error now. We *had* to win. And to win, we had to do every single thing the right way.
 
@@ -165,7 +165,7 @@ What did Manish's team do right? To answer this, we pored over their app. We pic
 
 As you can see, the Kapi guys did a lot of things right. Somewhat hilariously, when I pointed these things out to Manish and Ranveer, their responses were more or less "really? We basically just sort of winged it!". Whether this was an example of modesty or simply having a good intuition for what things to do right in a hackathon, it's clear that their win was not a fluke.
 
-###Putting these lessons to use
+### Putting these lessons to use
 
 The 2015 Code.Fun.Do. session was without a doubt the best hackathon experience I've ever had. Bolstered by the memory of our sub-par performance in 2014 and armed with the lessons learned from analysing Kapi's win, we charged headfirst into the 2015 edition.
 
@@ -181,7 +181,7 @@ The actual hackathon went smoothly. We made sure to seek out one of the judges, 
 
 In the next section, I talk about what makes an idea good for a hackathon.
 
-##What makes an idea good?
+## What makes an idea good?
 
 1. A good idea scratches an itch.
 
@@ -209,7 +209,7 @@ In the next section, I talk about what makes an idea good for a hackathon.
 
 In the next section, I summarise the observations listed thus far.
 
-##Summary
+## Summary
 
 This is the TL;DR section. Here, I list down all the observations and tips for doing well in a hackathon that were scattered throughout the above text. Advice given without any context or explanation can sometimes be confusing, so please do read the entire article if something isn't clear.
 
@@ -229,15 +229,15 @@ This is the TL;DR section. Here, I list down all the observations and tips for d
 
 In the next section, I briefly discuss the ideathons as well, if only because they paralleled the learnings from the hackathons I took part in.
 
-##Ideathons
+## Ideathons
 
 I mentioned in passing that I also took part in two ideathons. From a learning point of view, these ideathons didn't really teach me anything new - if anything, they only vindicated some of the observations I had made from other hackathons.
 
-###Samsung Intern App Design
+### Samsung Intern App Design
 
 The first ideathon was when I interned at Samsung. We were divided into teams of four to five interns, and we had to propose ideas (and not necessarily implement them), as part of an app design competition. After much discussion, we settled on two ideas (just like my team did for the Yahoo! HackU event). The first was an expense calculator app for groups of people travelling abroad. The second was a subtitle detection app that would search a list of websites for subtitles, given a media file, and perform very rudimentary sound analysis to determine if the subtitle file matched the file. Very trivial ideas, but somehow we won first place. One reason I suspect we won was because Samsung was probably looking for implementable ideas. The other teams proposed really cool but somewhat open ideas that at the very least would require a significant amount of research and/or software engineering to bring to reality. Our ideas by contrast were fairly straightforward.
 
-###Samsung VR Appathon
+### Samsung VR Appathon
 
 The second ideathon happened this semester. Samsung was conducting a virtual reality/augmented reality themed "appathon", in which the first stage was to propose ideas and the second stage would be for selected teams to implement the ideas they proposed. Once again, we split up. Shubham Mehta and I proposed a VR app for students to learn chemistry by visualising chemical reactions in a virtual world, using a Samsung Gear VR and some sort of arm movement tracker, like the Myo armband. Rahul and Mayank proposed an app for an AR headset that would guide people as they cooked a dish. The chemistry app was selected to participate in the next round, but as all four of us were really busy, we declined to take part.
 

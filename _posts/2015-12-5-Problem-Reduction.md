@@ -16,7 +16,7 @@ How do we do this? We think of a procedure that constructs a corresponding insta
 
 Effectively, we are proving that Q is a harder problem than our original problem P.
 
-###Example
+### Example
 
 Suppose Q is the question "given a program PROG1 and some input, does the program ever call a function foo() when it is run?" Our goal is to prove that Q is undecidable using the method we discussed above - we start with an arbitrary instance of Q and think of a procedure to turn it into an instance of our original hello-world problem P.
 

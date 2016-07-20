@@ -105,6 +105,6 @@ which is what we were trying to obtain!
 
 And now we have the insight behind the Y combinator. It's just the end result of refactoring the definition of a fixed point for functions that take other functions as input.
 
-##Footnotes
+## Footnotes
 
 [1] Note that for two functions to be equal, they must return the same output for every input

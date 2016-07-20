@@ -7,7 +7,7 @@ published: true
 
 This blog post discusses the solution to one of the exercises in an online course I've been doing in my spare time.
 
-##Problem Statement
+## Problem Statement
 
 The context of the problem is learning to use lazy evaluation. We start by defining a data structure called a `Stream`. It is a generic list similar to the built-in one in Haskell, except that it is necessarily infinite. It is defined like so:
 
@@ -37,7 +37,7 @@ Now for the problem. The **ruler series** is defined as the series in which the 
 
 Question: How do you represent the `ruler` series as a `Stream`?
 
-##A First Attempt
+## A First Attempt
 
 The assignment helpfully suggests:
 
@@ -69,7 +69,7 @@ And waited. And waited some more.
 
 ![Me at the prompt](https://s-media-cache-ak0.pinimg.com/736x/bb/43/57/bb435733159f4040f1c68c79f9dc7e8e.jpg)
 
-##Refining our solution
+## Refining our solution
 
 ...as you can guess, `ghci` was sent into an infinite loop trying to evaluate `ruler`. Why? Let's unravel the evaluation of `ruler` step by step. Keep in mind that Haskell is *lazy*, which means that
 
@@ -141,6 +141,6 @@ and so on and so forth. There's a lot of substitution going on, but notice the g
 
 In the case when we type in `ruler` at the `ghci` prompt, as we did above, that point corresponds to 20 terms of the series.
 
-##References
+## References
 
 The course mentioned in the beginning of this post is Brent Yorgey's fantastic *Intro to Haskell* course. The course materials, including lecture notes and assignments are available online, [here](http://www.seas.upenn.edu/~cis194/spring13/).

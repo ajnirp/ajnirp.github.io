@@ -7,12 +7,12 @@ published: true
 
 <!-- ![At Namiseom](https://wenderen.github.io/images/nami.jpg) -->
 
-Hi! Welcome to my website. My name is Rohan Prinja. I was born in Mumbai in India, but I spent most of my early life in the quiet neighbouring town of Pune. Currently, I live in [Suwon](https://en.wikipedia.org/wiki/Suwon) and work at Samsung.
+Hi! Welcome to my website. My name is Rohan Prinja. I am a first-year graduate student at the University of North Carolina at Chapel Hill.
 
 ### News
 * 2015.08.08: Graduated from IIT Bombay with an honours degree in Computer Science and Engineering
 * 2015.09.01: Joined [Samsung Electronics](http://www.samsung.com/sec/home/) as an associate software engineer
-* 2016.08.23: Joining [UNC Chapel Hill](http://www.unc.edu/) as a graduate student
+* 2016.08.23: Joined [UNC Chapel Hill](http://www.unc.edu/) as a graduate student
 
 ### Interests
 

@@ -59,7 +59,7 @@ A **application** is two expressions written with a space in between. The first 
 
 We proceeded in two steps. After the lambda was applied to `f`, `x` got substituted with `f`. We then had a lambda that accepted only a single argument `y`, duplicated it, and applied `f` to both. Next, this new lambda was applied to `g`. `y` got substituted with `g`, and we were left with `f g g`.
 
-Here's another example. Consider the lambda `λ x → x x`. It's known as the **U combinator**, and all it does is apply it's only argument to itself. If we pass the `U` to itself, what do we get?
+Here's another example. Consider the lambda `λ x → x x`. It's known as the **U combinator**, and all it does is apply its only argument to itself. If we pass the `U` combinator to itself, what do we get?
 
     (λ x → x x) (λ x → x x)
 
@@ -94,12 +94,12 @@ The successor function is **`S = λ w y x → y (w y x)`**. When applied to a nu
     (λ w y x → y (w y x)) M
     λ y x → y (M y x)
     λ y x → y ((λ s z → <s applied to z M times>) y x)
-    λ y x → <y applied to x M times>
+    λ y x → y (<y applied to x M times>)
     λ y x → <y applied to x M+1 times>
     λ s z → <s applied to z M+1 times>
     M+1
 
-Ok, great, it works out. But why does the successor function need three arguments? As it turns, the difference between M and M+1 is a single extra application of the `s` parameter. So we need one parameter for that - this is the `w` parameter - and two more parameters `y` and `x` to consume the two formal parameters of M! This is the importance of the `(w y x)` bit - we are resolving `M` in the context of `y` and `x` and then applying `y` once more outside the brackets.
+Ok, great, it works out. But why does the successor function need three arguments? As it turns out, the difference between M and M+1 is a single extra application of the `s` parameter. So we need one parameter for that - this is the `w` parameter - and two more parameters `y` and `x` to consume the two formal parameters of M! This is the importance of the `(w y x)` bit - we are resolving `M` in the context of `y` and `x` and then applying `y` once more outside the brackets.
 
 ### Addition
 

@@ -5,7 +5,7 @@ permalink: Y-Combinator-Derivation
 published: true
 ---
 
-This post is an attempt to put my understanding of the intuition behind the Y combinator into words. It is a follow up to my earlier, introductory post on the [untyped lambda calculus](http://wenderen.github.io/Notes-Lambda-Calculus).
+This post is an attempt to put my understanding of the intuition behind the Y combinator into words. It is a follow up to my earlier, introductory post on the [untyped lambda calculus](http://ajnirp.github.io/Notes-Lambda-Calculus).
 
 Recall that the Y combinator is defined like so:
 
@@ -13,7 +13,7 @@ Recall that the Y combinator is defined like so:
 
 It takes as input a function argument `y` and returns the result of applying `(λ x → y (x x))` to itself. This means that output of `Y R`, for some argument `R`, is `R (Y R)`. Note that both `Y R` and `R (Y R)` are partially applied functions.
 
-In the [previous post](http://wenderen.github.io/Notes-Lambda-Calculus) we saw how the Y combinator works. We looked at two examples of problems with recursive formulations and saw how to construct functions `R` such that `Y R`, when applied to the required arguments, yields the desired result. One insight we had was that since `R` is called with itself as the first argument, it must be an `(n+1)`-ary function, where `n` is the number of formal parameters in the recursive formulation.
+In the [previous post](http://ajnirp.github.io/Notes-Lambda-Calculus) we saw how the Y combinator works. We looked at two examples of problems with recursive formulations and saw how to construct functions `R` such that `Y R`, when applied to the required arguments, yields the desired result. One insight we had was that since `R` is called with itself as the first argument, it must be an `(n+1)`-ary function, where `n` is the number of formal parameters in the recursive formulation.
 
 We also saw *why* the Y combinator is needed. It gives us a way to express recursive functions in languages that do not natively support recursion - like the untyped lambda calculus.
 

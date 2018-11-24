@@ -5,37 +5,21 @@ permalink: /hello/
 published: true
 ---
 
-<!-- ![At Namiseom](https://wenderen.github.io/images/nami.jpg) -->
-
-Hi! Welcome to my website. My name is Rohan Prinja. I am a first-year graduate student at the University of North Carolina at Chapel Hill.
-
-### News
-* 2015.08.08: Graduated from IIT Bombay with an honours degree in Computer Science and Engineering
-* 2015.09.01: Joined [Samsung Electronics](http://www.samsung.com/sec/home/) as an associate software engineer
-* 2016.08.23: Joined [UNC Chapel Hill](http://www.unc.edu/) as a graduate student
+Hi! Welcome to my website.
 
 ### Interests
 
-I love computer graphics! I am excited by the capacity of computers to model and simulate the real world. In particular, my interests are physical simulation and rendering because I'm attracted to the algorithmic and mathematical problems associated with photorealistically simulating natural phenomena. I'm also interested in computational geometry.
+A few of my technical interests: virtual reality, systems programming, computer graphics.
 
 ### Hobbies
 
-* I enjoy learning foreign languages, and love [Duolingo](https://www.duolingo.com/wenderen) because of its wonderful community as well the way it cleverly turns language acquisition into a video game
-* I am a beginner at long-distance cycling and trekking
-* I love reading books - mostly non-fiction, science fiction and fantasy
-* I like listening to and exploring music. I use [last.fm](http://last.fm/user/wenderen) to organise my music collection
+* Learning foreign languages: I like [Duolingo](https://www.duolingo.com/) because of its wonderful community as well the way it cleverly turns language acquisition into a video game.
+* Kayaking and long-distance bicycling.
+* Reading: non-fiction, science fiction, fantasy, essays.
+* Listening to music: I use [last.fm](https://last.fm/user/wenderen) and [RYM](https://rateyourmusic.com/~_wenderen) to organise my music collection.
 
 ### Languages
 
-* **Native**: हिंदी
-* **Fluent**: English
-* **Intermediate**: français
-* **Beginner**: 한국말, Deutsch, norsk
-
-### Contact
-
-My email ID is my first name, followed by a dot, followed by my last name. The domain is Google's free email service.
-
-### Resume/CV
-
-Please email me if you would like to view a PDF copy of my resumé.
+* **Native, fluent**: हिंदी, English
+* **Intermediate**: français, norsk
+* **Beginner**: 한국말

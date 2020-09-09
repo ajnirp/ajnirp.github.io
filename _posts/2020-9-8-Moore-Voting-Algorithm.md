@@ -11,9 +11,9 @@ Iterate over the array. **If two elements are unequal, pretend the array doesn't
 
 If neither of the two crossed-out elements were the majority element the former majority element's new ratio in the new array is $\frac{k}{n-2}$. This is $\ge \frac{k}{n}$ (smaller denominator), which was already $\ge \frac{1}{2}$. And if we did remove a majority element instance, the new ratio is $\frac{k-1}{n-2}$. Is the new ratio greater than the old ratio, smaller than it, or equal to it, or does it depend on the values of $n$ and $k$? Derivation time:
 
-$\frac{k-1}{n-2} \ge ? \frac{k}{n}\\\
-=> kn - n \ge ? kn - 2k\\\
-=> 2k \ge ? n\\\
-=> \frac{k}{n} \ge ? \frac{1}{2}$
+$\frac{k-1}{n-2} \approx \frac{k}{n}\\
+=> kn - n \approx kn - 2k\\
+=> 2k \approx n\\
+=> \frac{k}{n} \approx \frac{1}{2}$
 
-The $\geq$ can be replaced by a $\ge$, and we're done. The new ratio is greater than the old one (regardless of what $k$ and $n$ were), and the old one was greater than $1/2$. So the former majority element is the new majority element!
+The $\approx$ can be replaced by a $\ge$, and we're done. The new ratio is greater than the old one (regardless of what $k$ and $n$ were), and the old one was greater than $1/2$. So the former majority element is the new majority element!

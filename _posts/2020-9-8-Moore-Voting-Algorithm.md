@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Why Moore' Voting Algorithm works
+title: Why Moore's Voting Algorithm works
 published: true
 mathjax: true
 ---

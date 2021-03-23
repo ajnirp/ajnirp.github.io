@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The insight behind the Dutch National Flag Algorithm
-published: false
+published: true
 ---
 The Dutch National Flag Algorithm takes as input an array of comparable elements and a pivot. It outputs nothing, and after it's done running the array has its elements moved around in-place so that all elements less than the pivot come first, then all elements equal to the pivot, and then all elements greater than the pivot. This algorithm shows up in quicksort, of which it's the only really complicated part in my opinion. What makes it special is that it runs in one pass and uses only constant space. The intuition behind this algorithm and the way its indices change eluded me until recently, so I'm writing this post to explain it.
 

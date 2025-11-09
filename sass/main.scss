@@ -17,13 +17,16 @@ $cyan:      #2aa198;
 $green:     #859900;
 
 body {
+    background-color: #fefefe;
+    // border: 1px solid $base03;
+    // border-radius: 15px;
+    color: $base03;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
     margin: 40px auto;
     max-width: 900px;
-    line-height: 1.6;
-    font-size: 17px;
-    color: #444;
-    padding: 0 10px;
+    padding: 15px 30px 15px 30px;
 }
 
 h1,h2,h3 {
@@ -41,7 +44,7 @@ a:hover {
 }
 
 pre {
-    border: 1px solid #444;
+    border: 1px solid $base03;
     border-radius: 20px;
     font-size: 17px;
     max-width: 90ch;
@@ -92,7 +95,7 @@ pre table {
 
     a {
         border-bottom: none;
-        color: #444;
+        color: $base03;
         text-decoration: none;
         padding: 10px;
     }

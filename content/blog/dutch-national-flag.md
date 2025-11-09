@@ -1,6 +1,6 @@
 +++
 title = "Understanding the Dutch National Flag algorithm"
-date = 2025-11-09
+date = 2020-09-13
 +++
 
 In computer science, the [Dutch National Flag problem](https://en.wikipedia.org/wiki/Dutch_national_flag_problem) asks: can you take an array of numbers and a "pivot" value, and sort the array in-place so that:

@@ -17,8 +17,10 @@ smart_punctuation = false
 
 [extra]
 # Put all your custom variables here
-
 author = "Rohan Prinja"
 description = "loriculus.org"
 default_language = "en"
+
+katex_enable = true
+
 title = "Loriculus"

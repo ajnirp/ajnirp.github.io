@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="{{ config.extra.author }}">
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <ul>
+    <li><a href="/">About</a></li>
+    <li><a href="{{ get_url(path='@/blog/_index.md') }}">Blog</a></li>
+  </ul>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      {% block content %} {% endblock content %}
+    </div>
+  </section>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+// Solarized colors. Taken from https://ethanschoonover.com/solarized/.
+$base03:    #002b36;
+$base02:    #073642;
+$base01:    #586e75;
+$base00:    #657b83;
+$base0:     #839496;
+$base1:     #93a1a1;
+$base2:     #eee8d5;
+$base3:     #fdf6e3;
+$yellow:    #b58900;
+$orange:    #cb4b16;
+$red:       #dc322f;
+$magenta:   #d33682;
+$violet:    #6c71c4;
+$blue:      #268bd2;
+$cyan:      #2aa198;
+$green:     #859900;
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 40px auto;
+    max-width: 900px;
+    line-height: 1.6;
+    font-size: 17px;
+    color: #444;
+    padding: 0 10px;
+}
+
+h1,h2,h3 {
+    line-height: 1.2
+}
+
+a {
+    color: $blue;
+    display: inline-block;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: $base2;
+}
+
+pre {
+    border: 1px solid #444;
+    border-radius: 20px;
+    font-size: 17px;
+    max-width: 90ch;
+    padding: 10px 20px 10px 20px;
+    margin: 0 auto;
+}
+
+/* The line numbers already provide some kind of left/right padding */
+// pre[data-linenos] {
+//   padding: 1rem 0;
+// }
+pre table td {
+  padding: 0;
+}
+/* The line number cells */
+pre table td:nth-of-type(1) {
+  padding-right: 15px;
+  text-align: center;
+  vertical-align: top;
+  user-select: none;
+}
+pre mark {
+  /* If you want your highlights to take the full width */
+  display: block;
+  /* The default background colour of a mark is bright yellow */
+  background-color: rgba(254, 252, 232, 0.9);
+}
+pre table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#header {
+    text-align: right;
+    margin: 0 auto;
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: inline-block;
+        font-weight: bold;
+        margin-left: 4rem;
+    }
+
+    a {
+        border-bottom: none;
+        color: #444;
+        text-decoration: none;
+        padding: 10px;
+    }
+}

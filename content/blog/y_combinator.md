@@ -50,7 +50,7 @@ Now, back to our end result:
 
     F = G F
 
-This is interesting. `F` is a function that takes a number argument (bear in mind that numbers in the lambda calculus are just functions). `G` is a function that takes as input two arguments: a function `F` and a number argument `x`. `G F` is therefore a partially applied function that takes one more argument as input. This function `G F` is equal [1] to `F`, which is the input to `G`.
+This is interesting. `F` is a function that takes a number argument (bear in mind that numbers in the lambda calculus are just functions). `G` is a function that takes as input two arguments: a function `F` and a number argument `x`. `G F` is therefore a partially applied function that takes one more argument as input. This function `G F` is <a href="#equal-footnote"><span id="equal">equal</span></a> to `F`, which is the input to `G`.
 
 In other words, `F` is a fixed point of `G`. So if we know `G`, we can find `F` by finding `G`'s fixed point. How do we do that? Ideally we would have a function `Y` which would take as input another function and returns its fixed point. This is of course the Y combinator that is the subject of this blog post. Given such a function, we could then pass `G` to it and get back `G`'s fixed point `F`. In other words:
 
@@ -103,6 +103,4 @@ which is what we were trying to obtain!
 
 And now we have the insight behind the Y combinator. It's just the end result of refactoring the definition of a fixed point for functions that take other functions as input.
 
-## Footnotes
-
-[1] Note that for two functions to be equal, they must return the same output for every input
+<span id="equal-footnote">[<a href="#equal">1</a>]</span> Note that for two functions to be equal, they must return the same output for every input

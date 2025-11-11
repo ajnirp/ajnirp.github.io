@@ -9,7 +9,7 @@ The other day I wrote a solver for the [LinkedIn Tango](https://www.linkedin.com
 
 For those unfamiliar with LinkedIn's games, the company publishes daily online games inspired by (I assume) Wordle and similar games, which first became very popular during the COVID-19 pandemic lockdowns.
 
-Tango as a puzzle is very reminiscent of the classic one-player puzzle game [Sudoku](https://en.wikipedia.org/wiki/Sudoku). For example:
+[Tango](https://www.linkedin.com/games/tango/) as a puzzle is very reminiscent of the classic one-player puzzle game [Sudoku](https://en.wikipedia.org/wiki/Sudoku). For example:
 
 * You have a grid with some cells "set" to a value, and several "empty" cells. 
 * Each empty cell must be set (by you) to solve the puzzle.
@@ -27,7 +27,7 @@ I figured it would be fun to write a solver. My first thought was to write a sol
 * When you see a cell with two "suns" on either side of it, fill it with a "moon". Likewise if there were two "moons".
 * Say the grid width and height are `N`. When you see a row or column with `N / 2` "suns" in total, fill all other cells with "moons".
 
-I wrote up a few of these heuristics and was able to run them on several Tango grids. A couple times I had to add new, cleverer heuristics to account for harder puzzles that were otherwise unsolvable with the heuristics I'd written so far. Naturally, this "expert knowledge" approach was painful to write and involving a lot of worrying about loop iterations, indices, and logical edge cases involving arrays.
+I wrote up a few of these heuristics and was able to run them on several Tango grids. A couple times I had to add new, cleverer heuristics to account for harder puzzles that were otherwise unsolvable with the heuristics I'd written so far. Naturally, this "expert knowledge" approach was painful to write and required a lot of worrying about loop iterations and edge cases around array bounds.
 
 Which made me take a step back and think: since Tango is quite reminiscent of Sudoku, and Sudoku is solvable by simple backtracking methods, why not do the same for Tango?
 

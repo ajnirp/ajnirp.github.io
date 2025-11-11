@@ -5,34 +5,6 @@ date = 2015-07-21
 
 This blog post is an introduction to the lambda calculus. It doesn't assume too much prior knowledge. In fact, I've tried to make this post self-contained. If something is unclear, please let me know!
 
-## Table of Contents
-
-* [Introduction](#introduction)
-    * [What is the lambda calculus?](#what-is-the-lambda-calculus)
-    * [Examples](#examples)
-    * [About this article](#about-this-article)
-* [Numbers](#numbers)
-* [Arithmetic](#arithmetic)
-    * [Successor](#successor)
-    * [Addition](#addition)
-    * [Multiplication](#multiplication)
-* [Logic](#logic)
-* [Control flow](#control-flow)
-* [Tuples](#tuples)
-* [More arithmetic](#more-arithmetic)
-    * [Predecessor](#predecessor)
-    * [Subtraction](#subtraction)
-    * [Division](#division)
-* [Comparisons](#comparisons)
-* [Recursion](#recursion)
-* [Negative numbers](#negative-numbers)
-    * [Successor](#successor-1)
-    * [Predecessor](#predecessor-1)
-    * [Addition](#addition-1)
-    * [Subtraction](#subtraction-1)
-* [Conclusion](#conclusion)
-* [Reference](#reference)
-
 ## Introduction
 
 ### What is the lambda calculus?

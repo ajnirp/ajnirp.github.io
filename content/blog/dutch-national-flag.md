@@ -3,6 +3,8 @@ title = "Understanding the Dutch National Flag algorithm"
 date = 2020-09-13
 +++
 
+## Introduction
+
 In computer science, the [Dutch National Flag problem](https://en.wikipedia.org/wiki/Dutch_national_flag_problem) asks: can you take an array of numbers and a "pivot" value, and sort the array in-place so that:
 
 * all elements less than the pivot value come first, followed by
@@ -12,6 +14,8 @@ In computer science, the [Dutch National Flag problem](https://en.wikipedia.org/
 This problem shows up in [quicksort](https://en.wikipedia.org/wiki/Quicksort), of which it’s the only really complicated part in my opinion.
 
 There's an elegant algorithm to solve this problem. It makes a single pass over the array and uses constant extra space! The implementation is easy enough to understand, but I had trouble understanding why it worked at all. That is, until I looked at it from the perspective of *maintaing invariants*.
+
+## How the algorithm works
 
 The key idea is to **define a set of invariants and ensure that they are all true at the beginning of every loop iteration, and also after all iterations are completed**. In other words, we must ensure they're all true before any iterations have occurred, before the second iteration starts, before the third iteration starts... and finally when all iterations have completed.
 

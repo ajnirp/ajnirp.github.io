@@ -3,11 +3,13 @@ title = "Problem Reduction"
 date = 2015-12-05
 +++
 
-This post is a collection of notes I put together when trying to understand the concept of problem reduction. It is more or less taken directly from Ullman and Hopcroft's excellent textbook on Automata Theory.
+This post is a collection of notes I put together when trying to understand the concept of **problem reduction**. It is more or less taken directly from Ullman and Hopcroft's excellent textbook on Automata Theory.
 
 Note: this post presumes knowledge of the concept of undecidability.
 
-The technique of **problem reduction** can be used to say whether a program is undecidable. We know that the question "given a program and some input, does the program print `hello world` when run?" is undecidable. Let's call this question P.
+## Problem reduction
+
+The technique of problem reduction can be used to say whether a program is undecidable. Let's say that we just _know_ that the problem "given a program and some input, does the program print `hello world` when run?" is undecidable. Let's call this question P.
 
 When we are given a different question Q and we want to prove that it is undecidable, we can follow the method that was used to prove that P is undecidable. This is a proof from first principles, and it resembles the [diagonal method argument](https://en.wikipedia.org/wiki/Cantor's_diagonal_argument) put forward by Cantor to prove that real numbers are uncountably infinite. But often it is easier to proceed via the method of *reduction*. We look for a way to reduce P to Q. This means proving that P is a special case of Q, or equivalently, that being able to solve Q means being able to solve P.
 
@@ -15,7 +17,7 @@ How do we do this? We think of a procedure that takes an instance of Q and turns
 
 Effectively, we are proving that Q is a harder problem than our original problem P. If the harder problem is decidable, so is the easier problem. And since the easier problem P _isn't_ decidable, neither is our harder problem Q.
 
-### Example
+## Example
 
 Suppose Q is the question "given a program PROG1 and some input, does the program ever call a function `foo()` when it is run?" Let's use problem reduction to prove that Q is undecidable. We'll start with an arbitrary instance of Q and think of a procedure to turn it into an instance of our original hello-world problem P.
 

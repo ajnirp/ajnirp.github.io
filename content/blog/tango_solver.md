@@ -3,7 +3,7 @@ title = "A backtracking solver for LinkedIn Tango"
 date = 2025-11-09
 +++
 
-The other day I wrote a solver for the [LinkedIn Tango](https://www.linkedin.com/games/tango/) puzzle. This blog post explains a few key ideas behind the implementation. If you'd like to dig through the code, it's [here](https://github.com/ajnirp/tango-rs).
+The other day I wrote a solver for the [LinkedIn Tango](https://www.linkedin.com/games/tango/) puzzle. This blog post explains a few key ideas behind the implementation. If you'd like to dig through the code, it's [here](https://github.com/ajnirp/tango).
 
 ## Primer
 
@@ -31,7 +31,7 @@ I wrote up a few of these heuristics and was able to run them on several Tango g
 
 Which made me take a step back and think: since Tango is quite reminiscent of Sudoku, and Sudoku is solvable by simple backtracking methods, why not do the same for Tango?
 
-I went ahead and did that, and it was indeed a simpler approach to implement. [Here's the code repository](https://github.com/ajnirp/tango-rs). There's lots of boilerplate code in there, but the heart of the code is in `solver.rs`. Specifically, this function:
+I went ahead and did that, and it was indeed a simpler approach to implement. [Here's the code repository](https://github.com/ajnirp/tango). There's lots of boilerplate code in there, but the heart of the code is in `solver.rs`. Specifically, this function:
 
 ```rust,linenos
 fn helper(board: &mut Board) -> bool {

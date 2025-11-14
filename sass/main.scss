@@ -21,9 +21,12 @@
 // Gruvbox uses the MIT/X11 license: https://en.wikipedia.org/wiki/MIT_License#X11_License
 $bg: #fbf1c7;
 $bg2: #bdae93;
+$blue: #458588;
 $blue2: #076678;
 $fg: #3c3836;
+$gray: #928374;
 $green2: #79740e;
+$orange: #d65d0e;
 $purple: #8f3f71;
 $red1: #cc241d;
 $red2: #9d0006;
@@ -37,9 +40,9 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 17px;
     line-height: 1.6;
-    margin: 40px auto;
+    margin: 0px auto;
     max-width: 900px;
-    padding: 15px 30px 15px 30px;
+    padding: 0px 30px 15px 30px;
 }
 
 h1,h2,h3 {
@@ -52,8 +55,7 @@ h1 {
 }
 
 a {
-    color: $blue2;
-    // color: $cyan;
+    color: $orange;
     display: inline-block;
     // font-weight: bold;
     text-decoration: none;
@@ -102,13 +104,18 @@ pre table {
 }
 
 #header {
+    background-color: #fafafa;
     border-bottom: 1px solid;
-    // border-bottom-color: $base03;
-    border-bottom-color: $fg;
+    border-color: $fg;
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    max-width: 900px;
+    
+    position: sticky;
+    opacity: 100;
+    top: 0;
 
     a {
         // text-decoration: none;
@@ -136,4 +143,11 @@ pre table {
         font-weight: bold;
         margin-left: 1.5rem;
     }
+}
+
+.post-date {
+    color: $gray;
+    display: inline;
+    font-family: monospace;
+    font-weight: bold;
 }

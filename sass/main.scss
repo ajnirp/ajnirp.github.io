@@ -1,26 +1,39 @@
-// Solarized colors. Taken from https://ethanschoonover.com/solarized/.
-$base03:    #002b36;
-$base02:    #073642;
-$base01:    #586e75;
-$base00:    #657b83;
-$base0:     #839496;
-$base1:     #93a1a1;
-$base2:     #eee8d5;
-$base3:     #fdf6e3;
-$yellow:    #b58900;
-$orange:    #cb4b16;
-$red:       #dc322f;
-$magenta:   #d33682;
-$violet:    #6c71c4;
-$blue:      #268bd2;
-$cyan:      #2aa198;
-$green:     #859900;
+// Solarized colors. Copied from https://ethanschoonover.com/solarized/.
+// Solarized uses the MIT license: https://github.com/altercation/solarized/blob/master/LICENSE
+// $base03:    #002b36;
+// $base02:    #073642;
+// $base01:    #586e75;
+// $base00:    #657b83;
+// $base0:     #839496;
+// $base1:     #93a1a1;
+// $base2:     #eee8d5;
+// $base3:     #fdf6e3;
+// $yellow:    #b58900;
+// $orange:    #cb4b16;
+// $red:       #dc322f;
+// $magenta:   #d33682;
+// $violet:    #6c71c4;
+// $blue:      #268bd2;
+// $cyan:      #2aa198;
+// $green:     #859900;
+
+// Gruvbox colors. Selectively copied from https://github.com/morhetz/gruvbox.
+// Gruvbox uses the MIT/X11 license: https://en.wikipedia.org/wiki/MIT_License#X11_License
+$bg: #fbf1c7;
+$bg2: #bdae93;
+$blue2: #076678;
+$fg: #3c3836;
+$green2: #79740e;
+$purple: #8f3f71;
+$red1: #cc241d;
+$red2: #9d0006;
 
 body {
-    background-color: #fefefe;
+    background-color: #fafafa;
     // border: 1px solid $base03;
     // border-radius: 15px;
-    color: $base03;
+    // color: $base03;
+    color: $fg;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 17px;
     line-height: 1.6;
@@ -33,18 +46,29 @@ h1,h2,h3 {
     line-height: 1.2
 }
 
+h1 {
+    // color: $magenta;
+    color: $red1;
+}
+
 a {
-    color: $blue;
+    color: $blue2;
+    // color: $cyan;
     display: inline-block;
+    // font-weight: bold;
     text-decoration: none;
 }
 
 a:hover {
-    background-color: $base2;
+    background-color: $bg;
+    // background-color: $base2;
+    border-radius: 5px;
+    // text-decoration: underline;
 }
 
 pre {
-    border: 1px solid $base03;
+    // border: 1px solid $base03;
+    border: 1px solid $fg;
     border-radius: 20px;
     font-size: 17px;
     max-width: 90ch;
@@ -78,9 +102,29 @@ pre table {
 }
 
 #header {
-    margin: 0 auto;
-    text-align: right;
+    border-bottom: 1px solid;
+    // border-bottom-color: $base03;
+    border-bottom-color: $fg;
 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    a {
+        // text-decoration: none;
+        // color: $violet;
+        color: $purple;
+        font-weight: bold;
+        padding: 10px;
+    }
+}
+
+#home a {
+    color: $green2;
+    // font-size: 25px;
+}
+
+#header-links {
     ul {
         margin: 0;
         padding: 0;
@@ -91,12 +135,5 @@ pre table {
         display: inline-block;
         font-weight: bold;
         margin-left: 1.5rem;
-    }
-
-    a {
-        border-bottom: none;
-        color: $base03;
-        text-decoration: none;
-        padding: 10px;
     }
 }

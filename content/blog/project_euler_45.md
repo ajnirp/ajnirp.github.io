@@ -153,7 +153,7 @@ For the numerator to be an integer, the quantity {{ katex(body="1 + 12(4h^2 - 2h
 
 The above code spits out an answer almost immediately on my laptop.
 
-An aside: I think the logic `int(s) == s` is a little sloppy in terms of technique. As it turns out, we don't need to do it this way, because we could always write an integer sqrt implementation that uses binary search to find the square root of a positive integer, rounded down to the nearest integer!
+An aside: it feels like overkill to use the Python standard library's `math.sqrt` function just to check if a number is a perfect square. As it turns out, we don't need to use it! You can always write an integer sqrt implementation that uses binary search to find the square root of a positive integer, rounded down to the nearest integer, and then check that squaring _that_ integer equals our original number. I leave this as an exercise to the reader.
 
 ## Conclusion
 

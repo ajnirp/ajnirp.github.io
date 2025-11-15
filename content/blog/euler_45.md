@@ -5,7 +5,7 @@ date = 2025-11-14
 
 ## Introduction
 
-[Project Euler](https://projecteuler.net) is a repository of fantastic computational problems that require a modest to heavy degree of mathematical thinking. The bar for submissions is fairly high, and it's entirely volunteer-run, from web hosting to problem curation to forum moderation. As someone who enjoys programming and math, I love Project Euler. In this post we'll discuss a solution to a fun Project Euler problem I solved the other day, [problem 45](https://projecteuler.net/problem=45).
+[Project Euler](https://projecteuler.net) is a repository of fantastic computational problems that require a modest to heavy degree of mathematical thinking. As someone who enjoys programming and math, I love Project Euler. In this post we'll discuss a solution to a fun problem of theirs that I solved the other day, [problem 45](https://projecteuler.net/problem=45).
 
 But first, a disclaimer:
 

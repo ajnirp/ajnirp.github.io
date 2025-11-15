@@ -159,4 +159,4 @@ An aside: it feels like overkill to use the Python standard library's `math.sqrt
 
 I hope you enjoyed this dissection of a not-terribly-difficult but nevertheless very enjoyable problem. Thank you for reading!
 
-**P.S.** Hover to reveal the answer, if you're curious: {{ spoiler(body="1533776805") }}.
+**P.S.** Hover to reveal the answer, if you're curious: {{ spoiler(body="the next triangle number that is also pentagonal and hexagonal is 1533776805") }}.

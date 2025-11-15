@@ -48,7 +48,6 @@ body {
     background-color: $background;
     color: $text-color;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
-    // font-size: 17px;
     line-height: 1.6;
     margin: 0 auto;
     padding: 0px 30px 15px 30px;
@@ -61,7 +60,7 @@ body {
 }
 
 h1,h2,h3 {
-    line-height: 1.2
+    line-height: 1
 }
 
 h1 {
@@ -70,18 +69,14 @@ h1 {
 }
 
 h2 {
+    color: $purple2;
     font-size: calc(1.1rem + 0.75vw);
 }
 
 h3 {
+    color: $purple1;
     font-size: calc(1rem + 0.5vw);
 }
-
-// @media (width >= 1200px) {
-//     h1 {
-//         font-size: 3rem;
-//     }
-// }
 
 a {
     color: $orange;
@@ -92,9 +87,7 @@ a {
 
 a:hover {
     background-color: $bg;
-    // background-color: $base2;
     border-radius: 5px;
-    // text-decoration: underline;
 }
 
 #header {
@@ -102,7 +95,6 @@ a:hover {
     border-bottom: 1px solid;
     border-color: $text-color;
 
-    // font-size: 18px;
     font-weight: bold;
 
     display: flex;
@@ -156,12 +148,10 @@ a:hover {
 }
 
 pre {
-    // border: 1px solid $base03;
     border: 1px solid $fg;
     border-radius: 20px;
-    // font-size: 17px;
-    max-width: 90ch;
-    padding: 10px 20px 10px 20px;
+    max-width: 100ch;
+    padding: 1rem 2rem 1rem 1rem;
     margin: 0 auto;
     overflow: scroll;
 }
@@ -211,4 +201,15 @@ pre table {
 }
 .spoiler:hover {
     background-color: $background;
+}
+
+#link-to-top {
+    display: block;
+    // flex-direction: row;
+    border-top: 1px solid;
+    border-color: $text-color;
+    padding-top: 20px;
+    margin: 0px auto;
+    top: 0;
+    text-align: center;
 }

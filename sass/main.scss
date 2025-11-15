@@ -40,15 +40,24 @@ $highlight-border: #415c42;
 $warning: #f87dc173;
 $warning-border: $red2;
 
+html {
+    font-size: 1rem;
+}
+
 body {
     background-color: $background;
     color: $text-color;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
-    font-size: 17px;
+    // font-size: 17px;
     line-height: 1.6;
-    margin: 0px auto;
-    max-width: 900px;
+    margin: 0 auto;
     padding: 0px 30px 15px 30px;
+}
+
+@media (width >= 1200px) {
+    body {
+        max-width: 45vw;
+    }
 }
 
 h1,h2,h3 {
@@ -57,7 +66,22 @@ h1,h2,h3 {
 
 h1 {
     color: $red1;
+    font-size: calc(1.5rem + 1vw);
 }
+
+h2 {
+    font-size: calc(1.1rem + 0.75vw);
+}
+
+h3 {
+    font-size: calc(1rem + 0.5vw);
+}
+
+// @media (width >= 1200px) {
+//     h1 {
+//         font-size: 3rem;
+//     }
+// }
 
 a {
     color: $orange;
@@ -76,15 +100,14 @@ a:hover {
 #header {
     background-color: #fafafa;
     border-bottom: 1px solid;
-    border-color: $fg;
+    border-color: $text-color;
 
-    font-size: 18px;
+    // font-size: 18px;
     font-weight: bold;
 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    max-width: 900px;
     
     padding-top: 30px;
     padding-bottom: 15px;
@@ -115,7 +138,7 @@ a:hover {
 
     li {
         display: inline-block;
-        margin-left: 1.5rem;
+        margin-left: 1rem;
     }
 }
 
@@ -126,14 +149,21 @@ a:hover {
     font-weight: bold;
 }
 
+@media (width <= 600px) {
+    .post-date {
+        display: none;
+    }
+}
+
 pre {
     // border: 1px solid $base03;
     border: 1px solid $fg;
     border-radius: 20px;
-    font-size: 17px;
+    // font-size: 17px;
     max-width: 90ch;
     padding: 10px 20px 10px 20px;
     margin: 0 auto;
+    overflow: scroll;
 }
 
 /* The line numbers already provide some kind of left/right padding */
@@ -142,10 +172,10 @@ pre {
 // }
 pre table td {
   padding: 0;
+  padding-right: 1rem;
 }
 /* The line number cells */
 pre table td:nth-of-type(1) {
-  padding-right: 15px;
   text-align: center;
   vertical-align: top;
   user-select: none;

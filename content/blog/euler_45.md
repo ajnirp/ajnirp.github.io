@@ -119,21 +119,15 @@ def sqrt_discriminant(m):
 def nth_triangle_num(n):
     return n*(n+1)//2
 
-def nth_pentagonal_num(n):
-    return n*(3*n-1)//2
-
-def nth_hexagonal_num(n):
-    return n*(2*n-1)
-
 h = 144
 while True:
     s = sqrt_discriminant(h)
     if int(s) == s:
         numerator = int(s) + 1
         if numerator % 6 == 0:
-            t = 2*h-1
+            t = 2*h - 1
             p = numerator // 6
-            print(nth_triangle_num(t), nth_pentagonal_num(p), nth_hexagonal_num(h))
+            print(nth_triangle_num(t))
             break
     h += 1
 ```

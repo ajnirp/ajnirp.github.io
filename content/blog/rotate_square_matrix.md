@@ -17,6 +17,7 @@ Why does this work? The derivation is straightforward. We relate 2D coordinates 
 i_1 = c + nr \\
 i_2 = r + n(n-c-1) = r + n^2 - nc - n
 {% end %}
+
 The second line above comes from the formula for mapping a 2D coordinate to a 1D one in the flattened array. Here the coordinate is {{ katex(body="(n-c-1, r)") }}, which is where {{ katex(body="(r, c)") }} goes after we rotate the matrix.
 
 {% katex(block=true) %}

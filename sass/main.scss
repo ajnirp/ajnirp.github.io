@@ -25,19 +25,24 @@ $blue: #458588;
 $blue2: #076678;
 $fg: #3c3836;
 $gray: #928374;
+$green1: #b8bb26;
 $green2: #79740e;
 $orange: #d65d0e;
-$purple: #8f3f71;
+$purple1: #d3869b;
+$purple2: #8f3f71;
 $red1: #cc241d;
 $red2: #9d0006;
 
+$background: #fafafa;
+$text-color: $fg;
+$highlight: #abe7ae;
+$highlight-border: #415c42;
+$warning: #f87dc173;
+$warning-border: $red2;
+
 body {
-    background-color: #fafafa;
-    // border: 1px solid $base03;
-    // border-radius: 15px;
-    // color: $base03;
-    color: $fg;
-    // font-family: 'Libre Baskerville', Arial, Helvetica, sans-serif;
+    background-color: $background;
+    color: $text-color;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
     font-size: 17px;
     line-height: 1.6;
@@ -51,13 +56,13 @@ h1,h2,h3 {
 }
 
 h1 {
-    // color: $magenta;
     color: $red1;
 }
 
 a {
     color: $orange;
     display: inline-block;
+    font-weight: bold;
     text-decoration: none;
 }
 
@@ -87,11 +92,12 @@ a:hover {
     position: sticky;
     opacity: 100;
     top: 0;
+    z-index: 999;
 
     a {
         // text-decoration: none;
         // color: $violet;
-        color: $purple;
+        color: $purple2;
         padding: 10px;
     }
 }
@@ -153,4 +159,26 @@ pre mark {
 pre table {
   width: 100%;
   border-collapse: collapse;
+}
+
+[role="highlight"] {
+    background: $highlight;
+    border: 1px solid $highlight-border;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+[role="warning"] {
+    background: $warning;
+    border: 1px solid $warning-border;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.spoiler {
+    background-color: $text-color;
+    border-radius: 5px;
+}
+.spoiler:hover {
+    background-color: $background;
 }

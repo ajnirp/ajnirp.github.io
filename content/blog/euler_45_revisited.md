@@ -3,7 +3,7 @@ title = "Revisiting Project Euler #45"
 date = 2025-12-20
 +++
 
-In this blog post I revisit a fun Project Euler problem. The solution I detailed in this [previous blog post](/blog/euler-45) worked but was a little clunky, involving checking if a quantity was a perfect square. I submitted that blog post to Hacker News for discussion, and one of the [comment threads](https://news.ycombinator.com/item?id=45942720) on that submission opened up an interesting line of discussion - what if we just modeled this problem as a combination of iterators?
+In this blog post I revisit a fun Project Euler problem. The solution I detailed in this [previous blog post](/blog/euler-45) worked but was a little clunky, involving checking if a quantity was a perfect square. I submitted that blog post to Hacker News for discussion, and one of the [comment threads](https://news.ycombinator.com/item?id=45942720) on that submission opened up an interesting line of discussion — what if we just modeled this problem as a combination of iterators?
 
 I translated the approach discussed in the above comments to Python, and got:
 
@@ -52,4 +52,4 @@ for num in combine(triangle(), combine(pentagonal(), hexagonal())):
 
 It turns out that we don't need to! A nice insight from the [previous blog post](/blog/euler-45) that eluded me until I re-read the Hacker News thread (in particular, [this comment](https://news.ycombinator.com/item?id=45991571)) was that **every hexagonal number is a triangle number**. Recall that if the {{ katex(body="t^{th}") }} triangle number equals the {{ katex(body="h^{th}") }} hexagonal number, then {{ katex(body="t = 2h - 1") }} must be true.
 
-We can read this property in reverse - given the {{ katex(body="h^{th}") }} hexagonal number, there always exists a corresponding {{ katex(body="t = 2h-1") }} such that the {{ katex(body="t^{th}") }} triangular number equals it. In other words, every hexagonal number is a triangle number. Which means that it's enough to check for numbers that are both hexagonal and pentagonal. The "triangle" requirement will automatically be satisfied 🙂.
+We can read this property in reverse: given the {{ katex(body="h^{th}") }} hexagonal number, there always exists a corresponding {{ katex(body="t = 2h-1") }} such that the {{ katex(body="t^{th}") }} triangular number equals it. In other words, every hexagonal number is a triangle number. Which means that it's enough to check for numbers that are both hexagonal and pentagonal. The "triangle" requirement will automatically be satisfied 🙂.

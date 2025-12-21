@@ -43,14 +43,13 @@ if __name__ == '__main__':
 
 What's going on here? To start with, we're defining a function `combine` that takes as input two existing generators and only yields elements that are members of _both_ generators. This is ensured by the `while l != r` loop that precedes the `yield l`.
 
-Fair enough, but how come the above code makes no mention of triangle numbers at all? Seems like we should define a generator for triangle numbers, and then do something like this:
+Fair enough, but how come the above code makes no mention of triangle numbers at all? Seems like we should define a generator for triangle numbers, and then do something like this?
 
 ```python
-combine(triangle(), combine(pentagonal(), hexagonal()))
+for num in combine(triangle(), combine(pentagonal(), hexagonal())):
+    pass  # seen = 0 ...
 ```
 
-?
-
-It turns out that we don't need to! A nice insight from the [previous blog post](/blog/euler-45) that eluded me until I re-read the Hacker News thread (in particular, [this comment](https://news.ycombinator.com/item?id=45991571)) was that **every hexagonal number is a triangle number**. Recall that if the {{ katex(body="t") }}th triangle number equals the {{ katex(body="h") }}th hexagonal number, then {{ katex(body="t = 2h - 1") }} must be true.
+It turns out that we don't need to! A nice insight from the [previous blog post](/blog/euler-45) that eluded me until I re-read the Hacker News thread (in particular, [this comment](https://news.ycombinator.com/item?id=45991571)) was that **every hexagonal number is a triangle number**. Recall that if the {{ katex(body="t^{th}") }} triangle number equals the {{ katex(body="h^{th}") }} hexagonal number, then {{ katex(body="t = 2h - 1") }} must be true.
 
 We can read this property in reverse - given the {{ katex(body="h^{th}") }} hexagonal number, there always exists a corresponding {{ katex(body="t = 2h-1") }} such that the {{ katex(body="t^{th}") }} triangular number equals it. In other words, every hexagonal number is a triangle number. Which means that it's enough to check for numbers that are both hexagonal and pentagonal. The "triangle" requirement will automatically be satisfied 🙂.

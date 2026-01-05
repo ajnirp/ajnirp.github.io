@@ -9,7 +9,7 @@ A fun Leetcode problem I solved recently was [#2521](https://leetcode.com/proble
 
 The problem statement simply asks us to find the number of **distinct prime factors** in the product of the elements of an array of positive integers. So for example the product of the elements of the array `[1, 2, 6, 7]` is `84`, whose prime factors are `[2, 2, 3, 7]`, which has `3` _distinct_ elements, so our answer should be `3`.
 
-The array can have at most `10,000` elements and each element lies between `2` and `1000`.
+The array can have at most {{ katex(body="10,000") }} elements and each element lies between {{ katex(body="2") }} and {{ katex(body="1000") }}, both inclusive.
 
 ## A first attempt
 
@@ -38,7 +38,7 @@ class Solution:
 
 In this code:
 
-* To construct the list of primes we use a naive algorithm that simply marks a number `k` as prime if it has no integer factors in the range `[2, k-1]`. There are of course many better, more sophisticated algorithms to check primality. 
+* To construct the list of primes we use a naive algorithm that simply marks a number `k` as prime if it has no integer factors in the set {{ katex(body="\{2, 3, 4, ..., k-1\}") }}. There are faster, more sophisticated algorithms to check primality, but this is just a first attempt. 
 
 * The `if prime > num: break` clause on lines 11 and 12 lets us skip pointless checks for `num % prime == 0`, which can never be true if `prime` is greater than `num`.
 
@@ -55,7 +55,7 @@ This solution passes all testcases, but the runtime looks to be suboptimal.
 
 There isn't much to refine in the approach we used for our first attempt. We'll need to try a different approach.
 
-When dealing with prime numbers it's natural to think of the [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Overview). This is an algorithm to generate all prime numbers up to a given number, in this case `1001`. The simplest implementation of this algorithm looks like [this in pseudocode](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode).
+When dealing with prime numbers it's natural to think of the [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Overview). This is an algorithm to generate all prime numbers up to a given number, in this case {{ katex(body="1000") }}. The simplest implementation of this algorithm looks like [this in pseudocode](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode).
 
 It turns out we can extend the sieve in a clever way — we can store the smallest prime factor for each number instead of a simple boolean value. I read about this approach in [this GeeksForGeeks post](https://www.geeksforgeeks.org/dsa/prime-factor/).
 

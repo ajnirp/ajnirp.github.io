@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">A backtracking solver for LinkedIn Tango</h1>
+
+<p class=post-date>Nov 09 2025</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/tango-solver/#primer">Primer</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/tango-solver/#writing-a-solver">Writing a solver</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/tango-solver/#future-work">Future work</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>The other day I wrote a solver for the <a href="https://www.linkedin.com/games/tango/">LinkedIn Tango</a> puzzle. This blog post explains a few key ideas behind the implementation. If you'd like to dig through the code, it's <a href="https://github.com/ajnirp/tango">here</a>.</p>
+<h2 id="primer">Primer</h2>
+<p>For those unfamiliar with LinkedIn's games, the company publishes daily online games inspired by (I assume) Wordle and similar games, which first became very popular during the COVID-19 pandemic lockdowns.</p>
+<p><a href="https://www.linkedin.com/games/tango/">Tango</a> as a puzzle is very reminiscent of the classic one-player puzzle game <a href="https://en.wikipedia.org/wiki/Sudoku">Sudoku</a>. For example:</p>
+<ul>
+<li>You have a grid with some cells "set" to a value, and several "empty" cells.</li>
+<li>Each empty cell must be set (by you) to solve the puzzle.</li>
+<li>Every value in a "set" cell comes from a fixed set of values. In Sudoku, it's the digits <code>1</code> through <code>9</code>. In Tango, it's either a "sun" or a "moon".</li>
+<li>Certain game rules enforce constraints on the grid. By extension, these rules influence what values a cell can take.
+<ul>
+<li>For example, in Sudoku, no row may contain duplicate digits. In Tango, every row must contain an equal number of "suns" and "moons".</li>
+</ul>
+</li>
+<li>Gameplay involves a player looking at the board, deducing what value an empty cell must take, filling that cell in, and then repeating the previous steps until the grid is filled in.</li>
+</ul>
+<p>For a full list of rules, please refer to the <a href="https://www.linkedin.com/games/tango/">Tango page</a>.</p>
+<h2 id="writing-a-solver">Writing a solver</h2>
+<p>I figured it would be fun to write a solver. My first thought was to write a solver that would apply one of several heuristics one after the other until all cells were filled up. Some examples of heuristics:</p>
+<ul>
+<li>When you see a cell with two "suns" on either side of it, fill it with a "moon". Likewise if there were two "moons".</li>
+<li>Say the grid width and height are <code>N</code>. When you see a row or column with <code>N / 2</code> "suns" in total, fill all other cells with "moons".</li>
+</ul>
+<p>I wrote up a few of these heuristics and was able to run them on several Tango grids. A couple times I had to add new, cleverer heuristics to account for harder puzzles that were otherwise unsolvable with the heuristics I'd written so far. Naturally, this "expert knowledge" approach was painful to write and required a lot of worrying about loop iterations and edge cases around array bounds.</p>
+<p>Which made me take a step back and think: since Tango is quite reminiscent of Sudoku, and Sudoku is solvable by simple backtracking methods, why not do the same for Tango?</p>
+<p>I went ahead and did that, and it was indeed a simpler approach to implement. <a href="https://github.com/ajnirp/tango">Here's the code repository</a>. There's lots of boilerplate code in there, but the heart of the code is in <code>solver.rs</code>. Specifically, this function:</p>
+<pre data-linenos data-lang="rust" style="background-color:#fcf0ca;color:#282828aa;" class="language-rust "><code class="language-rust" data-lang="rust"><table><tbody><tr><td>1</td><td><span style="color:#9d0006;">fn </span><span style="color:#407959;">helper</span><span>(</span><span style="color:#282828;">board</span><span>: </span><span style="color:#b23c15;">&amp;</span><span style="color:#9d0006;">mut</span><span> Board) -&gt; </span><span style="color:#9d0006;">bool </span><span>{
+</span></td></tr><tr><td>2</td><td><span>    </span><span style="color:#9d0006;">let</span><span> i </span><span style="color:#b23c15;">=</span><span> board.</span><span style="color:#b57614;">next_unsolved</span><span>();
+</span></td></tr><tr><td>3</td><td><span>    </span><span style="color:#9d0006;">if</span><span> i </span><span style="color:#b23c15;">== </span><span style="color:#b57614;">None </span><span>{
+</span></td></tr><tr><td>4</td><td><span>        </span><span style="color:#9d0006;">return </span><span style="color:#8f3f71;">true</span><span>;
+</span></td></tr><tr><td>5</td><td><span>    }
+</span></td></tr><tr><td>6</td><td><span>    </span><span style="color:#9d0006;">let</span><span> i </span><span style="color:#b23c15;">=</span><span> i.</span><span style="color:#b57614;">unwrap</span><span>();
+</span></td></tr><tr><td>7</td><td><span>    board.</span><span style="color:#b57614;">mark_solved</span><span>();
+</span></td></tr><tr><td>8</td><td><span>    </span><span style="color:#9d0006;">for</span><span> new </span><span style="color:#b23c15;">in </span><span style="color:#8f3f71;">0</span><span style="color:#b23c15;">..</span><span style="color:#8f3f71;">2 </span><span>{
+</span></td></tr><tr><td>9</td><td><span>        </span><span style="font-style:italic;color:#928374;">// set a value only if it&#39;s safe to do so
+</span></td></tr><tr><td>10</td><td><span>        </span><span style="color:#9d0006;">if </span><span style="color:#b57614;">can_set</span><span>(board, i, new) {
+</span></td></tr><tr><td>11</td><td><span>            board.</span><span style="color:#b57614;">set_index</span><span>(i, new);
+</span></td></tr><tr><td>12</td><td><span>            </span><span style="color:#9d0006;">if </span><span style="color:#b57614;">helper</span><span>(board) {
+</span></td></tr><tr><td>13</td><td><span>                </span><span style="color:#9d0006;">return </span><span style="color:#8f3f71;">true</span><span>;
+</span></td></tr><tr><td>14</td><td><span>            }
+</span></td></tr><tr><td>15</td><td><span>            board.</span><span style="color:#b57614;">set_index</span><span>(i, </span><span style="color:#8f3f71;">2</span><span>);
+</span></td></tr><tr><td>16</td><td><span>        }
+</span></td></tr><tr><td>17</td><td><span>    }
+</span></td></tr><tr><td>18</td><td><span>    board.</span><span style="color:#b57614;">mark_unsolved</span><span>();
+</span></td></tr><tr><td>19</td><td><span>    </span><span style="color:#8f3f71;">false
+</span></td></tr><tr><td>20</td><td><span>}
+</span></td></tr></tbody></table></code></pre>
+<p>This is a classic backtracking formulation. Pick an empty cell and ask if we can set it to a particular value. If yes, recurse with that value set. At some point, if the search fails, abandon that entire search branch, and instead try the next value (in Tango, there are only two values: <code>0</code> representing "sun" and <code>1</code> representing "moon").</p>
+<p>The "can we set this empty cell to a particular value" logic is a direct translation into code of the game's rules:</p>
+<pre data-linenos data-lang="rust" style="background-color:#fcf0ca;color:#282828aa;" class="language-rust "><code class="language-rust" data-lang="rust"><table><tbody><tr><td>1</td><td><span style="color:#9d0006;">fn </span><span style="color:#407959;">can_set</span><span>(</span><span style="color:#282828;">board</span><span>: </span><span style="color:#b23c15;">&amp;</span><span>Board, </span><span style="color:#282828;">i</span><span>: </span><span style="color:#9d0006;">usize</span><span>, </span><span style="color:#282828;">new</span><span>: </span><span style="color:#9d0006;">u8</span><span>) -&gt; </span><span style="color:#9d0006;">bool </span><span>{
+</span></td></tr><tr><td>2</td><td><span>    </span><span style="color:#9d0006;">let </span><span>(drs, dcs) </span><span style="color:#b23c15;">= </span><span>([</span><span style="color:#8f3f71;">0</span><span style="color:#9d0006;">usize</span><span>, </span><span style="color:#8f3f71;">1</span><span>], [</span><span style="color:#8f3f71;">1</span><span style="color:#9d0006;">usize</span><span>, </span><span style="color:#8f3f71;">0</span><span>]);
+</span></td></tr><tr><td>3</td><td><span>    </span><span style="color:#9d0006;">let</span><span> side </span><span style="color:#b23c15;">=</span><span> board.</span><span style="color:#b57614;">side</span><span>();
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">let </span><span>(r, c) </span><span style="color:#b23c15;">= </span><span>(board.</span><span style="color:#b57614;">row</span><span>(i), board.</span><span style="color:#b57614;">col</span><span>(i));
+</span></td></tr><tr><td>5</td><td><span>
+</span></td></tr><tr><td>6</td><td><span>    </span><span style="color:#9d0006;">for</span><span> v </span><span style="color:#b23c15;">in </span><span style="color:#8f3f71;">0</span><span style="color:#b23c15;">..</span><span style="color:#8f3f71;">2 </span><span>{
+</span></td></tr><tr><td>7</td><td><span>        </span><span style="color:#9d0006;">let </span><span>(dr, dc) </span><span style="color:#b23c15;">= </span><span>(drs[v], dcs[v]);
+</span></td></tr><tr><td>8</td><td><span>        </span><span style="color:#9d0006;">let </span><span>(</span><span style="color:#9d0006;">mut</span><span> _r, </span><span style="color:#9d0006;">mut</span><span> _c) </span><span style="color:#b23c15;">= </span><span>(r </span><span style="color:#b23c15;">*</span><span> dc, c </span><span style="color:#b23c15;">*</span><span> dr);
+</span></td></tr><tr><td>9</td><td><span>
+</span></td></tr><tr><td>10</td><td><span>        </span><span style="font-style:italic;color:#928374;">// `one` = the value two indices before `curr`
+</span></td></tr><tr><td>11</td><td><span>        </span><span style="font-style:italic;color:#928374;">// `two` = the value one index before `curr`
+</span></td></tr><tr><td>12</td><td><span>        </span><span style="color:#9d0006;">let </span><span>(</span><span style="color:#9d0006;">mut</span><span> one, </span><span style="color:#9d0006;">mut</span><span> two) </span><span style="color:#b23c15;">= </span><span>(</span><span style="color:#8f3f71;">255</span><span style="color:#9d0006;">u8</span><span>, </span><span style="color:#8f3f71;">255</span><span style="color:#9d0006;">u8</span><span>);
+</span></td></tr><tr><td>13</td><td><span>
+</span></td></tr><tr><td>14</td><td><span>        </span><span style="font-style:italic;color:#928374;">// number of cells in the row/col that are already equal to `new`
+</span></td></tr><tr><td>15</td><td><span>        </span><span style="color:#9d0006;">let mut</span><span> num_existing </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">0</span><span>;
+</span></td></tr><tr><td>16</td><td><span>
+</span></td></tr><tr><td>17</td><td><span>        </span><span style="color:#9d0006;">for </span><span style="color:#b23c15;">_ in </span><span style="color:#8f3f71;">0</span><span style="color:#b23c15;">..</span><span>side {
+</span></td></tr><tr><td>18</td><td><span>            </span><span style="color:#9d0006;">let</span><span> curr </span><span style="color:#b23c15;">= </span><span style="color:#9d0006;">if </span><span>(_r, _c) </span><span style="color:#b23c15;">== </span><span>(r, c) { new } </span><span style="color:#9d0006;">else </span><span>{ board.</span><span style="color:#b57614;">at</span><span>(_r, _c) };
+</span></td></tr><tr><td>19</td><td><span>
+</span></td></tr><tr><td>20</td><td><span>            </span><span style="font-style:italic;color:#928374;">// three consecutive identical not allowed
+</span></td></tr><tr><td>21</td><td><span>            </span><span style="color:#9d0006;">if</span><span> one </span><span style="color:#b23c15;">==</span><span> two </span><span style="color:#b23c15;">&amp;&amp;</span><span> two </span><span style="color:#b23c15;">==</span><span> curr </span><span style="color:#b23c15;">&amp;&amp;</span><span> curr </span><span style="color:#b23c15;">!= </span><span style="color:#8f3f71;">2 </span><span>{
+</span></td></tr><tr><td>22</td><td><span>                </span><span style="color:#9d0006;">return </span><span style="color:#8f3f71;">false</span><span>;
+</span></td></tr><tr><td>23</td><td><span>            }
+</span></td></tr><tr><td>24</td><td><span>            one </span><span style="color:#b23c15;">=</span><span> two;
+</span></td></tr><tr><td>25</td><td><span>            two </span><span style="color:#b23c15;">=</span><span> curr;
+</span></td></tr><tr><td>26</td><td><span>
+</span></td></tr><tr><td>27</td><td><span>            </span><span style="color:#9d0006;">if</span><span> curr </span><span style="color:#b23c15;">==</span><span> new { num_existing </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1</span><span>; }
+</span></td></tr><tr><td>28</td><td><span>
+</span></td></tr><tr><td>29</td><td><span>            _r </span><span style="color:#b23c15;">+=</span><span> dr;
+</span></td></tr><tr><td>30</td><td><span>            _c </span><span style="color:#b23c15;">+=</span><span> dc;
+</span></td></tr><tr><td>31</td><td><span>        }
+</span></td></tr><tr><td>32</td><td><span>        </span><span style="font-style:italic;color:#928374;">// no more than `side / 2` in a row or column
+</span></td></tr><tr><td>33</td><td><span>        </span><span style="font-style:italic;color:#928374;">// for example, for a 8x8 board, no more than 4 in a row or column
+</span></td></tr><tr><td>34</td><td><span>        </span><span style="color:#9d0006;">if</span><span> num_existing </span><span style="color:#b23c15;">&gt;</span><span> side </span><span style="color:#b23c15;">/ </span><span style="color:#8f3f71;">2 </span><span>{
+</span></td></tr><tr><td>35</td><td><span>            </span><span style="color:#9d0006;">return </span><span style="color:#8f3f71;">false</span><span>;
+</span></td></tr><tr><td>36</td><td><span>        }
+</span></td></tr><tr><td>37</td><td><span>    }
+</span></td></tr><tr><td>38</td><td><span>
+</span></td></tr><tr><td>39</td><td><span>    </span><span style="font-style:italic;color:#928374;">// abide by constraints
+</span></td></tr><tr><td>40</td><td><span>    </span><span style="font-style:italic;color:#928374;">// north, east, south, west
+</span></td></tr><tr><td>41</td><td><span>    </span><span style="color:#9d0006;">let</span><span> _drs </span><span style="color:#b23c15;">= </span><span>[</span><span style="color:#b23c15;">-</span><span style="color:#8f3f71;">1</span><span style="color:#9d0006;">i16</span><span>, </span><span style="color:#8f3f71;">0</span><span>, </span><span style="color:#8f3f71;">1</span><span>, </span><span style="color:#8f3f71;">0</span><span>];
+</span></td></tr><tr><td>42</td><td><span>    </span><span style="color:#9d0006;">let</span><span> _dcs </span><span style="color:#b23c15;">= </span><span>[</span><span style="color:#8f3f71;">0</span><span style="color:#9d0006;">i16</span><span>, </span><span style="color:#8f3f71;">1</span><span>, </span><span style="color:#8f3f71;">0</span><span>, </span><span style="color:#b23c15;">-</span><span style="color:#8f3f71;">1</span><span>];
+</span></td></tr><tr><td>43</td><td><span>    </span><span style="color:#9d0006;">let</span><span> constraint </span><span style="color:#b23c15;">=</span><span> board.</span><span style="color:#b57614;">constraint_at</span><span>(r, c);
+</span></td></tr><tr><td>44</td><td><span>    </span><span style="color:#9d0006;">for</span><span> j </span><span style="color:#b23c15;">in </span><span style="color:#8f3f71;">0</span><span style="color:#b23c15;">..</span><span style="color:#8f3f71;">8 </span><span>{
+</span></td></tr><tr><td>45</td><td><span>        </span><span style="color:#9d0006;">if</span><span> constraint </span><span style="color:#b23c15;">&amp; </span><span>(</span><span style="color:#8f3f71;">1 </span><span style="color:#b23c15;">&lt;&lt;</span><span> j) </span><span style="color:#b23c15;">== </span><span style="color:#8f3f71;">0 </span><span>{ </span><span style="color:#9d0006;">continue</span><span>; }
+</span></td></tr><tr><td>46</td><td><span>
+</span></td></tr><tr><td>47</td><td><span>        </span><span style="color:#9d0006;">let</span><span> _nr </span><span style="color:#b23c15;">= </span><span>(r </span><span style="color:#b23c15;">as </span><span style="color:#9d0006;">i16</span><span>) </span><span style="color:#b23c15;">+</span><span> _drs[j </span><span style="color:#b23c15;">% </span><span style="color:#8f3f71;">4</span><span>];
+</span></td></tr><tr><td>48</td><td><span>        </span><span style="color:#9d0006;">let</span><span> _nc </span><span style="color:#b23c15;">= </span><span>(c </span><span style="color:#b23c15;">as </span><span style="color:#9d0006;">i16</span><span>) </span><span style="color:#b23c15;">+</span><span> _dcs[j </span><span style="color:#b23c15;">% </span><span style="color:#8f3f71;">4</span><span>];
+</span></td></tr><tr><td>49</td><td><span>        </span><span style="color:#9d0006;">if</span><span> _nr </span><span style="color:#b23c15;">&lt; </span><span style="color:#8f3f71;">0 </span><span style="color:#b23c15;">||</span><span> _nc </span><span style="color:#b23c15;">&lt; </span><span style="color:#8f3f71;">0 </span><span>{ </span><span style="color:#9d0006;">continue</span><span>; }
+</span></td></tr><tr><td>50</td><td><span>
+</span></td></tr><tr><td>51</td><td><span>        </span><span style="color:#9d0006;">let </span><span>(nr, nc) </span><span style="color:#b23c15;">= </span><span>(_nr </span><span style="color:#b23c15;">as </span><span style="color:#9d0006;">usize</span><span>, _nc </span><span style="color:#b23c15;">as </span><span style="color:#9d0006;">usize</span><span>);
+</span></td></tr><tr><td>52</td><td><span>        </span><span style="color:#9d0006;">if </span><span style="color:#b23c15;">!</span><span>board.</span><span style="color:#b57614;">inside</span><span>(nr, nc) { </span><span style="color:#9d0006;">continue</span><span>; }
+</span></td></tr><tr><td>53</td><td><span>
+</span></td></tr><tr><td>54</td><td><span>        </span><span style="color:#9d0006;">let</span><span> nbr_val </span><span style="color:#b23c15;">=</span><span> board.</span><span style="color:#b57614;">at</span><span>(nr, nc);
+</span></td></tr><tr><td>55</td><td><span>        </span><span style="color:#9d0006;">if</span><span> nbr_val </span><span style="color:#b23c15;">== </span><span style="color:#8f3f71;">2 </span><span>{ </span><span style="color:#9d0006;">continue</span><span>; }
+</span></td></tr><tr><td>56</td><td><span>
+</span></td></tr><tr><td>57</td><td><span>        </span><span style="color:#9d0006;">if </span><span>(j </span><span style="color:#b23c15;">&lt; </span><span style="color:#8f3f71;">4 </span><span style="color:#b23c15;">&amp;&amp;</span><span> nbr_val </span><span style="color:#b23c15;">==</span><span> new) </span><span style="color:#b23c15;">|| </span><span>(j </span><span style="color:#b23c15;">&gt;= </span><span style="color:#8f3f71;">4 </span><span style="color:#b23c15;">&amp;&amp;</span><span> nbr_val </span><span style="color:#b23c15;">!=</span><span> new) {
+</span></td></tr><tr><td>58</td><td><span>            </span><span style="color:#9d0006;">continue</span><span>;
+</span></td></tr><tr><td>59</td><td><span>        }
+</span></td></tr><tr><td>60</td><td><span>        </span><span style="color:#9d0006;">return </span><span style="color:#8f3f71;">false</span><span>;
+</span></td></tr><tr><td>61</td><td><span>    }
+</span></td></tr><tr><td>62</td><td><span>
+</span></td></tr><tr><td>63</td><td><span>    </span><span style="color:#8f3f71;">true
+</span></td></tr><tr><td>64</td><td><span>}
+</span></td></tr></tbody></table></code></pre>
+<p>That's a long function, but all it's doing is verifying that:</p>
+<ul>
+<li>There is no row or cell with 3 consecutive occurrences of the same value.</li>
+<li>There is no row or cell with more than <code>N / 2</code> occurrences of the same value.</li>
+<li>Every "x" and "=" wall constraint is satisfied.</li>
+</ul>
+<p>I set up a simple test suite, some quick parsers to translate a string representation of a game into a more structured representation, and verified that the approach could handle every single game I threw at it, no matter how tough it was for a human to solve.</p>
+<h2 id="future-work">Future work</h2>
+<p>A natural follow-up is: how are these puzzles generated? Our basic requirement is: we want to generate games that a human can solve <strong>without guesswork</strong>. A prerequisite for not needing to guess is that a game should permit only one solution. Answering <em>that</em> question feels like an extension of the solver above. At a high level, it might look something like this:</p>
+<ul>
+<li>Modify the solver to check whether a given input game has a unique solution, no solution, or more than one solution.</li>
+<li>Take a blank board, give it a few random wall constraints, and fill in a few cells at random. This is a candidate game.</li>
+<li>Run the modified solver on the candidate. If there's a unique solution, we can stop here — we found a game that has a unique solution.</li>
+<li>If there is no solution, start afresh. If there are multiple solutions, fill in one more empty cell and then recheck for solution uniqueness. Keep doing this until we get to a successful candidate.</li>
+</ul>
+<p>There's a wrinkle here. Having a unique solution is a necessary condition for a game to be solvable without guesses. But is it a <em>sufficient</em> condition? I'm not sure. Something to think about.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

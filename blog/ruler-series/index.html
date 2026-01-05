@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Streams, Rulers and Laziness</h1>
+
+<p class=post-date>Jan 23 2016</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/ruler-series/#problem-statement">Problem Statement</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/ruler-series/#a-first-attempt">A First Attempt</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/ruler-series/#refining-our-solution">Refining our solution</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/ruler-series/#references">References</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>This blog post discusses the solution to one of the exercises in an online course I've been doing in my spare time.</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>The context of the problem is learning to use lazy evaluation. We start by defining a data structure called a <code>Stream</code>. It is a generic list similar to the built-in one in Haskell, except that it is necessarily infinite. It is defined like so:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#9d0006;">data </span><span style="color:#282828;">Stream</span><span> a </span><span style="color:#b23c15;">= </span><span style="color:#282828;">S</span><span> a (</span><span style="color:#282828;">Stream</span><span> a)
+</span></code></pre>
+<p>Simple enough. A <code>Stream</code> is an element of type <code>a</code> along with another <code>Stream</code> whose elements are also of type <code>a</code>. The <code>S</code> constructor is basically like <code>cons</code>.</p>
+<p>We can define utility functions for working with <code>Stream</code>s analogous to the ones in the <code>Prelude</code>.</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#407959;">repeat </span><span style="color:#9d0006;">:: </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a
+</span><span>repeat n </span><span style="color:#b23c15;">= </span><span style="color:#282828;">S</span><span> n </span><span style="color:#b23c15;">$</span><span> repeat n
+</span><span>
+</span><span style="color:#407959;">map </span><span style="color:#9d0006;">::</span><span> (</span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; </span><span style="color:#282828;">b</span><span>) </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">b
+</span><span>map f (</span><span style="color:#282828;">S</span><span> x y) </span><span style="color:#b23c15;">= </span><span style="color:#282828;">S</span><span> (f x) (map f y)
+</span><span>
+</span><span style="color:#407959;">streamToList </span><span style="color:#9d0006;">:: Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt;</span><span> [</span><span style="color:#282828;">a</span><span>]
+</span><span>streamToList (</span><span style="color:#282828;">S</span><span> x y) </span><span style="color:#b23c15;">=</span><span> x </span><span style="color:#b23c15;">:</span><span> (streamToList y)
+</span></code></pre>
+<p>For ease of debugging, it also helps to derive the <code>Show</code> typeclass for <code>Stream</code> to print the first, say, 20 elements.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>instance Show a =&gt; Show (Stream a) where
+</span><span>    show s = show $ take 20 $ streamToList s
+</span></code></pre>
+<p>Now for the problem. The <strong>ruler series</strong> is defined as the series in which the <em>n<sup>th</sup></em> element is the largest power of 2 which evenly divides <em>n</em>. It looks like this:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 4, ...
+</span></code></pre>
+<p>Question: How do you represent the <code>ruler</code> series as a <code>Stream</code>?</p>
+<h2 id="a-first-attempt">A First Attempt</h2>
+<p>The assignment helpfully suggests:</p>
+<blockquote>
+<p>define a function <code>interleaveStreams</code> which alternates the elements from two streams. Can you use this function to implement <code>ruler</code> in a clever way that does not have to do any divisibility testing?</p>
+</blockquote>
+<p>We know what <code>interleaveStreams</code> should look like. It should take two streams <code>[x1, x2, ...]</code>, <code>[y1, y2, ...]</code> and return the stream <code>[x1, y1, x2, y2, ...]</code>. How does this help us write a definition for <code>ruler</code>? Well, every alternate element of <code>ruler</code>, starting with the first, is a <code>0</code>. So <code>ruler</code> might be written as:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>interleaveStreams (repeat </span><span style="color:#8f3f71;">0</span><span>) </span><span style="color:#b23c15;">&lt;???&gt;
+</span></code></pre>
+<p>The only question now is, what is <code>&lt;???&gt;</code>. This isn't too hard to answer. If we remove the <code>0</code>s from <code>ruler</code>, we get this sequence:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>1, 2, 1, 3, 1, 2, 1, 4, ...
+</span></code></pre>
+<p>which, if you look at it carefully, is just the original <code>ruler</code> series with <code>1</code> added to every element - in other words, <code>map (+1) ruler</code>!</p>
+<p>We now have a definition (that doesn't work yet) for <code>ruler</code>:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#407959;">ruler </span><span style="color:#9d0006;">:: Stream Integer
+</span><span>ruler </span><span style="color:#b23c15;">=</span><span> interleaveStreams (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span></code></pre>
+<p>It doesn't work because we haven't yet defined <code>interleaveStreams</code> - which, for the sake of brevity, we will now refer to as <code>interleave</code>. How do we do that? My first instinct was to define it like so:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#407959;">interleave </span><span style="color:#9d0006;">:: Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a
+</span><span>interleave (</span><span style="color:#282828;">S</span><span> x y) (</span><span style="color:#282828;">S</span><span> x&#39; y&#39;) </span><span style="color:#b23c15;">= </span><span style="color:#282828;">S</span><span> x (</span><span style="color:#282828;">S</span><span> x&#39; (interleave y y&#39;))
+</span></code></pre>
+<p>Then I headed over to the <code>ghci</code> prompt, loaded my definitions in, entered <code>ruler</code> and waited expectantly.</p>
+<p>And waited. And waited some more.</p>
+<p><img src="https://s-media-cache-ak0.pinimg.com/736x/bb/43/57/bb435733159f4040f1c68c79f9dc7e8e.jpg" alt="Me at the prompt" /></p>
+<h2 id="refining-our-solution">Refining our solution</h2>
+<p>...as you can guess, <code>ghci</code> was sent into an infinite loop trying to evaluate <code>ruler</code>. Why? Let's unravel the evaluation of <code>ruler</code> step by step. Keep in mind that Haskell is <em>lazy</em>, which means that</p>
+<ol>
+<li>function arguments are evaluated only when they need to be evaluated</li>
+<li>function arguments need to be evaluated only when they need to be pattern-matched</li>
+<li>function arguments are only evaluated as far as is needed for a match to succeed, and no further</li>
+</ol>
+<p>Off we go!</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>ruler
+</span><span>interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span></code></pre>
+<p><code>interleave</code> expects two arguments of the form <code>(S x y)</code> and <code>(S x' y')</code>. Since this is not the case, it attempts to evaluate each of its arguments until they can be represented in this form.</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span><span>interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (repeat </span><span style="color:#8f3f71;">0</span><span>)) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span><span>interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (repeat </span><span style="color:#8f3f71;">0</span><span>)) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)))
+</span></code></pre>
+<p>We've made partial progress. The first argument to the outermost <code>interleave</code> is of the form <code>(S x y)</code>. The second argument isn't, though. So we must evaluate it.</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler))
+</span></code></pre>
+<p><code>map</code> also expects its second argument to be of the form <code>(S x y)</code>. Again, it isn't. So we must evaluate it first before we can evaluate the call to <code>map</code>.</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span></code></pre>
+<p>Wait a minute, didn't we just see this <em>exact</em> expression? How do we fix this?</p>
+<p>Well, the main reason we ran into an infinite loop above is that we were forced to evaluate the second argument to <code>interleave</code>, which eventually ended up regenerating the original expression. It would be nice if we could recurse <strong>without</strong> evaluating the second argument. We can't realy avoid evaluating the first argument, since intuitively, <em>something</em> needs to be destructured in order for things to move forward. In any case, the first argument to <code>interleave</code> is <code>repeat 0</code> - and that is trivially easy to destructure.</p>
+<p>So we need to write a definition for <code>interleave</code> that forces evaluation of <em>only</em> the first argument. In other words, our definition is constrained to look like this:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#407959;">interleave </span><span style="color:#9d0006;">:: Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a
+</span><span>interleave (</span><span style="color:#282828;">S</span><span> x y) w </span><span style="color:#b23c15;">= &lt;???&gt;
+</span></code></pre>
+<p>How do we complete the definition? Observe that interleaving the stream <code>(S a1 x)</code> into the stream <code>w</code>...</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>a1    a2    a3    a4
+</span><span>   b1    b2    b3    b4
+</span></code></pre>
+<p>...is the same as prepending <code>a1</code> to the result of interleaving <code>w</code> into <code>x</code>:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>b1    b2    b3    b4
+</span><span>   a2    a3    a4
+</span></code></pre>
+<p>In the above text diagrams, <code>x</code> is the stream <code>[a2, a3, a4, ...]</code>, and <code>w</code> is the stream <code>[b1, b2, b3, ...]</code>. It's easy to see that <code>(S a1 x)</code> spliced into <code>w</code> is the same as <code>w</code> spliced into <code>x</code>. with the only difference being that the former has an extra <code>a1</code> at the beginning. So our new definition for <code>interleave</code> is:</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#407959;">interleave </span><span style="color:#9d0006;">:: Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a </span><span style="color:#9d0006;">-&gt; Stream </span><span style="color:#282828;">a
+</span><span>interleave (</span><span style="color:#282828;">S</span><span> x y) w </span><span style="color:#b23c15;">= </span><span style="color:#282828;">S</span><span> x (interleave w y)
+</span></code></pre>
+<p>This recursive definition is better than our previous one because it doesn't force Haskell to evaluate the second argument right away. Yay!</p>
+<p>We can verify that this definition "works" - that is, the interpreter is able to lazily evaluate the <code>ruler</code> stream without invoking an infinite loop. Let's re-run the evaluation procedure again and see how things have changed.</p>
+<pre data-lang="haskell" style="background-color:#fcf0ca;color:#282828aa;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>ruler
+</span><span>interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span><span>interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (repeat </span><span style="color:#8f3f71;">0</span><span>)) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler)
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler))) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (repeat </span><span style="color:#8f3f71;">0</span><span>)) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler))) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>)))) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (</span><span style="color:#282828;">S</span><span> (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1 0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>)))) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">1</span><span> (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>)))) (repeat </span><span style="color:#8f3f71;">0</span><span>))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">1</span><span> (interleave (repeat </span><span style="color:#8f3f71;">0</span><span>) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>)))))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">1</span><span> (interleave (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (repeat </span><span style="color:#8f3f71;">0</span><span>)) (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>)))))
+</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">1</span><span> (</span><span style="color:#282828;">S </span><span style="color:#8f3f71;">0</span><span> (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) (interleave (map (</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span>) ruler) (repeat </span><span style="color:#8f3f71;">0</span><span>))) (repeat </span><span style="color:#8f3f71;">0</span><span>)))
+</span></code></pre>
+<p>and so on and so forth. There's a lot of substitution going on, but notice the general pattern emerging: we obtain an expression of the form <code>S 0 (S 1 (S 0 (...)))</code> - the <code>ruler</code> series. Since it is of the form <code>S x (S y (S z (...)))</code> where <code>x</code>, <code>y</code>, <code>z</code> and so on are all literals, it can be lazily evaluated upto whatever point we need.</p>
+<p>In the case when we type in <code>ruler</code> at the <code>ghci</code> prompt, as we did above, that point corresponds to 20 terms of the series.</p>
+<h2 id="references">References</h2>
+<p>The course mentioned in the beginning of this post is Brent Yorgey's fantastic <em>Intro to Haskell</em> course. The course materials, including lecture notes and assignments are available online, <a href="http://www.seas.upenn.edu/~cis194/spring13/">here</a>.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

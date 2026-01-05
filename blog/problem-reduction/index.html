@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Problem Reduction</h1>
+
+<p class=post-date>Dec 05 2015</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/problem-reduction/#problem-reduction">Problem reduction</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/problem-reduction/#example">Example</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>This post is a collection of notes I put together when trying to understand the concept of <strong>problem reduction</strong>. It is more or less taken directly from Ullman and Hopcroft's excellent textbook on Automata Theory.</p>
+<p>Note: this post presumes knowledge of the concept of undecidability.</p>
+<h2 id="problem-reduction">Problem reduction</h2>
+<p>The technique of problem reduction can be used to say whether a program is undecidable. Let's say that we just <em>know</em> that the problem "given a program and some input, does the program print <code>hello world</code> when run?" is undecidable. Let's call this question P.</p>
+<p>When we are given a different question Q and we want to prove that it is undecidable, we can follow the method that was used to prove that P is undecidable. This is a proof from first principles, and it resembles the <a href="https://en.wikipedia.org/wiki/Cantor&#x27;s_diagonal_argument">diagonal method argument</a> put forward by Cantor to prove that real numbers are uncountably infinite. But often it is easier to proceed via the method of <em>reduction</em>. We look for a way to reduce P to Q. This means proving that P is a special case of Q, or equivalently, that being able to solve Q means being able to solve P.</p>
+<p>How do we do this? We think of a procedure that takes an instance of Q and turns it into an instance of P. Then we note that if Q is decidable, so is P - since given any instance of Q we have a procedure to turn it into an instance of P.</p>
+<p>Effectively, we are proving that Q is a harder problem than our original problem P. If the harder problem is decidable, so is the easier problem. And since the easier problem P <em>isn't</em> decidable, neither is our harder problem Q.</p>
+<h2 id="example">Example</h2>
+<p>Suppose Q is the question "given a program PROG1 and some input, does the program ever call a function <code>foo()</code> when it is run?" Let's use problem reduction to prove that Q is undecidable. We'll start with an arbitrary instance of Q and think of a procedure to turn it into an instance of our original hello-world problem P.</p>
+<p>Here is what we will do.</p>
+<ol>
+<li>In program PROG1, if there is a function named <code>foo()</code>, rename it to something else, and rename all invocations of <code>foo()</code> to this new name as well. It doesn't matter what we rename it to. The point is to avoid a namespace clash.</li>
+<li>Add a function named <code>foo()</code> to PROG1 with an empty body.</li>
+<li>At every point in the program where output is done, add a function <code>check()</code> which checks if "hello world" has been printed thus far - and if yes, calls the function <code>foo()</code>. Exactly how <code>check()</code> is implemented isn't important. One way might be to have a global growable array of characters which is pushed into each time a character is printed. <code>check()</code> would then simply check if the array contains the characters "hello world" in that order.</li>
+</ol>
+<p>We have modified the initial program PROG1. Let's call this new program PROG2. By our construction, PROG1 and PROG2 behave identically in all respects when given the same input, except that PROG2 always calls <code>foo()</code> in situations where PROG1 prints <code>hello world</code>. Conversely, if PROG2 calls <code>foo()</code> we can be sure that PROG1 must have printed <code>hello world</code>. There is no other way in which PROG2 can call <code>foo()</code>, since we designed it that way.</p>
+<p>In other words, the statement 'PROG1 prints <code>hello world</code>' always has the same truth value as the statement 'PROG2 calls a function named <code>foo()</code>'.</p>
+<p>Now if Q were decidable - that is, we could always determine if a program calls a function named <code>foo()</code> given some arbitrary input - then we could determine if PROG1 would print "hello world" given some arbitrary input. This means P would be decidable. But it isn't, and so Q in turn isn't decidable.</p>
+<p>The key word is <em>arbitrary</em>. <em>Every</em> instance of Q should be convertible to an instance of P. The mapping need not be one-one, but at the very least it should account for every member of Q.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

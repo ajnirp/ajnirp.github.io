@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Revisiting Project Euler #45</h1>
+
+<p class=post-date>Dec 20 2025</p>
+
+
+
+<p>In this blog post I revisit a fun Project Euler problem. The solution I detailed in this <a href="/blog/euler-45">previous blog post</a> worked but was a little clunky, involving checking if a quantity was a perfect square. I submitted that blog post to Hacker News for discussion, and one of the <a href="https://news.ycombinator.com/item?id=45942720">comment threads</a> on that submission opened up an interesting line of discussion — what if we just modeled this problem as a combination of iterators?</p>
+<p>I translated the approach discussed in the above comments to Python, and got:</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span style="font-style:italic;color:#928374;"># generators for pentagonal and hexagonal numbers
+</span></td></tr><tr><td>2</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">pentagonal</span><span>():
+</span></td></tr><tr><td>3</td><td><span>    i </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">1
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">while </span><span style="color:#8f3f71;">True</span><span>:
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#9d0006;">yield </span><span>i</span><span style="color:#b23c15;">*</span><span>(</span><span style="color:#8f3f71;">3</span><span style="color:#b23c15;">*</span><span>i</span><span style="color:#b23c15;">-</span><span style="color:#8f3f71;">1</span><span>)</span><span style="color:#b23c15;">//</span><span style="color:#8f3f71;">2
+</span></td></tr><tr><td>6</td><td><span>        i </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1
+</span></td></tr><tr><td>7</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">hexagonal</span><span>():
+</span></td></tr><tr><td>8</td><td><span>    i </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">1
+</span></td></tr><tr><td>9</td><td><span>    </span><span style="color:#9d0006;">while </span><span style="color:#8f3f71;">True</span><span>:
+</span></td></tr><tr><td>10</td><td><span>        </span><span style="color:#9d0006;">yield </span><span>i</span><span style="color:#b23c15;">*</span><span>(</span><span style="color:#8f3f71;">2</span><span style="color:#b23c15;">*</span><span>i</span><span style="color:#b23c15;">-</span><span style="color:#8f3f71;">1</span><span>)
+</span></td></tr><tr><td>11</td><td><span>        i </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1
+</span></td></tr><tr><td>12</td><td><span>
+</span></td></tr><tr><td>13</td><td><span style="font-style:italic;color:#928374;"># given two generators, advances both until a common element is found, then
+</span></td></tr><tr><td>14</td><td><span style="font-style:italic;color:#928374;"># yields that element
+</span></td></tr><tr><td>15</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">combine</span><span>(</span><span style="color:#282828;">g1</span><span>, </span><span style="color:#282828;">g2</span><span>):
+</span></td></tr><tr><td>16</td><td><span>    </span><span style="color:#9d0006;">while </span><span style="color:#8f3f71;">True</span><span>:
+</span></td></tr><tr><td>17</td><td><span>        l, r </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">next</span><span style="color:#282828;">(g1)</span><span>, </span><span style="color:#b57614;">next</span><span style="color:#282828;">(g2)
+</span></td></tr><tr><td>18</td><td><span>        </span><span style="color:#9d0006;">while </span><span>l </span><span style="color:#b23c15;">!= </span><span>r:
+</span></td></tr><tr><td>19</td><td><span>            </span><span style="color:#9d0006;">if </span><span>l </span><span style="color:#b23c15;">&lt; </span><span>r:
+</span></td></tr><tr><td>20</td><td><span>                l </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">next</span><span style="color:#282828;">(g1)
+</span></td></tr><tr><td>21</td><td><span>            </span><span style="color:#9d0006;">else</span><span>:
+</span></td></tr><tr><td>22</td><td><span>                r </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">next</span><span style="color:#282828;">(g2)
+</span></td></tr><tr><td>23</td><td><span>        </span><span style="color:#9d0006;">yield </span><span>l
+</span></td></tr><tr><td>24</td><td><span>
+</span></td></tr><tr><td>25</td><td><span style="color:#9d0006;">if </span><span style="color:#b57614;">__name__ </span><span style="color:#b23c15;">== </span><span style="color:#79740e;">&#39;__main__&#39;</span><span>:
+</span></td></tr><tr><td>26</td><td><span>    seen </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">0
+</span></td></tr><tr><td>27</td><td><span>    </span><span style="color:#9d0006;">for </span><span>num </span><span style="color:#9d0006;">in </span><span style="color:#282828;">combine(pentagonal(), hexagonal())</span><span>:
+</span></td></tr><tr><td>28</td><td><span>        </span><span style="color:#b57614;">print</span><span style="color:#282828;">(num)
+</span></td></tr><tr><td>29</td><td><span>        seen </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1
+</span></td></tr><tr><td>30</td><td><span>        </span><span style="color:#9d0006;">if </span><span>seen </span><span style="color:#b23c15;">== </span><span style="color:#8f3f71;">4</span><span>:  </span><span style="font-style:italic;color:#928374;"># change this to the number of desired outputs
+</span></td></tr><tr><td>31</td><td><span>            </span><span style="color:#9d0006;">break
+</span></td></tr></tbody></table></code></pre>
+<p>What's going on here? To start with, we're defining a function <code>combine</code> that takes as input two existing generators and only yields elements that are members of <em>both</em> generators. This is ensured by the <code>while l != r</code> loop that precedes the <code>yield l</code>.</p>
+<p>Fair enough, but how come the above code makes no mention of triangle numbers at all? Seems like we should define a generator for triangle numbers, and then do something like this?</p>
+<pre data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#9d0006;">for </span><span>num </span><span style="color:#9d0006;">in </span><span style="color:#282828;">combine(triangle(), combine(pentagonal(), hexagonal()))</span><span>:
+</span><span>    </span><span style="color:#9d0006;">pass  </span><span style="font-style:italic;color:#928374;"># seen = 0 ...
+</span></code></pre>
+<p>It turns out that we don't need to! A nice insight from the <a href="/blog/euler-45">previous blog post</a> that eluded me until I re-read the Hacker News thread (in particular, <a href="https://news.ycombinator.com/item?id=45991571">this comment</a>) was that <strong>every hexagonal number is a triangle number</strong>. Recall that if the <script type="math/tex">t^{th}</script> triangle number equals the <script type="math/tex">h^{th}</script> hexagonal number, then <script type="math/tex">t = 2h - 1</script> must be true.</p>
+<p>We can read this property in reverse: given the <script type="math/tex">h^{th}</script> hexagonal number, there always exists a corresponding <script type="math/tex">t = 2h-1</script> such that the <script type="math/tex">t^{th}</script> triangular number equals it. In other words, every hexagonal number is a triangle number. Which means that it's enough to check for numbers that are both hexagonal and pentagonal. The "triangle" requirement will automatically be satisfied 🙂.</p>
+<p>This approach is much more readable than the one in the previous blog post, but is it more performant? As it turns out, this approach runs faster on my machine than the previous approach! It's not instantly obvious to me why, without inspecting the generated CPython bytecode, but I speculate that it has to do with the expensiveness of computing the floating-point square root of a number.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

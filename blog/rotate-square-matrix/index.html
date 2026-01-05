@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Rotating a Square Matrix</h1>
+
+<p class=post-date>Nov 23 2018</p>
+
+
+
+<p>How do you rotate a square matrix counter-clockwise? That's easy enough: you map the cell located at <script type="math/tex">(r, c)</script> to the cell located at <script type="math/tex">(n-c-1, r)</script>, where <script type="math/tex">n</script> is the length of a side of the square matrix.</p>
+<p>Today I stumbled across another way to do this. The idea is to flatten the matrix out and derive a linear map between the 1D indices of the flattened matrix and the 1D indices of the flattened rotated matrix. The relation is <script type="math/tex">(ni + n - 1) mod (n^2 + 1)</script>. That is, given an index <script type="math/tex">i</script> into the flattened version of the original matrix, the corresponding index in the flattened version of the rotated matrix will be <script type="math/tex">(ni + n - 1) mod (n^2 + 1)</script>.</p>
+<p>The index <script type="math/tex">i</script> is an integer between <script type="math/tex">0</script> and <script type="math/tex">n^2-1</script>, because it is an index into the flattening of a square matrix of side <script type="math/tex">n</script>. In fact, <script type="math/tex">i = nr + c</script>. Intuitively, we make r jumps of stride n, and then offset ourselves by c to get to the cell located at <script type="math/tex">(r, c)</script>. Note that <script type="math/tex">r</script> and <script type="math/tex">c</script> are integers lying in <script type="math/tex">[0, n-1]</script>.</p>
+<p>How do we derive the relation <script type="math/tex">(ni + n - 1) mod (n^2 + 1)</script>? By trial and error. My starting point was to take a 4x4 matrix and rotate it to the left, and to observe that there was an even spacing between the values of the 1D indices in the output - and that that spacing was equal to <script type="math/tex">n</script> itself. It was natural to guess that there was a modulo <script type="math/tex">n^2</script> involved, but that failed very quickly. I then tried <script type="math/tex">n^2 + 1</script>, and it worked!</p>
+<p>Why does this work? The derivation is straightforward. We relate 2D coordinates in a square matrix to the index of the corresponding cell in the flattened version: <script type="math/tex">(r, c) => (n-c-1, r)</script>. We already know how to map 2D coordinates between matrices when one is a left-rotation of the other. So we just need to derive a relation between the 1D indices, and we're done.</p>
+<script type="math/tex;mode=display">i_1 = c + nr \\
+i_2 = r + n(n-c-1) = r + n^2 - nc - n</script>
+<p>The second line above comes from the formula for mapping a 2D coordinate to a 1D one in the flattened array. Here the coordinate is <script type="math/tex">(n-c-1, r)</script>, which is where <script type="math/tex">(r, c)</script> goes after we rotate the matrix.</p>
+<script type="math/tex;mode=display">(ni_1 + n - 1) mod (n^2 + 1) \\
+= (nr + n^3 - n^2c - n^2 + n - 1) mod (n^2 + 1) \\
+= (nr - n^2c + (n - 1)(n^2 + 1)) mod (n^2 + 1) \\
+= (nr - n^2c) mod (n^2 + 1) \\
+= (nr - c(n^2 + 1) + c) mod (n^2 + 1) \\
+= nr + c</script>
+<p>...and we're done.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

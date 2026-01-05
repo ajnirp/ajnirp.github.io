@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Understanding the Dutch National Flag algorithm</h1>
+
+<p class=post-date>Sep 13 2020</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/dutch-national-flag/#introduction">Introduction</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/dutch-national-flag/#how-the-algorithm-works">How the algorithm works</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/dutch-national-flag/#array-j-pivot">array[j] &lt; pivot</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/dutch-national-flag/#array-j-pivot-1">array[j] == pivot</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/dutch-national-flag/#array-j-pivot-2">array[j] &gt; pivot</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+  </ul>
+
+
+<h2 id="introduction">Introduction</h2>
+<p>In computer science, the <a href="https://en.wikipedia.org/wiki/Dutch_national_flag_problem">Dutch National Flag problem</a> asks: can you take an array of numbers and a "pivot" value, and sort the array in-place so that:</p>
+<ul>
+<li>all elements less than the pivot value come first, followed by</li>
+<li>all elements equal to the pivot value, followed by</li>
+<li>all elements greater than the pivot value?</li>
+</ul>
+<p>This problem shows up in <a href="https://en.wikipedia.org/wiki/Quicksort">quicksort</a>, of which it’s the only really complicated part in my opinion.</p>
+<p>There's an elegant algorithm to solve this problem. It makes a single pass over the array and uses constant extra space! The implementation is easy enough to understand, but I had trouble understanding why it worked at all. That is, until I looked at it from the perspective of <em>maintaing invariants</em>.</p>
+<h2 id="how-the-algorithm-works">How the algorithm works</h2>
+<p>The key idea is to <strong>define a set of invariants and ensure that they are all true at the beginning of every loop iteration, and also after all iterations are completed</strong>. In other words, we must ensure they're all true before any iterations have occurred, before the second iteration starts, before the third iteration starts... and finally when all iterations have completed.</p>
+<p>What should our invariants look like? Well, they follow from the problem statement. Let's use three indices <code>i, j, k</code> to carve up our array into four sections, and choose our invariants to be:</p>
+<ol>
+<li>Items less than the pivot are at indices <code>&lt; i</code></li>
+<li>Items equal to the pivot are at indices <code>&gt;= i</code> and <code>&lt; j</code></li>
+<li>Unclassified items are at indices <code>&gt;= j</code> and <code>&lt; k</code></li>
+<li>Items greater than the pivot are at indices <code>&gt;= k</code></li>
+</ol>
+<p>At the end of our loop iterations, no element should remain unclassified, which means section 3 should be empty, which means our terminating condition is <code>j == k</code>.</p>
+<p>Knowing that we want our invariants . Before the iteration starts, assuming the array is 0-indexed, the indices should be initialized as follows:</p>
+<ul>
+<li><code>i = 0</code>. Initially, nothing is less than the pivot - we haven’t seen anything.</li>
+<li><code>j = 0</code>. everything in the range <code>[0, len(array))</code> is unclassified.</li>
+<li><code>k = len(array)</code>. Nothing is greater than the pivot because we haven’t seen anything.</li>
+</ul>
+<p>The hard part is to figure out what goes in the loop body. Remember, whatever we do in a single loop iteration, we must end with all invariants remaining true. At the same time, we want to make progress. In our formulation, progress means either incrementing <code>j</code> or decrementing <code>i</code>.</p>
+<p>In this article we'll skip over how to derive the algorithm from first principles, and instead directly present it. Here it is, in Rust:</p>
+<pre data-linenos data-lang="rust" style="background-color:#fcf0ca;color:#282828aa;" class="language-rust "><code class="language-rust" data-lang="rust"><table><tbody><tr><td>1</td><td><span style="color:#9d0006;">fn </span><span style="color:#407959;">dnf</span><span>&lt;T: </span><span style="color:#b57614;">PartialOrd</span><span>&gt;(</span><span style="color:#282828;">array</span><span>: </span><span style="color:#b23c15;">&amp;</span><span style="color:#9d0006;">mut</span><span> [T], </span><span style="color:#282828;">pivot</span><span>: T) {
+</span></td></tr><tr><td>2</td><td><span>    </span><span style="color:#9d0006;">if</span><span> array.</span><span style="color:#b57614;">is_empty</span><span>() {
+</span></td></tr><tr><td>3</td><td><span>        </span><span style="color:#9d0006;">return</span><span>;  </span><span style="font-style:italic;color:#928374;">// Nothing to do here.
+</span></td></tr><tr><td>4</td><td><span>    }
+</span></td></tr><tr><td>5</td><td><span>
+</span></td></tr><tr><td>6</td><td><span>    </span><span style="color:#9d0006;">let mut</span><span> i </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">0</span><span style="color:#9d0006;">usize</span><span>;
+</span></td></tr><tr><td>7</td><td><span>    </span><span style="color:#9d0006;">let mut</span><span> j </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">0</span><span style="color:#9d0006;">usize</span><span>;
+</span></td></tr><tr><td>8</td><td><span>
+</span></td></tr><tr><td>9</td><td><span>    </span><span style="font-style:italic;color:#928374;">// We checked for an empty array earlier, so this statement is guaranteed to
+</span></td></tr><tr><td>10</td><td><span>    </span><span style="font-style:italic;color:#928374;">// not underflow the `usize` type.
+</span></td></tr><tr><td>11</td><td><span>    </span><span style="color:#9d0006;">let mut</span><span> k: </span><span style="color:#9d0006;">usize </span><span style="color:#b23c15;">=</span><span> array.</span><span style="color:#b57614;">len</span><span>() </span><span style="color:#b23c15;">- </span><span style="color:#8f3f71;">1</span><span>;
+</span></td></tr><tr><td>12</td><td><span>
+</span></td></tr><tr><td>13</td><td><span>    </span><span style="color:#9d0006;">while</span><span> j </span><span style="color:#b23c15;">&lt;</span><span> k {
+</span></td></tr><tr><td>14</td><td><span>        </span><span style="color:#9d0006;">if</span><span> array[j] </span><span style="color:#b23c15;">&lt;</span><span> pivot {
+</span></td></tr><tr><td>15</td><td><span>            array.</span><span style="color:#b57614;">swap</span><span>(i, j);
+</span></td></tr><tr><td>16</td><td><span>            i </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1</span><span>;
+</span></td></tr><tr><td>17</td><td><span>            j </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1</span><span>;
+</span></td></tr><tr><td>18</td><td><span>        } </span><span style="color:#9d0006;">else if</span><span> array[j] </span><span style="color:#b23c15;">==</span><span> pivot {
+</span></td></tr><tr><td>19</td><td><span>            j </span><span style="color:#b23c15;">+= </span><span style="color:#8f3f71;">1</span><span>;
+</span></td></tr><tr><td>20</td><td><span>        } </span><span style="color:#9d0006;">else </span><span>{  </span><span style="font-style:italic;color:#928374;">// array[j] &gt; pivot
+</span></td></tr><tr><td>21</td><td><span>            k </span><span style="color:#b23c15;">-= </span><span style="color:#8f3f71;">1</span><span>;
+</span></td></tr><tr><td>22</td><td><span>            array.</span><span style="color:#b57614;">swap</span><span>(j, k);
+</span></td></tr><tr><td>23</td><td><span>        }
+</span></td></tr><tr><td>24</td><td><span>    }
+</span></td></tr><tr><td>25</td><td><span>}
+</span></td></tr></tbody></table></code></pre>
+<p>The if conditions that make up the body of the loop are clear. But how do we know which indices to update inside the if conditions? The underlying idea is: any time it's safe to "advance" an index (increment in the case of <code>i</code> and <code>j</code>, decrement in the case of <code>k</code>), do it.</p>
+<p>Let's analyze this case by case!</p>
+<h3 id="array-j-pivot"><code>array[j] &lt; pivot</code></h3>
+<p>After incrementing indices <code>i</code> and <code>j</code>, and swapping the elements at those incremented indices:</p>
+<ul>
+<li>We first can swap the elements are indices <code>i</code> and <code>j</code>. Next, we increment index <code>i</code> because it's safe to do so - everything to the left of index <code>i</code> is still less than the pivot even after incrementing. This means invariant 1 is maintained!</li>
+<li>Next, notice how the element that used to be at index <code>i</code> was equal to the pivot (because of invariant 2), and now it's at index <code>j</code>. So we increment index <code>j</code> since invariant 2 holds even after incrementing <code>j</code>.</li>
+<li>Invariant 3 is still true, because we now have one less unclassified element.</li>
+<li>Invariant 4 is still true, because index <code>k</code> didn't change.</li>
+</ul>
+<h3 id="array-j-pivot-1"><code>array[j] == pivot</code></h3>
+<p>After incrementing <code>j</code>:</p>
+<ul>
+<li>Invariant 1 is still true, because index <code>i</code> didn't change.</li>
+<li>Invariant 2 is still true. All array elements between indices <code>i</code> and <code>j</code> (excluding the element at index <code>j</code>) are equal to the pivot.</li>
+<li>Invariant 3 is still true, because we now have one less unclassified element.</li>
+<li>Invariant 4 is still true, because index <code>k</code> didn't change.</li>
+</ul>
+<h3 id="array-j-pivot-2"><code>array[j] &gt; pivot</code></h3>
+<p>We first decrement k and then swap the elements at indices j and k. This preserves invariant 4.</p>
+<ul>
+<li>Invariants 1 and 2 are still true, because neither index <code>i</code> nor index <code>j</code> changed.</li>
+<li>Invariant 3 is still true, because we now have one less unclassified element.</li>
+<li>Invariant 4 is still true. Why? Because initially the element at index <code>j</code> was greater than the pivot. We decremented index <code>k</code> and then swapped the elements at indices <code>j</code> and <code>k</code>, so now the element at index <code>k</code> is greater than the pivot. All elements to the right of the new value of index <code>k</code> continue to be greater than the pivot, as they were before.</li>
+</ul>
+<p>When the iteration ends, all invariants still hold. Additionally, the "unclassified" group empty (because <code>j == k</code>), and so all elements are sorted.</p>
+<p>If you find this sort of invariant-based analysis interesting, consider reading up on <a href="https://en.wikipedia.org/wiki/Program_derivation">Program Derivation</a>, in particular the book <a href="https://www.google.com/books/edition/_/4nJqQgAACAAJ?hl=en">Programming: The Derivation of Algorithms by Anne Kaldewaij</a>. A powerful idea in program derivation is that you can write a program by methodically translating invariants into pseudocode. This is nice because it's typically much easier to formulate invariants for a given problem statement than to directly write a bug-free program.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

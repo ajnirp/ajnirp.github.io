@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Deriving the Y combinator</h1>
+
+<p class=post-date>Dec 07 2015</p>
+
+
+
+<p>This post is an attempt to put my understanding of the intuition behind the Y combinator into words. It is a follow up to my earlier, introductory post on the <a href="/blog/lambda-calculus">untyped lambda calculus</a>.</p>
+<p>Recall that the Y combinator is defined like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y := λ y → (λ x → y (x x)) (λ x → y (x x))
+</span></code></pre>
+<p>It takes as input a function argument <code>y</code> and returns the result of applying <code>(λ x → y (x x))</code> to itself. This means that output of <code>Y R</code>, for some argument <code>R</code>, is <code>R (Y R)</code>. Note that both <code>Y R</code> and <code>R (Y R)</code> are partially applied functions.</p>
+<p>In the <a href="/blog/lambda-calculus">previous post</a> we saw how the Y combinator works. We looked at two examples of problems with recursive formulations and saw how to construct functions <code>R</code> such that <code>Y R</code>, when applied to the required arguments, yields the desired result. One insight we had was that since <code>R</code> is called with itself as the first argument, it must be an <code>(n+1)</code>-ary function, where <code>n</code> is the number of formal parameters in the recursive formulation.</p>
+<p>We also saw <em>why</em> the Y combinator is needed. It gives us a way to express recursive functions in languages that do not natively support recursion - like the untyped lambda calculus.</p>
+<p>"That great", you say, "but <em>where did the Y combinator come from</em>?". Fair question! In the last post we simply presented the Y combinator instead of deriving it from scratch or supplying the intuition behind it.</p>
+<p>The latter is what this post will attempt to do.</p>
+<p>Our method is as follows.</p>
+<ol>
+<li>We think of a situation that requires the use of a special kind of function.</li>
+<li>We write down a crude definition of that function that breaks the rules of the lambda calculus.</li>
+<li>We then refactor our definition so that it is a valid lambda expression.</li>
+<li>That special function is our Y combinator.</li>
+</ol>
+<p>Let's start with our old friend the factorial function.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>F = λ x → Z n 1 (M n (F (P n)))
+</span></code></pre>
+<p>(<em>please read the <a href="/blog/lambda-calculus">previous post</a> if you aren't sure what this means</em>)</p>
+<p>The problem with this is that <code>F</code> is not defined until the expression on the right is fully evaluated, which requires an application of <code>F</code>, which requires that <code>F</code> is fully evaluated to begin with. Let's break this cycle. Observe that the right hand side can be seen as a function of <code>F</code>. Sure, it's a lambda taking a single input <code>x</code>, but it could just as well be seen as a function which accepts a single input <code>F'</code>, like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>G = λ F&#39; → (λ x → Z n 1 (M n (F&#39; (P n))))
+</span><span>G = λ F&#39; x → Z n 1 (M n (F&#39; (P n)))
+</span></code></pre>
+<p>and so our previous expression can be written as:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>F = G F
+</span></code></pre>
+<p>A few things to note about this.</p>
+<ol>
+<li>There was nothing special about the factorial function. We could just as well have written the above derivation for any other recursive function.</li>
+<li>The arity of <code>F</code> wasn't relevant in our derivation either. <code>F</code> could have taken, say, 17 arguments and it wouldn't have made a difference to the logic above.</li>
+</ol>
+<p>Now, back to our end result:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>F = G F
+</span></code></pre>
+<p>This is interesting. <code>F</code> is a function that takes a number argument (bear in mind that numbers in the lambda calculus are just functions). <code>G</code> is a function that takes as input two arguments: a function <code>F</code> and a number argument <code>x</code>. <code>G F</code> is therefore a partially applied function that takes one more argument as input. This function <code>G F</code> is <a href="#equal-footnote"><span id="equal">equal</span></a> to <code>F</code>, which is the input to <code>G</code>.</p>
+<p>In other words, <code>F</code> is a fixed point of <code>G</code>. So if we know <code>G</code>, we can find <code>F</code> by finding <code>G</code>'s fixed point. How do we do that? Ideally we would have a function <code>Y</code> which would take as input another function and return its fixed point. This is of course the Y combinator that is the subject of this blog post. Given such a function, we could then pass <code>G</code> to it and get back <code>G</code>'s fixed point <code>F</code>. In other words:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>F := Y G
+</span></code></pre>
+<p>and so</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y G = G (Y G)
+</span><span>Y = λ G → G (Y G)
+</span></code></pre>
+<p>Note that the above line doesn't constitute a formal definition of the Y combinator. Why? Because <code>Y</code> appears on the right hand side, and so we have the same issue as we did with <code>F</code>.</p>
+<p>We need to get rid of <code>Y</code> appearing on the right hand side. How?</p>
+<p>Well, one example of a function that calls its input on itself is the <strong>U combinator</strong>, which we encountered in the <a href="http://wenderen.github.io/Notes-Lambda-Calculus">previous post</a>.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>U := λ x → x x
+</span></code></pre>
+<p>Here we have a function <code>Y</code> calling itself. It's tempting to use the U combinator in this setting. But then what should we apply the U combinator to? Let's call the unknown argument to the <code>U</code> combinator <code>H</code>, and try to derive an expression for it. We have:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y G = U H
+</span><span>Y G = H H
+</span></code></pre>
+<p>where <code>H</code> is chosen such that the property <code>Y G = G (Y G)</code> is satisfied. Now let's find <code>H</code>.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y G = G (Y G)
+</span><span>H H = G (H H)
+</span><span>H x = G (x x)
+</span><span>H = λ x → (G (x x))
+</span></code></pre>
+<p>The key step here was going from the second line above to the third line. We noticed that the second <code>H</code> in <code>H H</code> was reappearing in <code>G (H H)</code> and could therefore be treated as a parameter of the first <code>H</code> in <code>H H</code>. We then replaced it by a formal parameter <code>x</code> and rearranged things some more.</p>
+<p>Let's check that <code>Y G = H H</code> and <code>H = λ x → G (x x)</code> is enough to satisfy our original constraint <code>Y G = G (Y G)</code>.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>H = λ x → G (x x)
+</span><span>H H = (λ x → G (x x)) (λ x → G (x x))
+</span><span>H H = (λ u → G (u u)) (λ x → G (x x))
+</span><span>H H = G (λ x → G (x x G)) (λ x → G (x x G))
+</span><span>H H = G (H H)
+</span><span>Y G = G (Y G)
+</span></code></pre>
+<p>Nice, it works out. So:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y G = H H
+</span><span>Y = λ G → H H
+</span><span>Y = λ G → (λ x → G (x x)) (λ x → G (x x))
+</span><span>Y = λ y → (λ x → y (x x)) (λ x → y (x x))
+</span></code></pre>
+<p>which is what we were trying to obtain!</p>
+<p>And now we have the insight behind the Y combinator. It's just the end result of refactoring the definition of a fixed point for functions that take other functions as input.</p>
+<p><span id="equal-footnote">[<a href="#equal">1</a>]</span> Note that for two functions to be equal, they must return the same output for every input</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

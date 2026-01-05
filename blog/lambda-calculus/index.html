@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Notes on the Lambda Calculus</h1>
+
+<p class=post-date>Jul 21 2015</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#introduction">Introduction</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#what-is-the-lambda-calculus">What is the lambda calculus?</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#examples">Examples</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#about-this-article">About this article</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#numbers">Numbers</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#arithmetic">Arithmetic</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#successor">Successor</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#addition">Addition</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#multiplication">Multiplication</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#logic">Logic</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#control-flow">Control flow</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#tuples">Tuples</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#more-arithmetic">More arithmetic</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#predecessor">Predecessor</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#subtraction">Subtraction</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#division">Division</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#comparisons">Comparisons</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#recursion">Recursion</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#negative-numbers">Negative numbers</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#successor-1">Successor</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#predecessor-1">Predecessor</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#addition-1">Addition</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/lambda-calculus/#subtraction-1">Subtraction</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#conclusion">Conclusion</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/lambda-calculus/#reference">Reference</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>This blog post is an introduction to the lambda calculus. It doesn't assume too much prior knowledge. In fact, I've tried to make this post self-contained. If something is unclear, please let me know!</p>
+<h2 id="introduction">Introduction</h2>
+<h3 id="what-is-the-lambda-calculus">What is the lambda calculus?</h3>
+<p>The lambda calculus is a minimal model of computation. It specifies how to define functions and how to apply them to other arguments - which are themselves functions by virtue of the fact that the lambda calculus doesn't specify how to define anything <em>other than</em> a function. Despite this minimalism, the lambda calculus is equivalent to a Turing machine.</p>
+<p>A <strong>name</strong> or <strong>variable</strong> is an identifier, usually a lowercase letter. A <strong>lambda</strong> is a function with no name. It consists of a list of space-delimited names following the <code>λ</code> symbol. Following the argument list is an arrow <code>→</code> and the <strong>body</strong> of the lambda, which is an expression.</p>
+<p>What is an expression? An <strong>expression</strong> is either a name (defined above), a lambda (defined above) or an application. An expression can have a pair of parentheses <code>()</code> surrounding it. This doesn't change anything in the expression, but it can make reading easier sometimes.</p>
+<p>A <strong>application</strong> is two expressions written with a space in between. The first expression is said to be applied to the second. In lambda calculus, the convention is to associate from the left. So the application <code>x y z</code> is read as "<code>x</code> applied to <code>y</code>, and the result is then applied to <code>z</code>". Alternatively, this can be read as "<code>x</code> is applied to both <code>y</code> and <code>z</code>". Both interpretations are valid and in fact the same. Note that both these interpretations are <em>different</em> from this one: <code>x (y z)</code>. Can you say why?</p>
+<h3 id="examples">Examples</h3>
+<p><code>λ x y → x y y</code> is an example of a lambda. The <code>x y</code> after the <code>λ</code> is the argument list. The <code>x y y</code> after the arrow is the body of the lambda. If you were to describe this function in words, you might say "a lambda that takes two arguments, duplicates the second and applies the first to them".</p>
+<p><code>(λ x y → x y y) f g</code> is an example of a function application. The lambda we just defined is applied to two variables <code>f</code> and <code>g</code>, which are themselves functions - after all, everything in the lambda calculus is an anonymous function. To apply a function to some expressions, substitute each expression in the corresponding lambda. In this case, the application yields:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ x y → x y y) f g
+</span><span>(λ y → f y y) g
+</span><span>f g g
+</span></code></pre>
+<p>We proceeded in two steps. After the lambda was applied to <code>f</code>, <code>x</code> got substituted with <code>f</code>. We then had a lambda that accepted only a single argument <code>y</code>, duplicated it, and applied <code>f</code> to both. Next, this new lambda was applied to <code>g</code>. <code>y</code> got substituted with <code>g</code>, and we were left with <code>f g g</code>.</p>
+<p>Here's another example. Consider the lambda <code>λ x → x x</code>. It's known as the <strong>U combinator</strong>, and all it does is apply its only argument to itself. If we pass the <code>U</code> combinator to itself, what do we get?</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ x → x x) (λ x → x x)
+</span></code></pre>
+<p>Since the argument being passed to the first <code>U</code> also contains an <code>x</code>, we need to first rename it to something else to prevent a name clash. This is known as <strong>alpha renaming</strong>.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ x → x x) (λ x → x x)
+</span><span>(λ x → x x) (λ y → y y)
+</span></code></pre>
+<p>So <code>x</code> must be substituted by <code>(λ y → y y)</code> in the body of the first <code>U</code> - which is <code>x x</code>. This would yield</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ y → y y) (λ y → y y)
+</span></code></pre>
+<p>which is the <code>U</code> combinator applied to itself again. So <code>U U</code> is an infinite program - and in fact, since it regenerates itself at every step, it is a <a href="https://en.wikipedia.org/wiki/Quine_(computing)">quine</a>!</p>
+<h3 id="about-this-article">About this article</h3>
+<p>In this article, we'll look at how the lambda calculus implements some concepts that we expect from programming languages - numbers, arithmetic, logic, control flow, and recursion. It's really interesting to see how in spite of being an extremely minimal language, the lambda calculus is able to support all these concepts by building abstraction upon abstraction. Along the way, we'll try to understand the intuition behind some of these implementations.</p>
+<h2 id="numbers">Numbers</h2>
+<p><code>0</code> is <strong><code>λ s z → z</code></strong>. It ignores its first argument and returns the second one unmodified. <code>1</code> is <strong><code>λ s → s (s z)</code></strong>. <code>2</code> is <strong><code>λ s z → s (s (s z))</code></strong>. And so on. Essentially, a number in the untyped lambda calculus says "give me a function and another argument, and I'll apply the function this many times to that argument." This is why <code>0</code> ignores its first argument - applying a function zero times to a value means simply not changing the value at all.</p>
+<p>That's just the whole numbers, though. What about negative integers? We'll get there.</p>
+<h2 id="arithmetic">Arithmetic</h2>
+<h3 id="successor">Successor</h3>
+<p>The successor function is <strong><code>S = λ w y x → y (w y x)</code></strong>. When applied to a number, it returns the next number, like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>S M
+</span><span>(λ w y x → y (w y x)) M
+</span><span>λ y x → y (M y x)
+</span><span>λ y x → y ((λ s z → &lt;s applied to z M times&gt;) y x)
+</span><span>λ y x → y (&lt;y applied to x M times&gt;)
+</span><span>λ y x → &lt;y applied to x M+1 times&gt;
+</span><span>λ s z → &lt;s applied to z M+1 times&gt;
+</span><span>M+1
+</span></code></pre>
+<p>Ok, great, it works out. But why does the successor function need three arguments? As it turns out, the difference between M and M+1 is a single extra application of the <code>s</code> parameter. So we need one parameter for that - this is the <code>w</code> parameter - and two more parameters <code>y</code> and <code>x</code> to consume the two formal parameters of M! This is the importance of the <code>(w y x)</code> bit - we are resolving <code>M</code> in the context of <code>y</code> and <code>x</code> and then applying <code>y</code> once more outside the brackets.</p>
+<h3 id="addition">Addition</h3>
+<p>The successor function also works as an addition operator, because <code>M S N</code>, as per our intuition about numbers, is <code>S applied M times to N</code>. Adding <code>M</code> to <code>N</code> is therefore the same as incrementing the number <code>N</code> a total of <code>M</code> times. Nice - we got two functions for the price of one.</p>
+<h3 id="multiplication">Multiplication</h3>
+<p>Multiplication is <strong><code>M = λ x y z → x (y z)</code></strong>. This is also called the <a href="https://en.wikipedia.org/wiki/B,C,K,W_system">B combinator</a>, but never mind that. How does it work?</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>M A B
+</span><span>(λ x y z → x (y z)) A B
+</span><span>λ z → A (B z)
+</span><span>λ z → (λ t → A (B z t))
+</span></code></pre>
+<p>That last line was a technique known as <strong>eta-conversion</strong>. Eta-conversion says that if <code>E</code> is an expression in which <code>x</code> is NOT a free variable, then <code>E</code> is the same as <code>λ x → E x</code>. We're essentially taking an expression <code>E</code> and applying it to a variable <code>x</code> that is bound by a lambda we just introduced, and which does not itself appear in <code>E</code>. In the last line above, we eta-converted by adding in a <code>t</code> parameter. Now we can <a href="https://en.wikipedia.org/wiki/Currying">uncurry</a> the above line to get</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ z t → A (B z t)
+</span><span>λ u → (λ z t → A (B z t)) u
+</span><span>λ u z t → A (B z t) u
+</span></code></pre>
+<p>in other words, apply <code>z</code> to <code>t</code> B times. Then, apply that function to <code>u</code> A times.	In other words, do the operation "apply <code>z</code> to <code>t</code> B times" a total of <code>A</code> times - but to what? To the variable <code>u</code> - which is just a dummy variable we introduced so that <code>A</code> would have two arguments! Remember, our whole numbers are represented by functions which take two arguments each.</p>
+<p>So, we have: "apply <code>z</code> to <code>t</code> a total of <code>A * B</code> times". And that's just another way of stating the function</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ z t → &lt;apply z to t A * B times&gt;
+</span></code></pre>
+<p>which in turn is the number <code>A * B</code> in our representation.</p>
+<h2 id="logic">Logic</h2>
+<p>Yay logic! Specifically, Boolean logic.</p>
+<p>To have Boolean logic we need truth and falsity. The value <code>T</code> is <code>λ x y → x</code> and the value <code>F</code> is <code>λ x y → y</code> (Kind of like Scheme's <code>car</code> and <code>cdr</code>, but I digress).</p>
+<p>What else do we need? Right, Boolean operations.</p>
+<ol>
+<li>
+<p><code>AND</code> is <strong><code>λ x y → x y F</code></strong>. Why? Let's look at each case. If <code>x</code> is <code>F</code>, <code>F y F</code> is <code>F</code> regardless of <code>y</code>. If <code>y</code> is <code>F</code>, it doesn't matter if <code>x</code> is <code>T</code> (picks the first one) or <code>F</code> (picks the second one) - either way, <code>F</code> is going to be picked. And if both <code>x</code> and <code>y</code> are <code>T</code>, <code>T T F</code> is <code>T</code>.</p>
+</li>
+<li>
+<p><code>OR</code> is <strong><code>λ x y → x T y</code></strong>. The reasoning is similar.</p>
+</li>
+</ol>
+<p>(The other two combinations, by the way, aren't as interesting. <code>x F y</code> turns out to be <code>y AND NOT x</code>. <code>x y T</code> turns out to be <code>NOT (x AND NOT y)</code>. Oh well.)</p>
+<ol start="3">
+<li>'NOT' is <strong><code>λ x → x F T</code></strong>. Easy. (<code>λ x → x T F</code> on the other hand is just the identity function.)</li>
+</ol>
+<p>(Side note: <code>F</code> and <code>0</code> have the same definition, but you probably already noticed this :) )</p>
+<h2 id="control-flow">Control flow</h2>
+<p>We get <code>if</code> conditions via the <code>Z</code> predicate. The <code>Z</code> stands for <code>zero?</code> - it takes a single whole number input and returns <code>T</code> if the input is <code>0</code>, and <code>F</code> otherwise. The predicate itself is <strong><code>λ x → x F NOT F</code></strong> and the way it works is pretty cool. Recall that in our lambda calculus, numbers specify the number of times to apply a function. If we pass <code>0</code> to <code>Z</code>, we get <code>0 F NOT F</code>, which is <code>NOT F</code> - since <code>0</code> ignores its first argument - which in turn is <code>T</code>. If we pass any <em>other</em> whole number <code>M</code>, we get <code>M F NOT F</code>, which resolves as</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>M F NOT F
+</span><span>&lt;apply F to NOT M times&gt; F
+</span><span>F (F (... (F NOT) ...)) F
+</span><span>F &lt;something&gt; F
+</span><span>F
+</span></code></pre>
+<p>We didn't have to worry about the contents of that <code>something</code> - after all, <code>F</code> is defined as <code>λ x y → y</code>, meaning that it simply discards its first argument and returns the second one.</p>
+<h2 id="tuples">Tuples</h2>
+<p>To represent a pair <code>(a, b)</code>, we use the function <code>λ z → z a b</code>. We extract its first element with <code>T</code> like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ z → z a b) T
+</span><span>T a b
+</span><span>a
+</span></code></pre>
+<p>and its second element with <code>F</code> like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>(λ z → z a b) F
+</span><span>F a b
+</span><span>b
+</span></code></pre>
+<p>(remember what we said earlier about <code>T</code> and <code>F</code> being like <code>car</code> and <code>cdr</code> respectively?)</p>
+<p>Also, since a pair is just a 2-tuple and there is nothing special about the number 2 in this context, we could very well define an n-tuple <code>(a1, a2, a3, ..., an)</code> with the function <code>z → z a1 a2 a3 ... an</code>. This is a digression, though. Pairs are enough for what we're about to do next, which is...</p>
+<h2 id="more-arithmetic">More arithmetic</h2>
+<p>...subtraction!</p>
+<h3 id="predecessor">Predecessor</h3>
+<p>How do you subtract <code>1</code> from a number <code>N</code> using <em>only</em> the tools we've defined thus far? We have addition, multiplication, tuples and boolean logic in our toolkit. Multiplication doesn't seem to be a good choice. Boolean logic would help with branching, as we've seen above, but it's unlikely we'd need to branch just to define subtraction. Addition seems like a good bet - it is after all the inverse of subtraction. And tuples? Let's see.</p>
+<p>Keeping with our addition-based line of thought, one idea is to represent <code>N-1</code> by adding <code>N-1</code> to <code>0</code>, or in other words, incrementing <code>0</code> a total of <code>N-1</code> times using our successor function. How do we represent <code>N-1</code>, though? After all, this is what we're aiming for in the first place. The trick is to apply the same function <code>N</code> times to a pair, after which one of the pair's elements will equal <code>N-1</code>.</p>
+<p>Take a look at this function:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ p z → z (S (p T)) (p T)
+</span></code></pre>
+<p>Let's call it <code>PHI</code>. Given a pair <code>λ z → z a b</code>, it returns the pair <code>λ z → (S a) a</code>. So if you pass it a pair <code>(n, n-1)</code>, it will return the pair <code>(n+1, n)</code>. And if you pass it the pair <code>(0, 0)</code>, it will return the pair <code>(1, 0)</code>. This is the key to finding the predecessor of a number <code>N</code>. We apply <code>PHI</code> to <code>(0, 0)</code> a total of <code>N</code> times. The first time we get <code>(1, 0)</code>. After <code>N-1</code> more rounds we get <code>(N, N-1)</code>. Then we use <code>cdr</code> aka <code>F</code> to extract the second element of the pair. So our predecessor function <code>P</code> is</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ n → n PHI (λ z → z 0 0) F
+</span></code></pre>
+<p>Also note that if <code>n</code> is <code>0</code>, we get <code>P 0 = F</code>, and <code>F</code> is really <code>0</code> in disguise. So the predecessor of <code>0</code> is <code>0</code> itself. This seems like a silly property, but it will be useful soon.</p>
+<h3 id="subtraction">Subtraction</h3>
+<p>Just like addition and the successor operator, subtraction is achieved by repeatedly applying the predecessor operator. <code>M P N</code> is "apply <code>P</code> to <code>N</code> a total of <code>M</code> times" - in other words, <code>N - M</code>. Note that since the predecessor of <code>0</code> is <code>0</code>, if <code>M</code> is greater than <code>N</code> we will at some point be repeatedly applying <code>P</code> to <code>0</code>, and our final result will be just <code>0</code>.</p>
+<h3 id="division">Division</h3>
+<p>There isn't a short combinator for division analogous to multiplication that I know of, but division can be formulated as a recursive problem - and we'll see how in a later section.</p>
+<h2 id="comparisons">Comparisons</h2>
+<p>To test if a number <code>x</code> is greater than or equal to <code>y</code>, subtract <code>x</code> from <code>y</code> by decreasing <code>y</code> a total of <code>x</code> times. If you're left with <code>0</code>, <code>x</code> must have been at least as large as <code>y</code>. So our function <code>GE</code> is:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ x y → Z (x P y)
+</span></code></pre>
+<p>A similar test can be used for <code>LE</code>, lesser than or equal to:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ x y → Z (y P x)
+</span></code></pre>
+<p>For <code>GT</code>, greater than, we simply use <code>NOT LE</code>. Likewise, <code>LT</code> is <code>NOT GE</code>.</p>
+<p>Note by the way that if the predecessor of <code>0</code> were not <code>0</code>, none of the above definitions would work. See, I told you this property would come in handy.</p>
+<p>What about equality? If and only if <code>x &gt;= y</code> and <code>y &gt;= x</code> both hold, then <code>x = y</code>. So our <code>EQ</code> function is:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ x y → AND (GE x y) (GE y x)
+</span></code></pre>
+<p>Our not equal (<code>NE</code>) function is <code>NOT EQ</code>.</p>
+<h2 id="recursion">Recursion</h2>
+<p>In recursion as we know it in most programming languages, a function calls itself within its definition, and an edge case terminates the recursion. Like so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>factorial 0 = 1
+</span><span>factorial n = n * factorial (n - 1)
+</span></code></pre>
+<p>There are cleverer ways to write this function. We could rewrite it in tail-call-recursive form, for example. But fundamentally, the problem is that we are referring to the function name inside the body of the function. How would we do this in the lambda calculus? The whole point of the lambda calculus is that <em>everything</em> is expressed by the application of <em>nameless</em> functions.</p>
+<p>How do you refer to something when it has no name?</p>
+<p>Behold:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ y → (λ x → y (x x)) (λ x → y (x x))
+</span></code></pre>
+<p>This function is known as the <strong>Y combinator</strong>. What makes it special? Pass it a function argument <code>R</code>:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y R
+</span><span>(λ y → (λ x → y (x x)) (λ x → y (x x))) R
+</span><span>(λ x → R (x x)) (λ x → R (x x))
+</span><span>(λ z → R (z z)) (λ x → R (x x))
+</span><span>R ((λ x → R (x x)) (λ x → R (x x)))
+</span><span>R ((λ x → R (x x)) (λ x → R (x x)))
+</span><span>R (Y R)
+</span></code></pre>
+<p>Look at the first and last lines. <code>Y R = R (Y R)</code>. The right hand side is what we were looking for - a way to call R from within itself. This is what makes the Y combinator useful. It lets us use recursion in the untyped lambda calculus. If we want to recursively call a function from within itself, we simply pass it as an argument to the Y combinator.</p>
+<p>What could be an example of a function that we might want to call recursively? When college students are taught about recursion a common pedagogical example is the <code>factorial</code> function mentioned above. Let's set that aside in favour of an even simpler example that the <a href="http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf">reference paper for this article</a> uses - <strong>summing the first <code>n</code> numbers</strong>.</p>
+<p>The sum of the first <code>n</code> numbers is <code>n</code> plus the sum of the first <code>n-1</code> numbers. The base case is when <code>n</code> is <code>0</code>, in which case the sum is simply <code>0</code>.</p>
+<p>Now let's think about how our recursive function should look.</p>
+<p>First off: how many arguments should it take? We have only one numerical parameter <code>n</code>, so "one" is a good first guess. But we're working within the constraints of the Y combinator. Since <code>Y R</code> expans to <code>R (Y R)</code>, this means that <code>R</code> must take at least one more parameter, corresponding to this <code>(Y R)</code>. What does this other parameter represent? The recursive call of course!</p>
+<p>So let's try to write our recursive function with two arguments.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → &lt;body of our function - what do we put here?&gt;
+</span></code></pre>
+<p>Here, <code>r</code>, the first parameter, represents the recursive call we will make somewhere in the body of our function <code>R</code>. <code>n</code> is the number upto which we want to sum, starting from <code>0</code>.</p>
+<p>In the description of our recursion, we have an <code>if</code> condition - is <code>n</code> zero or not. We only know of one way to express branching - the <code>zero?</code> predicate we defined earlier. It seems to be a good fit.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → Z n 0 &lt;body of our function - what do we put here?&gt;
+</span></code></pre>
+<p>If <code>n</code> is <code>0</code>, we get</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → T 0 &lt;body&gt;
+</span><span>0
+</span></code></pre>
+<p>and if not,</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → F 0 &lt;body&gt;
+</span><span>&lt;body&gt;
+</span></code></pre>
+<p>which is what we want. Nice. Now let's think of what we should put in the body. Our recursive call will return the sum from <code>0</code> to <code>n-1</code>. We need to add <code>n</code> to that. So this should work:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → Z n 0 (n S r)
+</span></code></pre>
+<p>...er, wait a minute. <code>r</code> isn't the <em>result</em> of our recursive call, it's just the function that makes the recursive call. So it needs an argument of its own. In this case, the argument should be <code>n-1</code>, which in our lambda calculus is <code>P n</code>. And so we get:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → Z n 0 (n S (r (P n)))
+</span></code></pre>
+<p>Now let's try to run our function. On paper, of course.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y R 3
+</span><span>R (Y R) 3
+</span><span>(λ r n → Z n 0 (n S (r (P n)))) (Y R) 3
+</span><span>Z 3 0 (3 S ((Y R) (P 3)))
+</span><span>Z 3 0 (3 S ((Y R) 2))
+</span><span>F 0 (3 S ((Y R) 2))
+</span><span>(3 S ((Y R) 2))
+</span><span>3 S ((Y R) 2)
+</span><span>3 S (Y R 2)
+</span></code></pre>
+<p>We started out with <code>Y R 3</code> and ended up with <code>3 S (Y R 2)</code>. There's the recursion we wanted!</p>
+<p>Now let's run the above step two more times. As you can guess, we'll get <code>3 S (2 S (1 S (Y R 0)))</code>. <code>Y R 0</code> would expand to give us</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>Y R 0
+</span><span>R (Y R) 0
+</span><span>(λ r n → Z n 0 (n S (r (P n)))) (Y R) 0
+</span><span>Z 0 0 (0 S ((Y R) (P 0)))
+</span><span>T 0 (0 S ((Y R) (P 0)))
+</span><span>0
+</span></code></pre>
+<p>(See how <code>Z 0</code> broke the recursion? Good old <code>Z</code>. Where would we be without it?)</p>
+<p>Our final result is therefore <code>3 S (2 S (1 S 0))</code>, that is, <code>6</code>. Hooray! Now let's do the <strong>factorial</strong> function. What changes do we need to make?</p>
+<ol>
+<li>
+<p>The base case is still <code>n = 0</code>. But now the return value of the base case should be <code>1</code>.</p>
+</li>
+<li>
+<p>We have to multiply <code>n</code> with the result of the recursive call.</p>
+</li>
+</ol>
+<p>And so our function becomes:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r n → Z n 1 (M n (r (P n)))
+</span></code></pre>
+<p>For kicks, let's also do <strong>division</strong>. Again, the pattern is the same, with only minor variations.</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>λ r x y → (GT x y) 0 S (r x (x P y))
+</span></code></pre>
+<p><code>x</code> and <code>y</code> are the two arguments, and we want to find the quotient when <code>y</code> is divided by <code>x</code>. The base case is that <code>x</code> is greater than <code>y</code> - in this case, the quotient is zero. Otherwise, the quotient equals <code>1</code> plus the quotient when <code>y - x</code> is divided by <code>x</code>.</p>
+<h2 id="negative-numbers">Negative numbers</h2>
+<p>Negative integers are represented with pairs: we use a pair <code>λ z → z a b</code> to represent the number <code>a - b</code>. This of course requires that we change the definitions of our successor / addition and predecessor / subtraction functions so that they can work with pairs. Let's do that.
+Raúl Rojas wrote a beautiful <a href="http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf">paper</a> back in 1997 introducing the <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>. The paper explains the <strong>untyped lambda calculus</strong> from first principles in very plain language and was the only text that really made me understand the basics. This blog post is a <strong>collection of notes to accompany the paper</strong> - essentially, a summary of the paper mixed in with the insights I had while trying to understand it, as well as solutions to a couple of the easier problems posed at the end.</p>
+<h3 id="successor-1">Successor</h3>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>S&#39; = λ p → (λ z → z (S (p T)) (p F))
+</span><span>   = λ p z → z (S (p T)) (p F)
+</span></code></pre>
+<p>The meaning is clear enough. The successor of <code>a - b</code> is <code>(a + 1) - b</code>. Also, note that the first line expresses our intent more clearly - take a pair and return another pair whose values are derived from the original pair. The second line is just an uncurried version of the first.</p>
+<p>What else? Right, predecessor. Here we go:</p>
+<h3 id="predecessor-1">Predecessor</h3>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>P&#39; = λ p → (λ z → z (p T) (S (p F)))
+</span><span>   = λ p z → z (p T) (S (p F))
+</span></code></pre>
+<p>Pretty much the same as above. By the way - would <code>λ p z → z (P (p T)) (p F)</code> be a valid definition for <code>P'</code>? <em>(Hint: consider what happens when the first element of the pair is <code>0</code>)</em></p>
+<h3 id="addition-1">Addition</h3>
+<p><code>(a - b) + (c - d) = (a + c) - (b + d)</code>, so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>ADD = λ p q → (λ z → z ((p T) S (q T)) ((p F) S (q F)))
+</span><span>    = λ p q λ z → z ((p T) S (q T)) ((p F) S (q F))
+</span></code></pre>
+<h3 id="subtraction-1">Subtraction</h3>
+<p>Similar logic. <code>(a - b) - (c - d) = (a - c) - (b - d)</code>, so:</p>
+<pre style="background-color:#fcf0ca;color:#282828aa;"><code><span>SUB = λ p q → (λ z → z ((p T) P (q T)) ((p F) P (q F)))
+</span><span>    = λ p q λ z → z ((p T) P (q T)) ((p F) P (q F))
+</span></code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>The above was a brief introduction to the lambda calculus. We haven't touched upon some other interesting topics, like how lists are represented in the lambda calculus, and how one can write functions to operate on such lists. More on this to come!</p>
+<h2 id="reference">Reference</h2>
+<p>Raúl Rojas wrote a beautiful <a href="http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf">paper</a> back in 1997 introducing the <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus</a>. The paper explained the <strong>untyped lambda calculus</strong> from first principles in very plain language and was the only text that really made me understand the basics. This blog post began as a collection of notes to accompany the paper, and grew as I added in insights I had while trying to understand the paper, as well as solutions to a couple of the easier problems posed at the end.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

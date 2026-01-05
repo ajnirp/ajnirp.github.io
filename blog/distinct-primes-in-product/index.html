@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rohan Prinja</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata"> -->
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Leetcode #2521: Distinct Prime Factors of Product of Array</h1>
+
+<p class=post-date>Jan 04 2026</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/distinct-primes-in-product/#problem-statement">Problem statement</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/distinct-primes-in-product/#a-first-attempt">A first attempt</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/distinct-primes-in-product/#doing-better">Doing better</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/distinct-primes-in-product/#the-sieve-of-eratosthenes">The sieve of Eratosthenes</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/distinct-primes-in-product/#optimization-skipping-a-few-iterations">Optimization: skipping a few iterations</a>
+              </li>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/distinct-primes-in-product/#closing-thoughts">Closing thoughts</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+  </ul>
+
+
+<p>A fun Leetcode problem I solved recently was <a href="https://leetcode.com/problems/distinct-prime-factors-of-product-of-array/">#2521</a>. In this blog post I'll discuss a couple of solutions to it.</p>
+<h2 id="problem-statement">Problem statement</h2>
+<p>The problem statement simply asks us to find the number of <strong>distinct prime factors</strong> in the product of the elements of an array of positive integers. So for example the product of the elements of the array <code>[1, 2, 6, 7]</code> is <code>84</code>, whose prime factors are <code>[2, 2, 3, 7]</code>, which has <code>3</code> <em>distinct</em> elements, so our answer should be <code>3</code>.</p>
+<p>The array can have at most <script type="math/tex">10,000</script> elements and each element lies between <script type="math/tex">2</script> and <script type="math/tex">1000</script>, both inclusive.</p>
+<h2 id="a-first-attempt">A first attempt</h2>
+<p>A useful observation here is that we don't even need to multiply together all the array elements. We're only trying to count the <strong>distinct prime factors</strong> of the product, so if we build up a set of prime factors for each element and union all of them together and find its size, we'd be done. This way we sidestep issues with loss of precision or numeric type overflows.</p>
+<p>We could of course get around the latter restriction by using a language like Python or a language library that supports arbitrary-precision integers, but that seems like overkill when we already have the simpler idea discussed above.</p>
+<p>How do we find the prime factors of each element of the array? My first thought was to build up a list of primes from <code>2</code> to <code>1000</code>, since that's the range the array elements lie in. Then we could check each number against the list of primes, like so:</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span style="color:#9d0006;">class </span><span style="color:#407959;">Solution</span><span>:
+</span></td></tr><tr><td>2</td><td><span>    </span><span style="color:#9d0006;">def </span><span style="color:#407959;">distinctPrimeFactors</span><span>(</span><span style="color:#282828;">self</span><span>, </span><span style="color:#282828;">nums</span><span>: List[</span><span style="color:#b57614;">int</span><span>]) -&gt; </span><span style="color:#b57614;">int</span><span>:
+</span></td></tr><tr><td>3</td><td><span>        </span><span style="color:#9d0006;">def </span><span style="color:#407959;">is_prime</span><span>(</span><span style="color:#282828;">n</span><span>):
+</span></td></tr><tr><td>4</td><td><span>            </span><span style="color:#9d0006;">return </span><span style="color:#b23c15;">not </span><span style="color:#b57614;">any</span><span style="color:#282828;">(n </span><span style="color:#b23c15;">% </span><span style="color:#282828;">i </span><span style="color:#b23c15;">== </span><span style="color:#8f3f71;">0 </span><span style="color:#9d0006;">for </span><span style="color:#282828;">i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, n))
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#282828;">PRIMES </span><span style="color:#b23c15;">= </span><span>[k </span><span style="color:#9d0006;">for </span><span>k </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, </span><span style="color:#8f3f71;">1001</span><span style="color:#282828;">) </span><span style="color:#9d0006;">if </span><span style="color:#282828;">is_prime(k)</span><span>]
+</span></td></tr><tr><td>6</td><td><span>        seen </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">set</span><span style="color:#282828;">()
+</span></td></tr><tr><td>7</td><td><span>        </span><span style="color:#9d0006;">for </span><span>num </span><span style="color:#9d0006;">in </span><span>nums:
+</span></td></tr><tr><td>8</td><td><span>            </span><span style="color:#9d0006;">for </span><span>prime </span><span style="color:#9d0006;">in </span><span style="color:#282828;">PRIMES</span><span>:
+</span></td></tr><tr><td>9</td><td><span>                </span><span style="color:#9d0006;">if </span><span>prime </span><span style="color:#b23c15;">&gt; </span><span>num:
+</span></td></tr><tr><td>10</td><td><span>                    </span><span style="color:#9d0006;">break
+</span></td></tr><tr><td>11</td><td><span>                </span><span style="color:#9d0006;">if </span><span>prime </span><span style="color:#b23c15;">not in </span><span>seen:
+</span></td></tr><tr><td>12</td><td><span>                    </span><span style="color:#9d0006;">if </span><span>num </span><span style="color:#b23c15;">% </span><span>prime </span><span style="color:#b23c15;">== </span><span style="color:#8f3f71;">0</span><span>:
+</span></td></tr><tr><td>13</td><td><span>                        </span><span style="color:#282828;">seen.add(prime)
+</span></td></tr><tr><td>14</td><td><span>        </span><span style="color:#9d0006;">return </span><span style="color:#b57614;">len</span><span style="color:#282828;">(seen)
+</span></td></tr></tbody></table></code></pre>
+<p>In this code:</p>
+<ul>
+<li>
+<p>To construct the list of primes we use a naive algorithm that simply marks a number <code>k</code> as prime if it has no integer factors in the set <script type="math/tex">\{2, 3, 4, ..., k-1\}</script>. There are faster, more sophisticated algorithms to check primality, but this is just a first attempt.</p>
+</li>
+<li>
+<p>The <code>if prime &gt; num: break</code> clause on lines 11 and 12 lets us skip pointless checks for <code>num % prime == 0</code>, which can never be true if <code>prime</code> is greater than <code>num</code>.</p>
+</li>
+</ul>
+<p>This solution passes all testcases, but the runtime looks to be suboptimal.</p>
+<figure>
+<img src="leetcode-2521-attempt1.png" alt="A first attempt at solving Leetcode #2521. The runtime only beats 21% of submissions.">
+<figcaption>A first attempt at solving Leetcode #2521. The runtime only beats 21% of submissions.</figcaption>
+</figure>
+<p>Let's analyze the runtime. I'm going to assume that the <code>%</code> (modulo) operation is constant time to simplify calculations.</p>
+<ol>
+<li>
+<p>Let's use <script type="math/tex">N</script> to denote the upper bound of each positive integer in the array (in our problem statement, this is <script type="math/tex">1000</script>. Let's also use <script type="math/tex">M</script> to denote the number of elements in our array.</p>
+</li>
+<li>
+<p>We perform <script type="math/tex">\Theta(N^2)</script> operations to compute the list of all primes up to <script type="math/tex">N</script>, because for each number <script type="math/tex">2 \le n \le N</script> we check if it's prime by iterating from <script type="math/tex">2 \le i \le n</script>.</p>
+</li>
+<li>
+<p>Then, for each number in the array we perform at most <script type="math/tex">P</script> checks, where <script type="math/tex">P</script> is the number of primes between <script type="math/tex">1</script> and <script type="math/tex">1000</script>.</p>
+</li>
+</ol>
+<p>Our total runtime is then <script type="math/tex">\Theta(N^2) + O(MP)</script>. Can we get an asymptotically faster runtime?</p>
+<h2 id="doing-better">Doing better</h2>
+<h3 id="the-sieve-of-eratosthenes">The sieve of Eratosthenes</h3>
+<p>There isn't much to refine in the approach we used for our first attempt. We'll need to try a different approach.</p>
+<p>When dealing with prime numbers it's natural to think of the <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Overview">Sieve of Eratosthenes</a>. This is an algorithm to generate all prime numbers up to a given number, in this case <script type="math/tex">1000</script>. The simplest implementation of this algorithm looks like <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode">this in pseudocode</a>.</p>
+<p>Translating this to Python, we'd have something like</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span>isPrime </span><span style="color:#b23c15;">= </span><span>[</span><span style="color:#8f3f71;">True </span><span style="color:#9d0006;">for </span><span style="color:#282828;">_ </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">)</span><span>]
+</span></td></tr><tr><td>2</td><td><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, N)</span><span>:
+</span></td></tr><tr><td>3</td><td><span>    </span><span style="color:#9d0006;">if </span><span>isPrime[i]:
+</span></td></tr><tr><td>4</td><td><span>        </span><span style="color:#9d0006;">for </span><span>j </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#b23c15;">*</span><span style="color:#282828;">i, N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">, i)</span><span>:
+</span></td></tr><tr><td>5</td><td><span>            isPrime[j] </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">False
+</span></td></tr></tbody></table></code></pre>
+<p>It turns out we can extend the sieve in a clever way — we can store the smallest prime factor for each number instead of a simple boolean value. I read about this approach in <a href="https://www.geeksforgeeks.org/dsa/prime-factor/">this GeeksForGeeks post</a>.</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span>N </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">1000  </span><span style="font-style:italic;color:#928374;"># Upper bound on primes to generate, as per the problem statement
+</span></td></tr><tr><td>2</td><td><span>smallestPrimeFactor </span><span style="color:#b23c15;">= </span><span>[i </span><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">)</span><span>]
+</span></td></tr><tr><td>3</td><td><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, N)</span><span>:
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[i] </span><span style="color:#b23c15;">== </span><span>i:  </span><span style="font-style:italic;color:#928374;"># prime!
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#9d0006;">for </span><span>j </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#b23c15;">*</span><span style="color:#282828;">i, N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">, i)</span><span>:
+</span></td></tr><tr><td>6</td><td><span>            </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[j] </span><span style="color:#b23c15;">== </span><span>j:
+</span></td></tr><tr><td>7</td><td><span>                smallestPrimeFactor[j] </span><span style="color:#b23c15;">= </span><span>i
+</span></td></tr></tbody></table></code></pre>
+<p>Compare this code to the previous code and notice the extra <code>if</code> condition on line 6. Why do we need it? <code>smallestPrimeFactor[j] != j</code> means that in previous iteration, a smaller value of <code>i</code> overwrote that particular value of <code>j</code>. And if that was the case, then we don't want to overwrite that value with this current, larger value of <code>i</code>.</p>
+<p>Fair enough. But why store the smallest prime factor for each number at all? Because it gives us a quick way to factorize any number lying between <script type="math/tex">1</script> and <script type="math/tex">N</script>:</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span style="font-style:italic;color:#928374;"># Returns the prime factorization of `num` in sorted ascending order.
+</span></td></tr><tr><td>2</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">factorize</span><span>(</span><span style="color:#282828;">num</span><span>: </span><span style="color:#b57614;">int</span><span>, </span><span style="color:#282828;">smallestPrimeFactor</span><span>: </span><span style="color:#b57614;">list</span><span>[</span><span style="color:#b57614;">int</span><span>]) -&gt; </span><span style="color:#b57614;">list</span><span>[</span><span style="color:#b57614;">int</span><span>]:
+</span></td></tr><tr><td>3</td><td><span>    prime_factors </span><span style="color:#b23c15;">= </span><span>[]
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">while </span><span>num </span><span style="color:#b23c15;">&gt; </span><span style="color:#8f3f71;">1</span><span>:
+</span></td></tr><tr><td>5</td><td><span>        prime </span><span style="color:#b23c15;">= </span><span>smallestPrimeFactor[num]
+</span></td></tr><tr><td>6</td><td><span>        </span><span style="color:#282828;">prime_factors.append(prime)
+</span></td></tr><tr><td>7</td><td><span>        num </span><span style="color:#b23c15;">//= </span><span>prime
+</span></td></tr><tr><td>8</td><td><span>    </span><span style="color:#9d0006;">return </span><span>prime_factors
+</span></td></tr></tbody></table></code></pre>
+<p>It's straightforward to extend this function to instead dump all prime factors for a given number into a set external to the function. When we're done calling this function for every number in the array, we will have a set consisting of all of the distinct prime factors of the product of the entire array!</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span>distinctPrimes </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">set</span><span style="color:#282828;">()
+</span></td></tr><tr><td>2</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">factorizeAndUpdateDistinctSet</span><span>(</span><span style="color:#282828;">num</span><span>: </span><span style="color:#b57614;">int</span><span>, </span><span style="color:#282828;">smallestPrimeFactor</span><span>: </span><span style="color:#b57614;">list</span><span>[</span><span style="color:#b57614;">int</span><span>], </span><span style="color:#282828;">distinctPrimes</span><span>: </span><span style="color:#b57614;">set</span><span>[</span><span style="color:#b57614;">int</span><span>]):
+</span></td></tr><tr><td>3</td><td><span>    </span><span style="color:#9d0006;">while </span><span>num </span><span style="color:#b23c15;">&gt; </span><span style="color:#8f3f71;">1</span><span>:
+</span></td></tr><tr><td>4</td><td><span>        prime </span><span style="color:#b23c15;">= </span><span>smallestPrimeFactor[num]
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#282828;">distinctPrimes.add(prime)
+</span></td></tr><tr><td>6</td><td><span>        num </span><span style="color:#b23c15;">//= </span><span>prime
+</span></td></tr></tbody></table></code></pre>
+<p>And putting it all together, we have a working solution:</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span>N </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">1000
+</span></td></tr><tr><td>2</td><td><span>smallestPrimeFactor </span><span style="color:#b23c15;">= </span><span>[i </span><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">)</span><span>]
+</span></td></tr><tr><td>3</td><td><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">)</span><span>:
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[i] </span><span style="color:#b23c15;">== </span><span>i:  </span><span style="font-style:italic;color:#928374;"># prime!
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#9d0006;">for </span><span>j </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#b23c15;">*</span><span style="color:#282828;">i, N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">, i)</span><span>:
+</span></td></tr><tr><td>6</td><td><span>            </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[j] </span><span style="color:#b23c15;">== </span><span>j:
+</span></td></tr><tr><td>7</td><td><span>                smallestPrimeFactor[j] </span><span style="color:#b23c15;">= </span><span>i
+</span></td></tr><tr><td>8</td><td><span>
+</span></td></tr><tr><td>9</td><td><span>distinctPrimes </span><span style="color:#b23c15;">= </span><span style="color:#b57614;">set</span><span style="color:#282828;">()
+</span></td></tr><tr><td>10</td><td><span style="color:#9d0006;">def </span><span style="color:#407959;">factorizeAndUpdateDistinctSet</span><span>(</span><span style="color:#282828;">num</span><span>, </span><span style="color:#282828;">smallestPrimeFactor</span><span>, </span><span style="color:#282828;">distinctPrimes</span><span>):
+</span></td></tr><tr><td>11</td><td><span>    </span><span style="color:#9d0006;">while </span><span>num </span><span style="color:#b23c15;">&gt; </span><span style="color:#8f3f71;">1</span><span>:
+</span></td></tr><tr><td>12</td><td><span>        prime </span><span style="color:#b23c15;">= </span><span>smallestPrimeFactor[num]
+</span></td></tr><tr><td>13</td><td><span>        </span><span style="color:#282828;">distinctPrimes.add(prime)
+</span></td></tr><tr><td>14</td><td><span>        num </span><span style="color:#b23c15;">//= </span><span>prime
+</span></td></tr><tr><td>15</td><td><span>
+</span></td></tr><tr><td>16</td><td><span style="color:#9d0006;">for </span><span>num </span><span style="color:#9d0006;">in </span><span>nums:
+</span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#282828;">factorizeAndUpdateDistinctSet(num, smallestPrimeFactor, distinctPrimes)
+</span></td></tr><tr><td>18</td><td><span style="color:#9d0006;">return </span><span style="color:#b57614;">len</span><span style="color:#282828;">(distinctPrimes)
+</span></td></tr></tbody></table></code></pre>
+<p>...and it's much faster than before!</p>
+<figure>
+<img src="leetcode-2521-attempt2.png" alt="Our runtime now beats 92% of all submissions.">
+<figcaption>Our runtime now beats 92% of all submissions.</figcaption>
+</figure>
+<p>Let's analyze the runtime for this algorithm. Again, I'm going to assume that integer division (<code>//</code>) is constant time to simplify calculations. Again, not true, but interestingly, integer division is about as fast as the modulo operation is, so we're making the "same" deliberate error when comparing these two algorithms.</p>
+<ol>
+<li>
+<p>In the phase where we compute the smallest prime factor for each number, we update each element of the <code>smallestPrimeFactor</code> array at most once. So that's <script type="math/tex">\Theta(N)</script>, because that's how many elements the array has.</p>
+</li>
+<li>
+<p>Next, we factorize each member of the array, spending <script type="math/tex">O(Q)</script> time on each, where <script type="math/tex">Q</script> is the <em>maximum</em> number of not-necessarily-distinct prime factors that any element of the array has. It would be nice if we could get a not-too-coarse upper bound on <script type="math/tex">Q</script>, to keep things simple. As it happens, we can! To get as a high value as possible for the number of not-necessarily-distinct prime factors of a number, we can just keep multiplying by the smallest prime number there is, <script type="math/tex">2</script>. Notice how <script type="math/tex">512 = 2^9</script> has 9 not-necessarily-distinct prime factors, and so we can confidently say that no number under <script type="math/tex">1000</script> has more than 10 not-necessarily-distinct prime factors.</p>
+</li>
+<li>
+<p>In general, a nice not-too-coarse upper bound for <script type="math/tex">Q</script> would be <script type="math/tex">\log_{2}(N)</script> And so our running time for the factorization phase is <script type="math/tex">\Theta(N\log_{2}(N))</script>.</p>
+</li>
+</ol>
+<p>So our total runtime for this algorithm is <script type="math/tex">\Theta\log_2{N}</script>. Much better than our earlier runtime!</p>
+<h3 id="optimization-skipping-a-few-iterations">Optimization: skipping a few iterations</h3>
+<p>Every time we encounter a prime number, we "cross out" (set the corresponding index in <code>smallestPrimeFactor</code>) all of its multiples. To do so we'd move the index <script type="math/tex">j</script> from <script type="math/tex">2i</script> all the way up to <script type="math/tex">N+1</script> (upper bound exclusive) by steps of <script type="math/tex">i</script>, where <script type="math/tex">N</script> is the upper bound on primes that we want to generate.</p>
+<p>But there's a nice optimization available to us. Consider a prime number <script type="math/tex">i</script>. By the time our iteration variable <script type="math/tex">j</script> reaches <script type="math/tex">i</script>, we have already processed <em>every</em> multiple of <em>every</em> prime that was smaller than <script type="math/tex">i</script>. For example:</p>
+<ul>
+<li>we had already processed every multiple of <script type="math/tex">2</script>, including <script type="math/tex">2i</script></li>
+<li>we had already processed every multiple of <script type="math/tex">3</script>, including <script type="math/tex">3i</script></li>
+<li>...and so on</li>
+</ul>
+<p>To be precise, by the time <script type="math/tex">j</script> reaches <script type="math/tex">i</script>, we have already processed every multiple of <script type="math/tex">i</script> smaller than <script type="math/tex">i \times i</script>. We know for a fact that we haven't already processed <script type="math/tex">i \times i</script> itself, because <script type="math/tex">i</script> is prime and therefore would not be part of any of the previous iterations.</p>
+<p>And so we can start our iteration from <script type="math/tex">i^2</script> instead of <script type="math/tex">2i</script>, skipping a few <code>if</code> checks that would always have failed (because <code>smallestPrimeFactor[i]</code> would've been set to something other than <code>i</code> by that point).</p>
+<pre data-linenos data-lang="python" style="background-color:#fcf0ca;color:#282828aa;" class="language-python "><code class="language-python" data-lang="python"><table><tbody><tr><td>1</td><td><span>N </span><span style="color:#b23c15;">= </span><span style="color:#8f3f71;">1000  </span><span style="font-style:italic;color:#928374;"># as per the problem statement
+</span></td></tr><tr><td>2</td><td><span>smallestPrimeFactor </span><span style="color:#b23c15;">= </span><span>[i </span><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">)</span><span>]
+</span></td></tr><tr><td>3</td><td><span style="color:#9d0006;">for </span><span>i </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(</span><span style="color:#8f3f71;">2</span><span style="color:#282828;">, N)</span><span>:
+</span></td></tr><tr><td>4</td><td><span>    </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[i] </span><span style="color:#b23c15;">== </span><span>i:  </span><span style="font-style:italic;color:#928374;"># prime!
+</span></td></tr><tr><td>5</td><td><span>        </span><span style="color:#9d0006;">for </span><span>j </span><span style="color:#9d0006;">in </span><span style="color:#b57614;">range</span><span style="color:#282828;">(i</span><span style="color:#b23c15;">*</span><span style="color:#282828;">i, N</span><span style="color:#b23c15;">+</span><span style="color:#8f3f71;">1</span><span style="color:#282828;">, i)</span><span>:
+</span></td></tr><tr><td>6</td><td><span>            </span><span style="color:#9d0006;">if </span><span>smallestPrimeFactor[j] </span><span style="color:#b23c15;">== </span><span>j:
+</span></td></tr><tr><td>7</td><td><span>                smallestPrimeFactor[j] </span><span style="color:#b23c15;">= </span><span>i
+</span></td></tr></tbody></table></code></pre>
+<h3 id="closing-thoughts">Closing thoughts</h3>
+<ul>
+<li>
+<p>Notice how we use linear space in the sieve method: we allocate memory upfront for every number from <script type="math/tex">0</script> to <script type="math/tex">N</script> to store each number's smallest prime factor. This works well enough when our input is quite bounded as in the problem statement, with a maximum value of only <script type="math/tex">1000</script>.</p>
+</li>
+<li>
+<p>In both the naive approach and the sieve approach, we perform some precomputation. In the first method, we precomputed all primes up to <script type="math/tex">1000</script>. In the second method, we precomputed the smallest prime factor for every number up to <script type="math/tex">1000</script>. Logic like this should ideally live in the constructor (<code>def __init__(self):</code>) so that we do it only once and then reuse the solver object to answer queries for several inputs.</p>
+</li>
+</ul>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

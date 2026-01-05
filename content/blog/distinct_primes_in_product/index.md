@@ -168,7 +168,7 @@ But there's a nice optimization available to us. Consider a prime number {{ kate
 
 To be precise, by the time {{ katex(body="j" )}} reaches {{ katex(body="i" )}}, we have already processed every multiple of {{ katex(body="i" )}} smaller than {{ katex(body="i \times i" )}}. We know for a fact that we haven't already processed {{ katex(body="i \times i" )}} itself, because {{ katex(body="i" )}} is prime and therefore would not be part of any of the previous iterations.
 
-And so we can start our iteration from {{ katex(body="i^2" )}} instead of {{ katex(body="2i" )}}, skipping a few `if` checks that would always have failed (because `smallestPrimeFactor[i]` would've been something ).
+And so we can start our iteration from {{ katex(body="i^2" )}} instead of {{ katex(body="2i" )}}, skipping a few `if` checks that would always have failed (because `smallestPrimeFactor[i]` would've been set to something other than `i` by that point).
 
 ```python,linenos
 N = 1000  # as per the problem statement

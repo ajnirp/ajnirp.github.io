@@ -7,7 +7,7 @@ In this blog post I revisit a fun Project Euler problem. The solution I detailed
 
 I translated the approach discussed in the above comments to Python, and got:
 
-```python
+```python,linenos
 # generators for pentagonal and hexagonal numbers
 def pentagonal():
     i = 1
@@ -54,4 +54,4 @@ It turns out that we don't need to! A nice insight from the [previous blog post]
 
 We can read this property in reverse: given the {{ katex(body="h^{th}") }} hexagonal number, there always exists a corresponding {{ katex(body="t = 2h-1") }} such that the {{ katex(body="t^{th}") }} triangular number equals it. In other words, every hexagonal number is a triangle number. Which means that it's enough to check for numbers that are both hexagonal and pentagonal. The "triangle" requirement will automatically be satisfied 🙂.
 
-This approach is much more readable, but is it more performant? As it turns out, this approach runs faster on my machine than the approach described in my previous post! It's not instantly obvious to me why, without inspecting the generated CPython bytecode, but I speculate that it has to do with the expensiveness of computing the floating-point square root of a number.
+This approach is much more readable than the one in the previous blog post, but is it more performant? As it turns out, this approach runs faster on my machine than the previous approach! It's not instantly obvious to me why, without inspecting the generated CPython bytecode, but I speculate that it has to do with the expensiveness of computing the floating-point square root of a number.

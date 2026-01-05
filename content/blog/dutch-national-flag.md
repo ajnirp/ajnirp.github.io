@@ -30,9 +30,9 @@ At the end of our loop iterations, no element should remain unclassified, which 
 
 Knowing that we want our invariants . Before the iteration starts, assuming the array is 0-indexed, the indices should be initialized as follows:
 
-* i = 0. Initially, nothing is less than the pivot - we haven’t seen anything.
-* j = 0. everything in the range [0, len(array)) is unclassified.
-* k = len(array). Nothing is greater than the pivot because we haven’t seen anything.
+* `i = 0`. Initially, nothing is less than the pivot - we haven’t seen anything.
+* `j = 0`. everything in the range `[0, len(array))` is unclassified.
+* `k = len(array)`. Nothing is greater than the pivot because we haven’t seen anything.
 
 The hard part is to figure out what goes in the loop body. Remember, whatever we do in a single loop iteration, we must end with all invariants remaining true. At the same time, we want to make progress. In our formulation, progress means either incrementing `j` or decrementing `i`.
 

@@ -10,10 +10,13 @@ build_search_index = false
 [markdown]
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
-highlighting = true
-highlight_theme = "gruvbox-light"
 render_emoji = true
 smart_punctuation = false
+insert_anchor_links = "right"
+
+[markdown.highlighting]
+error_on_missing_language = false
+theme = "gruvbox-light-medium"
 
 [extra]
 # Put all your custom variables here

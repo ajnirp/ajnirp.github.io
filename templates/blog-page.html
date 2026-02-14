@@ -6,7 +6,7 @@
 
 <p class=post-date>{{ page.date | date(format="%b %d %Y") }}</p>
 
-{% if page.toc %}
+{% if section.toc %}
   <h2>Table of contents</h2>
   <ul>
   {% for h1 in page.toc %}

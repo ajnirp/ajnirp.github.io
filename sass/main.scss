@@ -19,6 +19,7 @@
 
 // Gruvbox colors. Selectively copied from https://github.com/morhetz/gruvbox.
 // Gruvbox uses the MIT/X11 license: https://en.wikipedia.org/wiki/MIT_License#X11_License
+$aqua: #427b58;
 $bg: #fbf1c7;
 $bg2: #bdae93;
 $blue: #458588;
@@ -33,7 +34,8 @@ $purple2: #8f3f71;
 $red1: #cc241d;
 $red2: #9d0006;
 
-$background: #fafafa;
+// $background: #fafafa;
+$background: #fff;
 $text-color: $fg;
 $highlight: #abe7ae;
 $highlight-border: #415c42;
@@ -69,33 +71,37 @@ h1,h2,h3 {
 
 h1 {
     color: $red1;
+    // color: $blue;
     font-size: calc(1.5rem + 1vw);
 }
 
 h2 {
-    color: $purple2;
-    font-size: calc(1.1rem + 0.75vw);
+    // color: $purple2;
+    color: $aqua;
+    font-size: calc(1.1rem + 0.6vw);
 }
 
 h3 {
-    color: $purple1;
-    font-size: calc(1rem + 0.5vw);
+    // color: $purple1;
+    color: $aqua;
+    font-size: calc(1.1rem + 0.6vw);
 }
 
 a {
-    color: $orange;
+    color: $blue;
     display: inline-block;
     font-weight: bold;
     text-decoration: none;
 }
 
 a:hover {
-    background-color: $bg;
+    // background-color: $bg;
     border-radius: 5px;
+    text-decoration: underline;
 }
 
 #header {
-    background-color: #fafafa;
+    background-color: $background;
     border-bottom: 1px solid;
     border-color: $text-color;
 
@@ -114,15 +120,13 @@ a:hover {
     z-index: 999;
 
     a {
-        // text-decoration: none;
-        // color: $violet;
-        color: $purple2;
+        color: $blue2;
         padding: 10px;
     }
 }
 
 #home a {
-    color: $green2;
+    color: $blue2;
 }
 
 #header-links {
@@ -163,13 +167,17 @@ pre {
     font-size: $code-font-size;
     padding: 1rem 2rem 1rem 1rem;
     margin: 0 auto;
-    overflow: scroll;
+    // overflow: scroll;
+}
+
+pre span .giallo-ln {
+    padding-right: 1rem;
 }
 
 /* The line numbers already provide some kind of left/right padding */
-// pre[data-linenos] {
-//   padding: 1rem 0;
-// }
+pre[data-linenos] {
+  padding: 1rem 0;
+}
 pre table td {
   padding: 0;
   padding-right: 1rem;
@@ -229,3 +237,6 @@ figcaption {
     text-align: center;
     color: $gray;
 }
+
+h1 .zola-anchor, h2 .zola-anchor, h3 .zola-anchor { visibility: hidden; }
+h1:hover .zola-anchor, h2:hover .zola-anchor, h3:hover .zola-anchor { visibility: visible; }

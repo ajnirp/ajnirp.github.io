@@ -6,7 +6,7 @@ toc = false
 
 ## Chained assignment has a footgun
 
-In Python, chained assignment has a subtle (if well-known) footgun. The following function returns `True`:
+In Python, chained assignment has a subtle (though well-known) footgun. The following function returns `True`:
 
 ```python,linenos
 def example():
@@ -73,9 +73,9 @@ So now `a` refers to the newly created list.
 
 * `STORE_FAST 1`
 
-The next instruction is `STORE 1`. Again, we pop the stack but this time we store a reference to the `1`-th varname, which is the variable `b`.
+The next instruction is `STORE 1`. Again, we pop the stack but this time we store the popped value — which is a pointer to the above list — in the `1`-th varname, which is the variable `b`.
 
-So now `b` refers to the newly created list.
+So now `b` refers to the _same_ list object as before.
 
 ## Doing it the right way
 

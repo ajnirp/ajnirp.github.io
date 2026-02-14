@@ -57,21 +57,21 @@ At this point, we're fairly close to understanding what chained assignment looks
 
 Let's go over the instructions for line **4** (`a = b = []`) one-by-one.
 
-### `BUILD_LIST 0`
+* `BUILD_LIST 0`
 
 `BUILD_LIST N` pops `N` items from the stack, turns them into a list, and then pushes a **C pointer** to the resultant list onto the evaluation stack ([see code](https://github.com/python/cpython/blob/fdbc135f9cf57599cca8aeeed947d0b736fdb197/Python/executor_cases.c.h#L8146)). To precise, it creates a `PyListObject`, casts it to a `PyObject`, and then returns it ([see code](https://github.com/python/cpython/blob/fdbc135f9cf57599cca8aeeed947d0b736fdb197/Objects/listobject.c#L3269-L3287)). In this case, we have `BUILD_LIST 0` which creates an empty list and pushes it onto the stack.
 
-### `COPY 0`
+* `COPY 0`
 
 `COPY N` copies the `N`-th last item from the stack and pushes it onto the stack. In this example we have `COPY 1` which means we copy the 1-th last item (i.e. the item at the top, the reference to the list) and push it to the top of the stack. So we now have two references to the same list on the stack.
 
-### `STORE_FAST 0`
+* `STORE_FAST 0`
 
 `STORE_FAST N` pops the stack and stores the popped value into the `N`-th varname. In this example we have `STORE_FAST 0`. What's the `0`-th varname? Recall that `example.__code__.co_varnames` was `(a, b)`. So the `0`-th varname is just `a`, which the `dis.dis()` function has already helpfully identified for us!
 
 So now `a` refers to the newly created list.
 
-### `STORE_FAST 1`
+* `STORE_FAST 1`
 
 The next instruction is `STORE 1`. Again, we pop the stack but this time we store a reference to the `1`-th varname, which is the variable `b`.
 

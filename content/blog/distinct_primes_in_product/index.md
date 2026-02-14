@@ -49,23 +49,52 @@ This solution passes all testcases, but the runtime looks to be suboptimal.
 <figcaption>A first attempt at solving Leetcode #2521. The runtime only beats 21% of submissions.</figcaption>
 </figure>
 
-Let's analyze the runtime. I'm going to assume that the `%` (modulo) operation is constant time to simplify calculations.
+Let's analyze the runtime. I'm going to assume that the `%` (modulo) operation is <a href="#constant-footnote"><span id="constant">constant time</span></a> to simplify calculations. 
 
-1. Let's use {{ katex(body="N" )}} to denote the upper bound of each positive integer in the array (in our problem statement, this is {{ katex(body="1000" )}}. Let's also use {{ katex(body="M" )}} to denote the number of elements in our array.
+1. Let's use {{ katex(body="N") }} to denote the upper bound of each positive integer in the array. In our problem statement, this is {{ katex(body="1000") }}. Let's also use {{ katex(body="M") }} to denote the number of elements in our array.
 
-1. We perform {{ katex(body="\Theta(N^2)" )}} operations to compute the list of all primes up to {{ katex(body="N" )}}, because for each number {{ katex(body="2 \le n \le N" )}} we check if it's prime by iterating from {{ katex(body="2 \le i \le n" )}}.
+1. We perform {{ katex(body="\Theta(N^2)") }} operations to compute the list of all primes up to {{ katex(body="N") }}, because for each number {{ katex(body="2 \le n \le N") }} we check if it's prime by iterating from {{ katex(body="2 \le i \le n") }}.
 
-1. Then, for each number in the array we perform at most {{ katex(body="P" )}} checks, where {{ katex(body="P" )}} is the number of primes between {{ katex(body="1" )}} and {{ katex(body="1000" )}}.
+1. Then, for each number in the array we perform at most {{ katex(body="P") }} checks, where {{ katex(body="P") }} is the number of primes between {{ katex(body="1") }} and {{ katex(body="1000") }}.
 
-Our total runtime is then {{ katex(body="\Theta(N^2) + O(MP)" )}}. Can we get an asymptotically faster runtime?
+Our total runtime is then {{ katex(body="\Theta(N^2) + O(MP)") }}. Note that {{ katex(body="P") }} grows slower than {{ katex(body="N") }}. For {{ katex(body="N = 1000") }}, {{ katex(body="P") }} is just {{ katex(body="168") }}.
 
-## Doing better
+This {{ katex(body="\Theta(N^2)") }} term is not great. Can we get a faster runtime?
 
-### The sieve of Eratosthenes
+One thing we can do is: when checking if an integer {{ katex(body="n") }} is prime, we can save some time by running {{ katex(body="k") }} from {{ katex(body="2") }} to {{ katex(body="\sqrt(n)") }} instead of {{ katex(body="n-1") }}.
 
-There isn't much to refine in the approach we used for our first attempt. We'll need to try a different approach.
+```python,linenos
+class Solution:
+    def distinctPrimeFactors(self, nums: List[int]) -> int:
+        def is_prime(n):
+            upper_bound = 1 + math.ceil(math.sqrt(n)) if n > 2 else n
+            return not any(n % i == 0 for i in range(2, upper_bound))
+        PRIMES = [k for k in range(2, 1001) if is_prime(k)]
+        seen = set()
+        for num in nums:
+            for prime in PRIMES:
+                if prime > num:
+                    break
+                if prime not in seen:
+                    if num % prime == 0:
+                        seen.add(prime)
+        return len(seen)
+```
 
-When dealing with prime numbers it's natural to think of the [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Overview). This is an algorithm to generate all prime numbers up to a given number, in this case {{ katex(body="1000") }}. The simplest implementation of this algorithm looks like [this in pseudocode](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode).
+We now iterate up to the ceiling of the square root of {{ katex(body="n") }}. The edge case to consider is {{ katex(body="n=2") }}. If we did that for {{ katex(body="n=2") }} we'd end up with an empty range, so instead we iterate up to {{ katex(body="n") }} in that case.
+
+Running this, we get:
+
+<figure>
+<img src="leetcode-2521-attempt1.5.png" alt="We're marginally better than before, but this is still pretty inefficient.">
+<figcaption>We're marginally better than before, but this is still pretty inefficient.</figcaption>
+</figure>
+
+## A different approach: the sieve of Eratosthenes
+
+There isn't much else to refine in the above approach. We'll need to try something else.
+
+A faster way to generate prime numbers is the [sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Overview). This is an algorithm to generate all prime numbers up to a given number, in this case {{ katex(body="1000") }}. The simplest implementation of this algorithm looks like [this in pseudocode](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Pseudocode).
 
 Translating this to Python, we'd have something like
 
@@ -90,9 +119,9 @@ for i in range(2, N):
                 smallestPrimeFactor[j] = i
 ```
 
-Compare this code to the previous code and notice the extra `if` condition on line 6. Why do we need it? `smallestPrimeFactor[j] != j` means that in previous iteration, a smaller value of `i` overwrote that particular value of `j`. And if that was the case, then we don't want to overwrite that value with this current, larger value of `i`.
+Compare this code to the previous code and notice the extra `if` condition on line 6. Why do we need it? `smallestPrimeFactor[j] != j` means that in a previous iteration, for a smaller value of `i`, we had updated `smallestPrimeFactor[j]`. And if that was the case, then we don't want to overwrite _that_ value with this current, larger value of `i`.
 
-Fair enough. But why store the smallest prime factor for each number at all? Because it gives us a quick way to factorize any number lying between {{ katex(body="1" )}} and {{ katex(body="N" )}}:
+Fair enough. But why store the smallest prime factor for each number at all? Because it gives us a quick way to factorize any number lying between {{ katex(body="1") }} and {{ katex(body="N") }}:
 
 ```python,linenos
 # Returns the prime factorization of `num` in sorted ascending order.
@@ -150,25 +179,30 @@ Let's analyze the runtime for this algorithm. Again, I'm going to assume that in
 
 1. In the phase where we compute the smallest prime factor for each number, we update each element of the `smallestPrimeFactor` array at most once. So that's {{ katex(body="\Theta(N)") }}, because that's how many elements the array has.
 
-1. Next, we factorize each member of the array, spending {{ katex(body="O(Q)") }} time on each, where {{ katex(body="Q") }} is the _maximum_ number of not-necessarily-distinct prime factors that any element of the array has. It would be nice if we could get a not-too-coarse upper bound on {{ katex(body="Q" )}}, to keep things simple. As it happens, we can! To get as a high value as possible for the number of not-necessarily-distinct prime factors of a number, we can just keep multiplying by the smallest prime number there is, {{ katex(body="2" )}}. Notice how {{ katex(body="512 = 2^9") }} has 9 not-necessarily-distinct prime factors, and so we can confidently say that no number under {{ katex(body="1000" )}} has more than 10 not-necessarily-distinct prime factors.
+1. Next, we factorize each member of the array, spending {{ katex(body="O(Q)") }} time on each, where {{ katex(body="Q") }} is the _maximum_ number of not-necessarily-distinct prime factors that any element of the array has. It would be nice if we could get a not-too-coarse upper bound on {{ katex(body="Q") }}, to keep things simple. As it happens, we can! To get as a high value as possible for the number of not-necessarily-distinct prime factors of a number, we can just keep multiplying by the smallest prime number there is, {{ katex(body="2") }}. Notice how {{ katex(body="512 = 2^9") }} has 9 not-necessarily-distinct prime factors, and so we can confidently say that no number under {{ katex(body="1000") }} has more than 10 not-necessarily-distinct prime factors.
 
 1. In general, a nice not-too-coarse upper bound for {{ katex(body="Q") }} would be {{ katex(body="\log_{2}(N)") }} And so our running time for the factorization phase is {{ katex(body="\Theta(N\log_{2}(N))") }}.
 
-So our total runtime for this algorithm is {{ katex(body="\Theta\log_2{N}") }}. Much better than our earlier runtime!
+So our total runtime for this algorithm is {{ katex(body="\Theta(N) + \Theta(N\log_2{N})") }}, which is just {{ katex(body="\Theta(N\log_2{N})") }}. Much better than our earlier runtime!
+
+Our space complexity is {{ katex(body="\Theta(N) + O(MQ)") }}:
+
+* The first term {{ katex(body="\Theta(N)") }} comes from the `smallestPrimeFactor` array.
+* The second term {{ katex(body="O(MQ)") }} from the factorization step, because each of the {{ katex(body="M") }} array elements has at most {{ katex(body="Q") }} not-necessarily-distinct prime factors. Note that at each step we check membership and then insert into the Python set, and the _average case_ complexity (not worst case!) of both operations doing so is constant-time. For more details, please see the [Python wiki](https://wiki.python.org/moin/TimeComplexity).
 
 ### Optimization: skipping a few iterations
 
-Every time we encounter a prime number, we "cross out" (set the corresponding index in `smallestPrimeFactor`) all of its multiples. To do so we'd move the index {{ katex(body="j" )}} from {{ katex(body="2i" )}} all the way up to {{ katex(body="N+1" )}} (upper bound exclusive) by steps of {{ katex(body="i" )}}, where {{ katex(body="N" )}} is the upper bound on primes that we want to generate.
+Every time we encounter a prime number, we "cross out" (set the corresponding index in `smallestPrimeFactor`) all of its multiples. To do so we'd move the index {{ katex(body="j") }} from {{ katex(body="2i") }} all the way up to {{ katex(body="N+1") }} (upper bound exclusive) by steps of {{ katex(body="i") }}, where {{ katex(body="N") }} is the upper bound on primes that we want to generate.
 
-But there's a nice optimization available to us. Consider a prime number {{ katex(body="i" )}}. By the time our iteration variable {{ katex(body="j" )}} reaches {{ katex(body="i" )}}, we have already processed _every_ multiple of _every_ prime that was smaller than {{ katex(body="i" )}}. For example:
+But there's a nice optimization available to us. Consider a prime number {{ katex(body="i") }}. By the time our iteration variable {{ katex(body="j") }} reaches {{ katex(body="i") }}, we have already processed _every_ multiple of _every_ prime that was smaller than {{ katex(body="i") }}. For example:
 
-* we had already processed every multiple of {{ katex(body="2" )}}, including {{ katex(body="2i" )}}
-* we had already processed every multiple of {{ katex(body="3" )}}, including {{ katex(body="3i" )}}
+* we had already processed every multiple of {{ katex(body="2") }}, including {{ katex(body="2i") }}
+* we had already processed every multiple of {{ katex(body="3") }}, including {{ katex(body="3i") }}
 * ...and so on
 
-To be precise, by the time {{ katex(body="j" )}} reaches {{ katex(body="i" )}}, we have already processed every multiple of {{ katex(body="i" )}} smaller than {{ katex(body="i \times i" )}}. We know for a fact that we haven't already processed {{ katex(body="i \times i" )}} itself, because {{ katex(body="i" )}} is prime and therefore would not be part of any of the previous iterations.
+To be precise, by the time {{ katex(body="j") }} reaches {{ katex(body="i") }}, we have already processed every multiple of {{ katex(body="i") }} smaller than {{ katex(body="i \times i") }}. We know for a fact that we haven't already processed {{ katex(body="i \times i") }} itself, because {{ katex(body="i") }} is prime and therefore would not be part of any of the previous iterations.
 
-And so we can start our iteration from {{ katex(body="i^2" )}} instead of {{ katex(body="2i" )}}, skipping a few `if` checks that would always have failed (because `smallestPrimeFactor[i]` would've been set to something other than `i` by that point).
+And so we can start our iteration from {{ katex(body="i^2") }} instead of {{ katex(body="2i") }}, skipping a few `if` checks that would always have failed (because `smallestPrimeFactor[i]` would've been set to something other than `i` by that point).
 
 ```python,linenos
 N = 1000  # as per the problem statement
@@ -182,6 +216,10 @@ for i in range(2, N):
 
 ### Closing thoughts
 
-* Notice how we use linear space in the sieve method: we allocate memory upfront for every number from {{ katex(body="0" )}} to {{ katex(body="N" )}} to store each number's smallest prime factor. This works well enough when our input is quite bounded as in the problem statement, with a maximum value of only {{ katex(body="1000" )}}.
+* Notice how we use linear space in the sieve method: we allocate memory upfront for every number from {{ katex(body="0") }} to {{ katex(body="N") }} to store each number's smallest prime factor. This works well enough when our input is quite bounded as in the problem statement, with a maximum value of only {{ katex(body="1000") }}.
 
-* In both the naive approach and the sieve approach, we perform some precomputation. In the first method, we precomputed all primes up to {{ katex(body="1000" )}}. In the second method, we precomputed the smallest prime factor for every number up to {{ katex(body="1000" )}}. Logic like this should ideally live in the constructor (`def __init__(self):`) so that we do it only once and then reuse the solver object to answer queries for several inputs.
+* In both the naive approach and the sieve approach, we perform some precomputation. In the first method, we precomputed all primes up to {{ katex(body="1000") }}. In the second method, we precomputed the smallest prime factor for every number up to {{ katex(body="1000") }}. Logic like this should ideally live in the constructor (`def __init__(self):`) so that we do it only once and then reuse the solver object to answer queries for several inputs.
+
+Thanks for reading!
+
+<span id="constant-footnote">[<a href="#constant">1</a>] It isn't constant time, but as it turns out, if implemented correctly, it's as fast as _other_ operations like multiplication and computing modular remainders. This allows us to simplify our runtime analysis.

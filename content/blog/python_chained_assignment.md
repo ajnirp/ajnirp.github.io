@@ -19,7 +19,7 @@ I've known of this behavior for a long time, but every once in a while it catche
 
 The most recent time I shot myself in the foot with this bug, I got curious: I know what happens at a semantic level when I write `a = b = []`, but what happens at the *bytecode level*? A quick Google search led me to the [dis module](https://docs.python.org/3/library/dis.html), which allows you to inspect disassembled [CPython](https://en.wikipedia.org/wiki/CPython) bytecode.
 
-## Show me the bytecode
+## Inspecting the bytecode
 
 Let's write a simple program in a new file `chained-assignment-example.py` using the `dis` module...
 

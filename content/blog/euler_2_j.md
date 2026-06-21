@@ -164,7 +164,7 @@ With all this in mind, we can translate the final line of the solution:
 
 into plain language as follows:
 
-<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array is less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
+<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array is <b>no longer</b> less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
 
 ## Doesn't J have a while. keyword?
 
@@ -296,6 +296,8 @@ In the interest of code golfing, this can be compressed into one line:
 ```j
 x:4%~_2++/(({:,({.+4*{:))^:(4e6>{:))^:_(0 2)
 ```
+
+There are likely better ways to solve this problem. Maybe I'll revisit this article in the future, when I know more J. For now, this is a good place to stop!
 
 ## Closing thoughts
 

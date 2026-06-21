@@ -22,7 +22,7 @@ The solution to this is straightforward in a programming language that supports 
 ```python
 def solve() -> int:
     prev, curr, result = 1, 2, 0
-    while curr < 4_000_000:
+    while curr < 4e6:
         if curr % 2 == 0:
             result += curr
         prev, curr = curr, prev + curr
@@ -33,9 +33,9 @@ print(solve())
 
 The result is `4613732`. How would we solve this problem in J?
 
-## Solving this in J
+## A direct solution
 
-Here's my solution. I'm still learning the language, so it's probably not very polished.
+Here's a direct solution. I'm still learning the language, so it's probably not very polished.
 
 ```j
 step =. monad define
@@ -43,10 +43,10 @@ delta =. (curr , 0) {~ 2 | curr =. {: y
 (delta + {. y) , curr , curr + 1 { y
 )
 
-{. (step^:(4000000 > {:))^:_ (0 1 2)
+{. (step^:(4e6 > {:))^:_ (0 1 2)
 ```
 
-This is a straightforward implementation of the problem statement. Let's dissect it, starting with `step`.
+This is a straightforward translation of the problem statement into code. Let's dissect it, starting with `step`.
 
 `step` takes as input a **3-element array representing an accumulated value and two consecutive Fibonnaci numbers**. It returns **a new accumulated value and slides the two Fibonacci numbers forward**. The new accumulated value is the same as the old one if the old second Fibonacci number was odd. Otherwise, it's increased by the old second Fibonacci number.
 
@@ -88,7 +88,7 @@ Onto the next line.
 That concludes our analysis of `step`. Nothing too fancy there. Onto the next line:
 
 ```j
-{. (step^:(4000000 > {:))^:_ (0 1 2)
+{. (step^:(4e6 > {:))^:_ (0 1 2)
 ```
 
 This line is an instance of a common J pattern `(u^:v)^:_ y`, where:
@@ -100,7 +100,7 @@ Here:
 
 * `y` is (initially) the 3-element array `0 1 2` discussed earlier.
 * `u` is the `step` function discussed earlier.
-* `v` is `(4000000 > {:)`. It's a boolean verb that checks if the last element of an array (obtained by `{:`) is less than 4 million.
+* `v` is `(4e6 > {:)`. It's a boolean verb that checks if the last element of an array (obtained by `{:`) is less than 4 million.
 
 How does this pattern work?
 
@@ -125,7 +125,7 @@ Let's discuss the pattern `(u^:v)^:_ y`. What's up with the two `^:`s and the un
 
 Side note: in J, `*:^:3 3` is not the same as `(*:^:3) 3`, which is why we added the parentheses. The former supplies an array `3 3` to the adverb `^:` and yields an unapplied verb. This behavior is not relevant here, so let's move on.
 
-Let's give our boolean function `(4000000 > {:)` a nice name, `shouldContinue`. The final line of our J solution is then:
+Let's give our boolean function `(4e6 > {:)` a nice name, `shouldContinue`. The final line of our J solution is then:
 
 ```j
 {. (step^:shouldContinue)^:_ (0 1 2)
@@ -159,7 +159,7 @@ def while_in_j(u, v, y):
 With all this in mind, we can translate the final line of the solution:
 
 ```j
-{. (step^:(4000000 > {:))^:_ (0 1 2)
+{. (step^:(4e6 > {:))^:_ (0 1 2)
 ```
 
 into plain language as follows:
@@ -188,11 +188,178 @@ solve =. {{ a =. 0 1 2 while. y > {: a do. a =. step a end. {. a }}
 
 I haven't profiled this method compared with the previous one, but if I had to hazard a guess, I suspect this `while.` would be less efficient, because the J interpreter knows how to take advantage of common patterns like `(u^:v)^:_ y`. Plus, `while.` is considered unidiomatic in J anyway.
 
+## Beating the odds
+
+The method above considers each Fibonacci number, asks if it is even, and adds it if yes. It would be nice to iterate in such a way that we skip all the odd numbers entirely. Does there exist a recurrence relation for the even Fibonacci numbers? I searched around and sure enough:
+
+{% katex(block=true) %}
+E_n = 4E_{n-1} + E_{n-2}
+{% end %}
+
+Here, {{ katex(body="E_n") }} is the n-th **even** Fibonacci number, with {{ katex(body="E_1 = 0") }} and {{ katex(body="E_2 = 2" )}}. This allows us to rewrite our `step` verb...
+
+```j
+step =. ({. + {:) , ({: , ({.@}. + 4*{:))
+```
+
+...and our `solve` verb...
+
+```j
+{. (step^:(4e6 > {.))^:_ (0 0 2)
+```
+
+...with the added bonus that `step` is now a tacit verb, meaning it makes no explicit reference to its operand!
+
+The key to understanding `step` is to recognize that it's a fork, which is a way to compose three verbs. Suppose `f`, `g` and `h` are 3 monadic verbs, and `y` is a noun. The following two lines of J code are exactly identical.
+
+```j
+(f g h) y
+(f y) g (h y)
+```
+
+In plain language:
+
+<div role="highlight">Seprately apply f to y and h to y. Use both values as operands to g.</div>
+
+In the code above:
+
+* `f` is `{. + {:` (itself a fork: add the first and last elements of an array).
+* `g` is `,` (join two values into an array).
+* `h` is itself a fork.
+  * The first two verbs are `{:` (return the last element of an array) and `,` (join two nouns into an array).
+  * The last one is `({.@}. + 4*{:)`, another fork (we're three levels deep now!).
+    * The first verb is `{.@}.` (return the second element of an array).
+    * The second is `+` (add two elements).
+    * The third is `4*{:` (multiply the last element by 4).
+
+We're doing essentially the same thing as in the first method:
+
+* unconditionally add the old "second Fibonacci number" to the accumulated value.
+* copy over the old "second Fibonacci number" to the new "first Fibonacci number".
+* compute {{ katex(body="E_n = 4E_{n-1} + E_{n-2}") }} and copy it over to the new "second Fibonacci number".
+
+Our starter value is now the array `0 0 2`.
+
+The difference from the first method is now there's no check on the even-ness of the second Fibonacci number. It's always even!
+
+## Keeping less state
+
+Do we really need to store an accumulator value at every step of the iteration?
+
+While searching around, I stumbled across this [GeeksForGeeks article](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/) which demonstrates how to write the **sum** of the first {{ katex(body="N") }} Fibonacci numbers in terms of a linear combination of a constant number of Fibonacci numbers:
+
+{% katex(block=true) %}
+\sum_{i=1}^{n} F_i = F_{n+2} - 1
+{% end %}
+
+My first thought was if we could do the same for the sum of the first {{ katex(body="N") }} even Fibonacci numbers as well. I grabbed a pen and paper, and was able to derive:
+
+{% katex(block=true) %}
+\sum_{i=1}^{n} E_i = \frac{E_{n+1} + E_n - 2}{4}
+{% end %}
+
+(If you're interested in the derivation, it's in the [appendix](#appendix).)
+
+This permits us to write our solve logic another way. Say {{ katex(body="k") }} is the last even Fibonacci number to be under 4 million. Then the sum of this number and all smaller even Fibonacci numbers is
+
+{% katex(block=true) %}
+\frac{E_{k+1} + E_k - 2}{4}
+{% end %}
+
+and so, as before, we stop our iteration once the second Fibonacci number is not less than 4 million:
+
+```j
+(step^:(4e6 > {:))^:_ (0 2)
+```
+
+Note that this time our starter value is just `0 2` — we've gotten rid of the accumulated value!
+
+The output array contains two numbers, the first being the last even Fibonacci number under 4 million, and the second being the one just after it. We apply the formula above: sum them up, subtract `2`, and divide by `4`. In J, this would be:
+
+```
+x: 4 %~ _2 + +/ (step^:(4e6 > {:))^:_ (0 2)
+```
+
+The `x:` at the beginning forces higher precision. Without it, the result renders as `4.61373e6` instead of `4613732`.
+
+Putting it all together, our third solution, and the shortest so far, is:
+
+```j
+step =. {: , ({. + 4*{:)
+x: 4 %~ _2 + +/ (step^:(4e6 > {:))^:_ (0 2)
+```
+
+Notice how the `step` definition is much shorter now. We only need to advance the two Fibonacci numbers. No bothering with the accumulated value.
+
+In the interest of code golfing, this can be compressed into one line:
+
+```j
+x:4%~_2++/(({:,({.+4*{:))^:(4e6>{:))^:_(0 2)
+```
+
 ## Closing thoughts
 
-There were some nice ideas in this otherwise straightforward implementation, but by far the most interesting one in my opinion is the idea to rephrase a `while` loop with a boolean breakout condition as an attempt to locate a fixed point of a function. This is part of the reason I love J, and languages like it. They encourage — or in some cases actively push — you to look at computational patterns in a wholly different way.
+There were some very cool ideas at play here. To list a few:
+* iteration recast as a fixed point search
+* iteration without explicit iteration variables
+* tacit verb definitions and nested forks
+* a recurrence for even Fibonacci numbers, and a summation formula for them
+
+It's hard to pick a winner, but IMO the most interesting one was the idea to rephrase a `while` loop with a boolean breakout condition as an attempt to locate a fixed point of a function. This is part of the reason I love J, and languages like it. They encourage, or in some cases actively push you to look at computational patterns in a wholly different way.
 
 ## References
 
-* A great article by Jordan Scales on [Fibonacci numbers in J](https://thatjdanisso.cool/j-fibonacci). I adapted the idea in this post to incorporate an accumulated value.
-* The excellent [J for C Programmers](https://www.jsoftware.com/help/jforc/contents.htm) book by Henry Rich. I can't recommend this enough.
+* A great article by Jordan Scales on [Fibonacci numbers in J](https://thatjdanisso.cool/j-fibonacci). I adapted the method in the post to incorporate an accumulated value.
+* The excellent [J for C Programmers](https://www.jsoftware.com/help/jforc/contents.htm) book by Henry Rich. I can't recommend it enough. I read it to understand the `(u^:v)^:_` pattern.
+* [Verb trains in J](https://www.jsoftware.com/help/learning/09.htm). I read it to understand forks.
+* [GeeksForGeeks - summing the first N Fibonacci numbers](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/)
+* [GeeksForGeeks - a recurrence relation for even Fibonacci numbers](https://www.geeksforgeeks.org/dsa/sum-fibonacci-numbers/)
+
+## Appendix
+
+Starting from:
+
+{% katex(block=true) %}
+E_n = 4E_{n-1} + E_{n-2}
+{% end %}
+
+we get:
+
+{% katex(block=true) %}
+E_n - E_{n-1} = 3E_{n-1} + E_{n-2} \\
+{% end %}
+
+Generalizing this, we get:
+
+{% katex(block=true) %}
+E_n - E_{n-1} = 3E_{n-1} + E_{n-2} \\
+E_{n-1} - E_{n-2} = 3E_{n-2} + E_{n-3} \\
+... \\
+E_3 - E_2 = 3E_2 + E_1 \\
+{% end %}
+
+Adding these all up, we get:
+{% katex(block=true) %}
+E_n - E_2 = 3\sum_{i=2}^{n-1} E_i + \sum_{i=1}^{n-2} E_i
+{% end %}
+
+Adjusting the indices a bit:
+
+{% katex(block=true) %}
+E_n - E_2 = 3\sum_{i=1}^{n-1} E_i + \sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
+E_n - E_2 = 4\sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
+{% end %}
+
+And now rearranging:
+
+{% katex(block=true) %}
+4\sum_{i=1}^{n-1} E_i = E_n + E_{n-1} - E_2 + 3E_1
+{% end %}
+
+Note that {{ katex(body="E_1 = 0") }} and {{ katex(body="E_2 = 2") }}. Substituting these in, and replacing {{ katex(body="n") }} by {{ katex(body="n + 1") }} in the final expression, we get:
+
+{% katex(block=true) %}
+4\sum_{i=1}^{n} E_i = E_n + E_{n} - 2
+{% end %}
+
+and we're done!

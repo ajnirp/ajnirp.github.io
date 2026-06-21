@@ -142,7 +142,7 @@ def conditional_execution(u, v, y):
     return u(y) if v(y) else y
 ```
 
-The fun part is when we attach a `^:_` adverb to this verb `step^:shouldContinue`. Recall that `_` in J is **positive infinity**. When `^:_` is attached to a verb, it means: **keep applying this verb until you reach a [fixed point of the function](https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29)**.
+The fun part is when we attach a `^:_` adverb to this verb `step^:shouldContinue`. In J, `_` is **positive infinity**. When `^:_` is attached to a verb, it means: **keep applying this verb until you reach a [fixed point of the function](https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29)**.
 
 And so `(step^:shouldContinue)^:_` is a verb that runs `step^:shouldContinue` on its input until its output equals its input. And when does that happen? When `shouldContinue` yields `0`, and `y` is returned. At that point we've reached the fixed point of `step^:shouldContinue`, and we break out of the iteration!
 
@@ -164,7 +164,7 @@ With all this in mind, we can translate the final line of the solution:
 
 into plain language as follows:
 
-<div role="highlight">Run the step function until the rightmost element of the input array is less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
+<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array is less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
 
 ## Doesn't J have a while. keyword?
 
@@ -219,7 +219,7 @@ The key to understanding `step` is to recognize that it's a fork, which is a way
 
 In plain language:
 
-<div role="highlight">Seprately apply f to y and h to y. Use both values as operands to g.</div>
+<div role="highlight">Separately apply <code>f</code> to <code>y</code> and <code>h</code> to <code>y</code>. Use both values as operands to <code>g</code>.</div>
 
 In the code above:
 
@@ -312,21 +312,17 @@ It's hard to pick a winner, but IMO the most interesting one was the idea to rep
 * A great article by Jordan Scales on [Fibonacci numbers in J](https://thatjdanisso.cool/j-fibonacci). I adapted the method in the post to incorporate an accumulated value.
 * The excellent [J for C Programmers](https://www.jsoftware.com/help/jforc/contents.htm) book by Henry Rich. I can't recommend it enough. I read it to understand the `(u^:v)^:_` pattern.
 * [Verb trains in J](https://www.jsoftware.com/help/learning/09.htm). I read it to understand forks.
-* [GeeksForGeeks - summing the first N Fibonacci numbers](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/)
-* [GeeksForGeeks - a recurrence relation for even Fibonacci numbers](https://www.geeksforgeeks.org/dsa/sum-fibonacci-numbers/)
+* GeeksForGeeks
+  * [Summing the first N Fibonacci numbers](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/)
+  * [A recurrence relation for even Fibonacci numbers](https://www.geeksforgeeks.org/dsa/sum-fibonacci-numbers/)
 
 ## Appendix
 
 Starting from:
 
 {% katex(block=true) %}
-E_n = 4E_{n-1} + E_{n-2}
-{% end %}
-
-we get:
-
-{% katex(block=true) %}
-E_n - E_{n-1} = 3E_{n-1} + E_{n-2} \\
+E_n = 4E_{n-1} + E_{n-2} \\
+\implies E_n - E_{n-1} = 3E_{n-1} + E_{n-2}
 {% end %}
 
 Generalizing this, we get:
@@ -347,7 +343,7 @@ Adjusting the indices a bit:
 
 {% katex(block=true) %}
 E_n - E_2 = 3\sum_{i=1}^{n-1} E_i + \sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
-E_n - E_2 = 4\sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
+\implies E_n - E_2 = 4\sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
 {% end %}
 
 And now rearranging:
@@ -356,10 +352,11 @@ And now rearranging:
 4\sum_{i=1}^{n-1} E_i = E_n + E_{n-1} - E_2 + 3E_1
 {% end %}
 
-Note that {{ katex(body="E_1 = 0") }} and {{ katex(body="E_2 = 2") }}. Substituting these in, and replacing {{ katex(body="n") }} by {{ katex(body="n + 1") }} in the final expression, we get:
+Recall that {{ katex(body="E_1 = 0") }} and {{ katex(body="E_2 = 2") }}. Substituting these in, and replacing {{ katex(body="n") }} by {{ katex(body="n + 1") }} in the final expression, we get:
 
 {% katex(block=true) %}
-4\sum_{i=1}^{n} E_i = E_n + E_{n} - 2
+4\sum_{i=1}^{n} E_i = E_{n+1} + E_n - 2 \\
+\implies \sum_{i=1}^{n} E_i = \frac{E_{n+1} + E_n - 2}{4}
 {% end %}
 
 and we're done!

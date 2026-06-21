@@ -160,6 +160,10 @@ code {
     font-family: monospace;
 }
 
+:not(pre) > code {
+    color: $red2;
+}
+
 pre {
     border: 1px solid $fg;
     border-radius: 20px;

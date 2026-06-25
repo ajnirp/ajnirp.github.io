@@ -133,7 +133,7 @@ Let's give our boolean function `(4e6 > {:)` a nice name, `shouldContinue`. The 
 
 What does `step^:shouldContinue` do? `shouldContinue` is a verb and not a numeric noun, so the above explanation doesn't apply to it!
 
-In plain language, for some argument `y`, the pattern `(step^:shouldContinue) y` is a verb that does the following: **apply `shouldContinue` to `y`. Take the result, which should be a numeric noun, and attach it to the `^:` that modifies `step`**.
+In plain language, for some argument `y`, the pattern `(step^:shouldContinue) y` evaluates as follows: **apply `shouldContinue` to `y`. Take the result, which should be a numeric noun, and attach it to the `^:` that modifies `step`**.
 
 This bears examining. `shouldContinue` is boolean, so it will yield either `0` or `1`. If `shouldContinue y` yields `1`, we apply `step` to `y`. If it yields `0`, we do nothing and just return `y`. In Python, this would be:
 
@@ -164,7 +164,7 @@ With all this in mind, we can translate the final line of the solution:
 
 into plain language as follows:
 
-<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array is <b>no longer</b> less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
+<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array (the "next" Fibonacci number) is <b>no longer</b> less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
 
 ## Doesn't J have a while. keyword?
 
@@ -186,7 +186,7 @@ and we could've used some syntactic sugar and taken advantage of the way control
 solve =. {{ a =. 0 1 2 while. y > {: a do. a =. step a end. {. a }}
 ```
 
-I haven't profiled this method compared with the previous one, but if I had to hazard a guess, I suspect this `while.` would be less efficient, because the J interpreter knows how to take advantage of common patterns like `(u^:v)^:_ y`. Plus, `while.` is considered unidiomatic in J anyway.
+I haven't profiled this method compared with the previous one, but if I had to hazard a guess, I suspect this `while.` would be less efficient, because the J interpreter knows how to optimize common patterns like `(u^:v)^:_ y`. Plus, `while.` is considered unidiomatic in J anyway.
 
 ## Beating the odds
 
@@ -246,7 +246,7 @@ The difference from the first method is now there's no check on the even-ness of
 
 Do we really need to store an accumulator value at every step of the iteration?
 
-While searching around, I stumbled across this [GeeksForGeeks article](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/) which demonstrates how to write the **sum** of the first {{ katex(body="N") }} Fibonacci numbers in terms of a linear combination of a constant number of Fibonacci numbers:
+While searching around, I stumbled across this [article](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/) which demonstrates how to write the **sum** of the first {{ katex(body="N") }} Fibonacci numbers in terms of a linear combination of a constant number of Fibonacci numbers:
 
 {% katex(block=true) %}
 \sum_{i=1}^{n} F_i = F_{n+2} - 1
@@ -291,10 +291,38 @@ x: 4 %~ _2 + +/ (step^:(4e6 > {:))^:_ (0 2)
 
 Notice how the `step` definition is much shorter now. We only need to advance the two Fibonacci numbers. No bothering with the accumulated value.
 
-In the interest of code golfing, this can be compressed into one line:
+We can go one step further and get rid of the parentheses in the definition of `step`. As it happens, the [**train**](https://www.jsoftware.com/help/learning/09.htm) of five verbs in a row `(a b c d e f)` (when applied monadically i.e. with only a right argument) is evaluated like so:
 
 ```j
-x:4%~_2++/(({:,({.+4*{:))^:(4e6>{:))^:_(0 2)
+(a b c d e) y
+(a y) b ((c d e) y)
+(a y) b ((c y) d (e y))
+```
+
+In other words, a train of 5 verbs resolves into a fork whose right argument is a nested fork.
+
+This is an instance of a more general rule, which is when you have an odd-length train of verbs `(a b c ...)` it is equivalent to a fork with the first verb being monadic `a`, the second verb being dyadic (i.e. with a left and right argument) `b`, and the third verb being monadic `(c ...)`. The last one is _another_ monadic odd-length train of verbs, and we can expand this recursively, as we did above for the train of 5 verbs.
+
+Here, `a` is `{:` (take the rightmost element of an array), `b` is dyadic `,` (combine two elements into an array), `c` is `{.` (take the leftmost element of an array), `d` is dyadic `+` (sum two numbers), and `e` is `4*{:` (multiply the rightmost element of an array by 4).
+
+And so we can discard the parentheses and just write
+
+```j
+step =. {: , {. + 4*{:
+x: 4 %~ _2 + +/ (step^:(4e6 > {:))^:_ (0 2)
+```
+
+We can also get rid of one set of parentheses in the second line, turning `(u^:(v))^:_` into just `u^:(v)^:_`:
+
+```j
+step =. {: , {. + 4*{:
+x: 4 %~ _2 + +/ step^:(4e6 > {:)^:_ (0 2)
+```
+
+In the interest of code golfing, we can combine the two lines and get rid of as many spaces as possible. We'd end up with:
+
+```j
+x:4%~_2++/({:,{.+4*{:)^:(4e6>{:)^:_(0 2)
 ```
 
 There are likely better ways to solve this problem. Maybe I'll revisit this article in the future, when I know more J. For now, this is a good place to stop!
@@ -307,27 +335,27 @@ There were some very cool ideas at play here. To list a few:
 * tacit verb definitions and nested forks
 * a recurrence for even Fibonacci numbers, and a summation formula for them
 
-It's hard to pick a winner, but IMO the most interesting one was the idea to rephrase a `while` loop with a boolean breakout condition as an attempt to locate a fixed point of a function. This is part of the reason I love J, and languages like it. They encourage, or in some cases actively push you to look at computational patterns in a wholly different way.
+It's hard to pick a winner, but IMO the most interesting idea was that we can rephrase a `while` loop with a boolean breakout condition as a search for a fixed point of a function. This is part of the reason I love J, and languages like it. They encourage, or in some cases actively push you to look at computational patterns in a wholly different way.
 
 ## References
 
 * A great article by Jordan Scales on [Fibonacci numbers in J](https://thatjdanisso.cool/j-fibonacci). I adapted the method in the post to incorporate an accumulated value.
 * The excellent [J for C Programmers](https://www.jsoftware.com/help/jforc/contents.htm) book by Henry Rich. I can't recommend it enough. I read it to understand the `(u^:v)^:_` pattern.
-* [Verb trains in J](https://www.jsoftware.com/help/learning/09.htm). I read it to understand forks.
+* [Verb trains in J](https://www.jsoftware.com/help/learning/09.htm).
 * GeeksForGeeks
   * [Summing the first N Fibonacci numbers](https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/)
   * [A recurrence relation for even Fibonacci numbers](https://www.geeksforgeeks.org/dsa/sum-fibonacci-numbers/)
 
 ## Appendix
 
-Starting from:
+To derive the identity for the sum of the first {{ katex(body="N") }} even Fibonacci numbers, we start from:
 
 {% katex(block=true) %}
 E_n = 4E_{n-1} + E_{n-2} \\
 \implies E_n - E_{n-1} = 3E_{n-1} + E_{n-2}
 {% end %}
 
-Generalizing this, we get:
+And plug in different values for {{ katex(body="n") }}, from {{ katex(body="3") }} up to {{ katex(body="n") }}:
 
 {% katex(block=true) %}
 E_n - E_{n-1} = 3E_{n-1} + E_{n-2} \\

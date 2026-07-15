@@ -57,6 +57,46 @@ Find the number of leading `1`s in a boolean array.
     +/∧\
 ```
 
+Find the corner elements of a table.
+```apl
+⊃     ⍝ top left
+⊃⌽    ⍝ top right
+⊃⊖    ⍝ bottom left
+⊃⌽⍤⊖  ⍝ bottom right
+```
+
+Two ways to sum a boolean array.
+```apl
++/
+≢⍸
+```
+
+Empty out an array.
+```apl
+⍬⍨  ⍝ Using a constant function
+0/  ⍝ Using replicate
+```
+
+Zero out selected indices from an array.
+```apl
+    a←⍳ 4
+1 2 3 4
+    a[2 3]←0
+    a
+1 0 0 4
+```
+
+Mean of a numeric array. Note that we do a `1⌈` on the `≢`. This ensures that for `0⍴0` the denominator is `1` rather than `0`, and so we evalute `0÷1` rather than `0÷0` which APL would compute as `1`.
+```apl
++⌿÷1⌈≢
+```
+
+Find the first index of occurrence for each element of an array.
+```apl
+    ⍳⍨ 2 3 3 1 5 2
+1 2 2 4 5 1
+```
+
 ## Numbers
 
 Sign of a number.
@@ -140,6 +180,15 @@ Case-insensitive string comparison. Note the use of `⍥` (over), which monadica
 1
 ```
 
+Check if `⍺` is a prefix of `⍵` (works for numeric arrays too).
+```apl
+⊃⍷
+```
+For suffix, we use the same idea.
+```apl
+{⊃(⌽⍺)⍷⌽⍵}
+```
+ 
 Check that a string is a palindrome after discarding non-alphabet characters. We convert to uppercase, discard everything that is not an uppercase letter, and then check that the result is a palindrome.
 ```apl
 {(⌽≡⊢) ⎕A∩⍨1⎕C ⍵}

@@ -16,9 +16,11 @@ Was OFF -trains=box
 +
 ```
 
+An optimized expression will be colored differently. Examples: `⊃⌽` or `⊢/` or `+/∧\`. I use the Nord theme, and they're colored orange.
+
 ## Basic array operations
 
-Turn a scalar into an array.
+Turn a scalar into an array. Quite useful in situations like dealing with single-character strings, which APL treats as scalars.
 ```apl
    ,5
 5
@@ -41,34 +43,18 @@ Flatten an array.
 {,⍵}
 ```
 
+Select multiple indices from an array.
+```apl
+    a←'abcd'
+    a[3 1 4 2]
+cadb
+    3 1 4 2 ⌷⍤0 99⊢'abcd'  ⍝ 99 is a conventional value to use for array ranks greater than Dyalog's maximum of 15
+cadb
+```
+
 Check that an array is a palindrome.
 ```apl
 ⌽≡⊢
-```
-
-Pad a number with a desired number of `0`s.
-```apl
-    11↑1 ⍝ 1 followed by ten 0's.
-1 0 0 0 0 0 0 0 0 0 0
-```
-
-Find the number of leading `1`s in a boolean array.
-```apl
-    +/∧\
-```
-
-Find the corner elements of a table.
-```apl
-⊃     ⍝ top left
-⊃⌽    ⍝ top right
-⊃⊖    ⍝ bottom left
-⊃⌽⍤⊖  ⍝ bottom right
-```
-
-Two ways to sum a boolean array.
-```apl
-+/
-≢⍸
 ```
 
 Empty out an array.
@@ -97,6 +83,71 @@ Find the first index of occurrence for each element of an array.
 1 2 2 4 5 1
 ```
 
+Find the _endings_ of occurrences of array `⍺` in array `⍵`. Recall that if we want the _beginnings_ we can just use `⍷`.
+```apl
+{(1-≢⍺)⌽⍺⍷⍵}
+```
+
+Mode of an array.
+```apl
+{m←⍉{⍺,≢⍵}⌸,⍵ ⋄ m[1;]/⍨(⊢=⌈/)m[2;]}
+{⊃{⍺/⍨⍵=⌈/⍵}/,⌿,∘≢⌸⍵}  ⍝ A more elegant formulation by abrudz
+```
+
+Standard deviation of an array.
+```apl
+{0.5*⍨(×/⍴⍵)÷⍨+/(×⍨⊢-+/÷≢),⍵}
+```
+
+Prefixes of an array
+```apl
+{(⍳≢⍵)↑¨⊂⍵}
+,\  ⍝ very bad performance, like 3 orders of magnitude worse
+```
+
+### Boolean arrays
+
+Convert a positive number to binary by using the inverse of the decode function.
+```apl
+2⊥⍣¯1⊢
+```
+
+Pad a number with a desired number of `0`s.
+```apl
+    11↑1 ⍝ 1 followed by ten 0's.
+1 0 0 0 0 0 0 0 0 0 0
+```
+
+Find the number of leading `1`s in a boolean array.
+```apl
++/∧\
+```
+
+Find the corner elements of a table.
+```apl
+⊃     ⍝ top left
+⊃⌽    ⍝ top right
+⊃⊖    ⍝ bottom left
+⊃⌽⍤⊖  ⍝ bottom right
+```
+
+Two ways to sum a boolean array.
+```apl
++/
+≢⍸
+```
+
+Generate a random array of `0`s and `1`s with length `1000`.
+```apl
+    v←{⎕IO←0 ⋄ ?⍵⍴2}1000
+```
+
+Find the first `1` in a Boolean vector.
+```apl
+<\
+```
+At first glance, this looks like it would run in quadratic time, but APL interpreters optimize for this and the actual runtime is linear.
+
 ## Numbers
 
 Sign of a number.
@@ -107,6 +158,11 @@ Sign of a number.
 Get the integral and fractional part of a non-negative real number.
 ```apl
 0 1∘⊤
+```
+
+Convert a positive number to its digits. See [this StackOverflow answer](https://stackoverflow.com/a/44990891).
+```apl
+10∘⊥⍣¯1
 ```
 
 ## Profiling
@@ -188,10 +244,34 @@ For suffix, we use the same idea.
 ```apl
 {⊃(⌽⍺)⍷⌽⍵}
 ```
+
+Split a string `⍵` into a words on a delimiter `⍺`, discarding empty strings.
+```apl
+{+/2</1,⍨⍺=⍵}  ⍝ We're looking for "0 1" subarrays in the is-mask. We add a 1 at the end to ensure there's a "0 1" subarray for the last word.
+```
  
 Check that a string is a palindrome after discarding non-alphabet characters. We convert to uppercase, discard everything that is not an uppercase letter, and then check that the result is a palindrome.
 ```apl
 {(⌽≡⊢) ⎕A∩⍨1⎕C ⍵}
+```
+
+Compare semver strings, assuming they're represented as arrays of 3 numbers. Subtract, find the signs and return the first non-zero element (or just `0`).
+```apl
+{⊃d/⍨0≠d←×⍺-⍵}
+```
+Another nice way. This relies on `⊃⍬` being `0`. Note also the use of `0⍨` as the right tine of the fork.
+```apl
+⊃⍤×-~0⍨
+```
+A very clever way to do this is as follows. We decode the signum'd array of `1`s, `0`s and `¯1`s in base 2. If the result is negative it means the highest non-zero value must have been `¯1` and likewise if the result is positive then the highest non-zero value must have been `1`.
+```apl
+×2⊥×⍤-
+```
+
+Convert an Excel column identifier to a number.
+```apl
+{26⊥⎕A⍳⍵}
+26⊥⎕A⍳⊢  ⍝ Tacit version of the above
 ```
 
 ## Mathematics
@@ -218,4 +298,22 @@ This can be rephrased in tacit form as a 5-train. Note that we use `×` (sign) t
 Generate a random float between 0 and 1.
 ```apl
 ?0
+```
+
+## Time
+
+Get the current time.
+```apl
+⎕TS  ⍝  Returns a 7-element integer vector representing the current year, month, day, hour, minute, second, and millisecond in that order. 
+```
+
+Compare two timestamps that are both in the format returned by `⎕TS`. Return `¯1` if the left timestamp is smaller, `0` if they're equal, and `1` if the left timestamp is greater.
+```apl
+×2⊥×⍤-  ⍝ This is identical to the semver comparison algorithm!
+```
+
+Check if a year is a leap year
+```apl
+((0=4∘|)∧(0≠100∘|))∨0=400∘|  ⍝ My first attempt - clumsy, in retrospect
+≠⌿0=400 100 4∘.|⊢  ⍝ Key idea here is we have a yes-no-yes type of situation which is perfect for xor i.e. ≠
 ```

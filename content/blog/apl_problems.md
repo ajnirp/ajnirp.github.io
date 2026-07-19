@@ -25,12 +25,51 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 
 ## APL quest problems
 
+### 2014
+```apl
+{(⊢≡⌽)⍵/⍨⍵∊⎕A,⎕UCS 96+⍳26}  ⍝ 2014.5
+```
+
+### 2015
+```apl
+(≡⍥{t[⍋t←s/⍨(s←1⎕C⍵)∊⎕A]})  ⍝ 2015.1
+{0.5*⍨(×/⍴⍵)÷⍨+/(×⍨⊢-+/÷≢),⍵}  ⍝ 2015.5
+```
+
+### 2016.4
+
+```apl
+{h ← (≢ ⍺) ⌊ (≢ ⍵) ⋄ (h ↓ ⍺) ,⍨ (h ↓ ⍵) ,⍨ , ⍉ ↑ (h ↑ ⍺) (h ↑ ⍵)}  ⍝ My initial approach
+```
+
+### 2017.1
+
+[Link to problem](https://apl.quest/2017/1/)
+```apl
+{¯1+2×⍳⍵}
+{+\2-⍵↑1}  ⍝ doesn't rely on ⎕IO being 1!
+```
+
+### 2017.9
+
+[Link to problem](https://apl.quest/2017/9/)
+```apl
+{2>≢⍵: (≢⍵)⍴0 ⋄ 0,⍨2=/⍵}
+```
+
+### 2017.10
+
+[Link to problem](https://apl.quest/2017/10/)
+```apl
+{(s,s)⍴⍵↑⍨*⍨s←⌈0.5*⍨≢⍵}
+```
+
 ### 2018.1
 
 [Link to problem](https://apl.quest/2018/1/)
 ```apl
 {≢ ∪ ⌈\ ⍵}
-{+/ ≠ ⌈\ ⍵}
++/⍤≠⌈\
 ```
 Compute the max-scan, then ask how many unique elements there are.
 
@@ -89,6 +128,70 @@ To avoid the problem of generating high-rank matrices (which caps us at inputs o
 {{⍺ ('*'⍨¨⍵)}⌸+⌿1+(,⍵)⊤¯1+⍳×/⍵}
 ```
 Notice how we have to use `,⍵` instead of `⍵` as  the left arugment to `⊤` (encode). This handles the case of when `⍵` is a scalar by promoting it to a vector.
+
+### 2019
+```apl
+{⍵⊂⍨(⍺↑1)⍴⍨≢⍵}  ⍝ 2019.1
+{'FDCBA'[0 65 70 80 90⍸⍵]}  ⍝ 2019.2
+{m/⍨(∧/0∘<∧9∘>)¨m←(⊂⍵)+,(2 1)(1 2)∘.×∘.,⍨¯1 1}  ⍝ 2019.4. Knight's moves. Good use of outer product
+```
+
+### 2018.10
+
+[Link to problem](https://apl.quest/2018/10/). Check if `⍺` and `⍵` are anagrams, ignoring spaces. Assume both are uppercase.
+
+```apl
+≡⍥{' '~⍨s[⍋s←,⍵]}
+```
+
+You could go with
+```apl
+≡⍥{' '~⍨⍵[⍋s⍵]}
+```
+but this runs into trouble with inputs like `'d'` which APL treats as scalars. Raveling and assigning to a variable guards against that.
+
+### 2020.2
+
+[Link to problem](https://apl.quest/2020/2/). It's a 5-train!
+```apl
+⊢⊂⍨128∘>∨191∘<
+```
+
+### 2020.5
+
+[Link to problem](https://apl.quest/2020/5/). Note the conditional flip idiom. We subtract the right from the left, find the magnitude, index that many numbers, add the smaller number as an offset, and then conditionally flip the result if the left number is larger.
+```apl
+{⌽⍣(>/⍵)⊢(⌊/⍵)+0,⍳|-/⍵}
+```
+
+### 2020.6
+```apl
+{⍵[⍒⍺=⍵]}`
+```
+
+### 2022.5
+
+[Link to problem](https://apl.quest/2022/5/). I had to assign the outer `⍵` to a new name so as to refer to it in the inner dfn. Otherwise, it is shadowed by the inner dfn's `⍵`. The core idea is that we overtake (with a negative amount) from an ever-increasing chain of `⎕`s. To see how this solution works, try running suffixes of it, like `{{x↑⍵⍴'⎕'}¨⍳x←⍵}7`.
+
+```apl
+{↑{(-x)↑⍵⍴'⎕'}¨⍳x←⍵}
+```
+
+Shortly after, I found a better way to rephrase the above idea. The nice thing here is that `↑` does the padding with prototypes while lifting the pre-result up one level of depth.
+```apl
+{⌽↑(⍳⍵)⍴¨'⎕'}
+```
+Similary:
+```apl
+{⌽↑'⎕'/¨⍨⍳⍵}
+⌽⍤↑'⎕'/¨⍨⍳  ⍝ Tacit version of the above
+```
+
+### 2020.7
+```apl
+{b←2⊥⍣¯1⊢⍺ ⍵ ⋄ b[;1]≡∧/b}
+(∧/≤/)2⊥⍣¯1,  ⍝ Much nicer - why use AND and compare against the original when you can just use ≤
+```
 
 ### 2023.3
 

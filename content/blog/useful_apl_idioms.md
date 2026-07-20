@@ -105,6 +105,12 @@ Prefixes of an array
 ,\  ⍝ very bad performance, like 3 orders of magnitude worse
 ```
 
+Check if a table is a magic square.
+```apl
+∧/⊢=⊃(+⌿),(+/),+/,⍥(1 1∘⍉)∘⌽
+(∧/⊢=⊃)(+⌿),(+/),(+⌿1 1∘⍉∘⌽),(+⌿1 1∘⍉)  ⍝ Identical to the above, but more verbose
+```
+
 ### Boolean arrays
 
 Convert a positive number to binary by using the inverse of the decode function.
@@ -209,6 +215,12 @@ All lowercase English letters.
 abcdefghijklmnopqrstuvwxyz
 ```
 
+All digits from `0` to `9`.
+```apl
+    ⎕D
+0123456789
+```
+
 Discard all characters except English letters.
 ```apl
     a ← 'The quick brown fox! Jumps over the lazy... dog?'
@@ -248,6 +260,10 @@ For suffix, we use the same idea.
 Split a string `⍵` into a words on a delimiter `⍺`, discarding empty strings.
 ```apl
 {+/2</1,⍨⍺=⍵}  ⍝ We're looking for "0 1" subarrays in the is-mask. We add a 1 at the end to ensure there's a "0 1" subarray for the last word.
+```
+Split a string `⍵` into a words on any one of character vector of delimiters `⍺` (length 1 or more), keeping empty strings.
+```apl
+{1↓¨x⊂⍨⍺∊⍨x←⍵,⍨⊃⍺}  ⍝ 2016.9. Split on a set of delimiters, keeping empty strings.
 ```
  
 Check that a string is a palindrome after discarding non-alphabet characters. We convert to uppercase, discard everything that is not an uppercase letter, and then check that the result is a palindrome.
@@ -298,6 +314,11 @@ This can be rephrased in tacit form as a 5-train. Note that we use `×` (sign) t
 Generate a random float between 0 and 1.
 ```apl
 ?0
+```
+
+Set the random seed.
+```apl
+⎕RL
 ```
 
 ## Time

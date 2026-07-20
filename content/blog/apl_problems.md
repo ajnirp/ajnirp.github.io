@@ -27,113 +27,101 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 
 ### 2014
 ```apl
+{(×⍨⍵)=+.×⍨⍺}  ⍝ 2014.1.
+{(⍵×⍵)=+/⍺×⍺}  ⍝ 2014.1. More readable
+{⍵=|+/¯9 ¯11○⍺}  ⍝ 2014.2. Interpret the left argument as a complex number.
+{⍵=0:⍬ ⋄ ({⍵,+/¯2↑⍵}⍣(⍵-1)),1}  ⍝ 2014.3
 {(⊢≡⌽)⍵/⍨⍵∊⎕A,⎕UCS 96+⍳26}  ⍝ 2014.5
+{0.5*⍨+.×⍨⍺-⍵}  ⍝ 2014.8
+{9.8÷⍨(1○○⍵÷90)×⍺×⍺}  ⍝ 2014.9
+{100×⌈⌿(¯1↓⍵)÷⍨1↓⍵-¯1⌽⍵}  ⍝ 2014.10
 ```
 
 ### 2015
 ```apl
 (≡⍥{t[⍋t←s/⍨(s←1⎕C⍵)∊⎕A]})  ⍝ 2015.1
 {0.5*⍨(×/⍴⍵)÷⍨+/(×⍨⊢-+/÷≢),⍵}  ⍝ 2015.5
+{(¯0.01∘+)@(13∘=)⍵}  ⍝ 2015.8
 ```
 
-### 2016.4
+### 2016
 
 ```apl
-{h ← (≢ ⍺) ⌊ (≢ ⍵) ⋄ (h ↓ ⍺) ,⍨ (h ↓ ⍵) ,⍨ , ⍉ ↑ (h ↑ ⍺) (h ↑ ⍵)}  ⍝ My initial approach
+{h ← (≢ ⍺) ⌊ (≢ ⍵) ⋄ (h ↓ ⍺) ,⍨ (h ↓ ⍵) ,⍨ , ⍉ ↑ (h ↑ ⍺) (h ↑ ⍵)}  ⍝ 2016.4. My initial approach
+
+{⊃(//,⌿{⍺,⍨1=≢⍵}⌸⍵)}  ⍝ 2016.5
+
+{⍵[⍋≢¨⍵]}  ⍝ 2016.6
+
+{⍵/⍨⊃∨/0=3 5|⍵ ⍵}  ⍝ 2016.7
+
+{/∘⍵¨(,⍥⊂∘~⍨)0>⍵}  ⍝ 2016.8
+{(⍵/⍨m)(⍵/⍨~m←0>⍵)}  ⍝ 2016.8. A lot more readable IMO
+
+{1↓¨x⊂⍨⍺∊⍨x←⍵,⍨⊃⍺}  ⍝ 2016.9. Split on a set of delimiters, keeping empty strings.
+
++.×  ⍝ 2016.10
 ```
 
-### 2017.1
+### 2017
 
-[Link to problem](https://apl.quest/2017/1/)
 ```apl
-{¯1+2×⍳⍵}
-{+\2-⍵↑1}  ⍝ doesn't rely on ⎕IO being 1!
+{¯1+2×⍳⍵}  ⍝ 2017.1
+{+\2-⍵↑1}  ⍝ 2017.1. Doesn't rely on ⎕IO being 1!
+
+⊢+1=2∘|  ⍝ 2017.2
+
+{360÷⍨⍺×○×⍨⍵÷2}  ⍝ 2017.4
+
+∧/∊∘'ATCG'  ⍝ 2017.5
+
++/'ACGT'∘.=⊢ ⍝ 2017.7
+
+{2>≢⍵: (≢⍵)⍴0 ⋄ 0,⍨2=/⍵}  ⍝ 2017.9
+
+{(s,s)⍴⍵↑⍨*⍨s←⌈0.5*⍨≢⍵}  ⍝ 2017.10
 ```
 
-### 2017.9
-
-[Link to problem](https://apl.quest/2017/9/)
+### 2018
 ```apl
-{2>≢⍵: (≢⍵)⍴0 ⋄ 0,⍨2=/⍵}
-```
++/⍤≠⌈\  ⍝ 2018.1. Ask how many unique elements there are in the max-scan.
 
-### 2017.10
-
-[Link to problem](https://apl.quest/2017/10/)
-```apl
-{(s,s)⍴⍵↑⍨*⍨s←⌈0.5*⍨≢⍵}
-```
-
-### 2018.1
-
-[Link to problem](https://apl.quest/2018/1/)
-```apl
-{≢ ∪ ⌈\ ⍵}
-+/⍤≠⌈\
-```
-Compute the max-scan, then ask how many unique elements there are.
-
-Another nice idea is to compare pairs of adjacent numbers in the max-scan and add up the points of difference. We'll need add `1` to get the right answer, and also special-case the empty array case. 
-
-```apl
+⍝ 2018.1. Number of differing consecutive pairs in the max-scan. Need to add `1` to get the right answer, and special-case empty arrays.
+⍝ This is more efficient because there's no hashing involved. We're making use of the structure of the max-scan (strictly increasing). We can use `cmpx` to profile these implementations.
 {⍬≡⍵: 0 ⋄ 1+ +/ 2</ ⌈\ ⍵}
-```
 
-This is more efficient because there's no hashing involved. We're making use of the structure of the max-scan (strictly increasing). We can use `cmpx` to profile these implementations.
-
-### 2018.2
-
-[Link to problem](https://apl.quest/2018/2/)
-
-The fractional part is the remainder modulo `1`, and we can subtract that from the input to get the integral part.
-```apl
+⍝ 2018.2
 {(⍵-rem),rem←1|⍵}
-```
-
-We can use `⌊` to compute the integral part, and then subtract that from the input to get the fractional part.
-```apl
 {⌊ , ⍵-⌊⍵}
-```
-We can rewrite the right argument to `,` as a 3-train `⊢-⌊` and then go one step further and turn the entire thing into a 5-train.
-```apl
-⌊ , ⊢ - ⌊
-```
-
-Combining with the previous idea:
-```apl
+⌊ , ⊢ - ⌊  ⍝ Tacit rephrasing of the above
 ⌊ , 1∘|
+0 1∘⊤  ⍝ Coolest solution IMO. Rephrasing the problem as finding the encoding in base 1.
+
+⍝ 2018.3
+{{⍺ ('*'⍨¨⍵)} ⌸ , +/¨ ⍳⍵}  ⍝ ⍺⍨¨⍵ which creates an array in the shape of ⍵ and then replaces each element with ⍺. The final result's shape will be different if ⍺ is not a scalar.
+{{⍺ ('*'⍨¨⍵)}⌸+⌿1+(,⍵)⊤¯1+⍳×/⍵}  ⍝ Does not generate high-rank arrays as above (which caps us at inputs of length ≤ 15). We use ,⍵ so that encode's left arg is a vector.
+
+{0=⍺: ⍵ ⋄ ((×⍺)×-≢⍵)↑⍵↓⍨-⍺}  ⍝ 2018.7
+
+×2⊥×⍤-  ⍝ 2018.9
+≡⍥{' '~⍨s[⍋s←,⍵]}  ⍝ 2018.10
 ```
-
-Or just use the encode function:
-```apl
-0 1∘⊤
-```
-
-### 2018.3
-
-[Link to problem](https://apl.quest/2018/3/)
-
-This uses the idiom `⍺⍨¨⍵` which creates an array in the "shape" of `⍵`, with each element being `⍺`. The actual shape of the result will be different if `⍺` is itself an array.
-```apl
-{{⍺ ('*'⍨¨⍵)} ⌸ , +/¨ ⍳⍵}
-```
-
-For example, try
-```apl
-(2 4 ⍴ ⍳ 8) ⍨¨ ⍳ 3
-```
-
-To avoid the problem of generating high-rank matrices (which caps us at inputs of length 15 or less), we can use encode:
-```apl
-{{⍺ ('*'⍨¨⍵)}⌸+⌿1+(,⍵)⊤¯1+⍳×/⍵}
-```
-Notice how we have to use `,⍵` instead of `⍵` as  the left arugment to `⊤` (encode). This handles the case of when `⍵` is a scalar by promoting it to a vector.
 
 ### 2019
 ```apl
 {⍵⊂⍨(⍺↑1)⍴⍨≢⍵}  ⍝ 2019.1
+
 {'FDCBA'[0 65 70 80 90⍸⍵]}  ⍝ 2019.2
+
 {m/⍨(∧/0∘<∧9∘>)¨m←(⊂⍵)+,(2 1)(1 2)∘.×∘.,⍨¯1 1}  ⍝ 2019.4. Knight's moves. Good use of outer product
+
+f←(≢∘∪≠≢)¨⊆  ⍝ 2019.5 Nest is cool. If the input is a simple scalar or already nested, does nothing. Otherwise, boxes the result into a scalar 1-item array.
+
+⍝ 2019.6
+{⊢/¨⍸⍵∘.∊'1' '2ABC' '3DEF' '4GHI' '5JKL' '6MNO' '7PQRS' '8TUV' '9WXYZ'}
+{lut←(¯1+⍳10),(1+⍳8)/⍨4 3 4,⍨5⍴3 ⋄ lut[(⎕D,⎕A)⍳⍵]}  ⍝ As fast as can be, because we're just using a lookup table.
+
+{+/|2-/(⊢,⊃)(+/¯9 ¯11∘○)¨⍵}  ⍝ 2019.8. Using complex numbers to model distances. Nice use of trains too - ⊢,⊃ appends to an array its first element. 
 ```
 
 ### 2018.10
@@ -150,23 +138,33 @@ You could go with
 ```
 but this runs into trouble with inputs like `'d'` which APL treats as scalars. Raveling and assigning to a variable guards against that.
 
-### 2020.2
+### 2020
 
-[Link to problem](https://apl.quest/2020/2/). It's a 5-train!
 ```apl
-⊢⊂⍨128∘>∨191∘<
+⊢⊂⍨128∘>∨191∘<  ⍝ 2020.2 5-train!
+
+{⌽⍣(>/⍵)⊢(⌊/⍵)+0,⍳|-/⍵}  ⍝ 2020.5. Conditional flip! Index up to magnitude of the subtraction, add smaller as an offset, flip the result only if left is larger.
+
+{⍵[⍒⍺=⍵]}`  ⍝ 2020.6
+
+⍝ 2020.7
+{b←2⊥⍣¯1⊢⍺ ⍵ ⋄ b[;1]≡∧/b}  ⍝ my initial approach
+(∧/≤/)2⊥⍣¯1,  ⍝ Much nicer - why use AND and compare against the original when you can just use ≤
+
+{∧/¯1=2×/×2-/(10∘⊥⍣¯1) ⍵}  ⍝ 2020.8
 ```
 
-### 2020.5
-
-[Link to problem](https://apl.quest/2020/5/). Note the conditional flip idiom. We subtract the right from the left, find the magnitude, index that many numbers, add the smaller number as an offset, and then conditionally flip the result if the left number is larger.
+### 2021
 ```apl
-{⌽⍣(>/⍵)⊢(⌊/⍵)+0,⍳|-/⍵}
-```
+{100×(≢⍵)÷⍨+/⍵∊'GC'}  ⍝ 2021.1
 
-### 2020.6
-```apl
-{⍵[⍒⍺=⍵]}`
+⍝ 2021.2
+{l←1+≢⍺ ⋄ 0@{l=⍵}⍺⍳⍵}  ⍝ 2021.2
+{1+≢⍺}|⍳  ⍝ Courtesy abrudz. Much nicer.
+
+⍝ 2021.7. Magic square check
+(∧/⊢=⊃)(+⌿),(+/),(+⌿1 1∘⍉∘⌽),(+⌿1 1∘⍉)
+∧/⊢=⊃(+⌿),(+/),+/,⍥(1 1∘⍉)∘⌽  ⍝ Rephrasing of the above using ⍥ (over).
 ```
 
 ### 2022.5
@@ -185,12 +183,6 @@ Similary:
 ```apl
 {⌽↑'⎕'/¨⍨⍳⍵}
 ⌽⍤↑'⎕'/¨⍨⍳  ⍝ Tacit version of the above
-```
-
-### 2020.7
-```apl
-{b←2⊥⍣¯1⊢⍺ ⍵ ⋄ b[;1]≡∧/b}
-(∧/≤/)2⊥⍣¯1,  ⍝ Much nicer - why use AND and compare against the original when you can just use ≤
 ```
 
 ### 2023.3

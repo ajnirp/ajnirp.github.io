@@ -165,6 +165,12 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 ⍝ 2021.7. Magic square check
 (∧/⊢=⊃)(+⌿),(+/),(+⌿1 1∘⍉∘⌽),(+⌿1 1∘⍉)
 ∧/⊢=⊃(+⌿),(+/),+/,⍥(1 1∘⍉)∘⌽  ⍝ Rephrasing of the above using ⍥ (over).
+
+|⍤-⍥{0 24 60⊥¯3↑⍵}  ⍝ 2021.8
+
+⍝ 2021.9. Max run length. Useful to know in run-length encoding (RLE).
+{{⍺←0 0 2 ⋄ ⍬≡⍵:⊃⍺ ⋄ (⊃⍵)=⍺[3]:(1↓⍵)∇⍨(⍺[1]⌈1+⍺[2]),(1+⍺[2]),⊃⍵ ⋄ (1↓⍵)∇⍨(1⌈⍺[1]),1,⊃⍵}×2-/⍵}  ⍝ My initial attempt. A direct translation of Scheme-like languages. Messy.
+{⌈/¯2-/⍸1,⍨1,2≠/×2-/⍵}  ⍝ Nice idea: ¯2-/ flips (⌽) the arguments in the n-wise reduction.
 ```
 
 ### 2022.5

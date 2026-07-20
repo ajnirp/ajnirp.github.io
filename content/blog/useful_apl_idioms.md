@@ -18,7 +18,7 @@ Was OFF -trains=box
 
 An optimized expression will be colored differently. Examples: `⊃⌽` or `⊢/` or `+/∧\`. I use the Nord theme, and they're colored orange.
 
-## Basic array operations
+## Miscellaneous array operations
 
 Turn a scalar into an array. Quite useful in situations like dealing with single-character strings, which APL treats as scalars.
 ```apl
@@ -109,6 +109,16 @@ Check if a table is a magic square.
 ```apl
 ∧/⊢=⊃(+⌿),(+/),+/,⍥(1 1∘⍉)∘⌽
 (∧/⊢=⊃)(+⌿),(+/),(+⌿1 1∘⍉∘⌽),(+⌿1 1∘⍉)  ⍝ Identical to the above, but more verbose
+```
+
+Run-length encoding (RLE) / run-length packing.
+```
+'packR'⎕cy'dfns'
+packR  ⍝ To study the source code
+⍝ See also {⌈/¯2-/⍸1,⍨1,2≠/×2-/⍵} which is the solution to https://apl.quest/2021/9/
+⍝ The high-level idea is: pairwise differences, signum, pairwise inequality, pad left and right with 1,
+⍝ find indices of 1s, then find the consecutive differences. These are the starts of the runs.
+⍝ packR does some extra stuff which I haven't looked at yet.
 ```
 
 ### Boolean arrays

@@ -34,9 +34,9 @@ We can run it:
 2 1 3 2 1 1 1
 ```
 
-I like how this approach embodies the array paradigm: think in terms of array transformations instead of iteration. The result is almost declarative.
+I like how this approach embodies the array paradigm: think in terms of array transformations instead of explicitly specifying iteration bounds. The resulting solution is almost declarative.
 
-To start with we vectorize `⍵` in case it's a scalar. `2≠/vect` is a Boolean mask of when an element differs from the one to its right. Preprend a `1` to that and we have a mask telling us where each run starts, stored in `mask`. Append a `1` and use `⍸` to get the index of each `1`. These are the starting indices of each run. Find the run lengths by taking the pairwise differences, and then mix `↑` the values and the lengths to return our desired table.
+To start with we vectorize `⍵` in case it's a scalar. `2≠/vec` is a Boolean mask of when an element differs from the one to its right. Preprend a `1` to that and we have a mask telling us where each run starts, stored in `mask`. Append a `1` and use `⍸` to get the index of each `1`. These are the starting indices of each run. Find the run lengths by taking the pairwise differences, and then mix `↑` the values and the lengths to return our desired table.
 
 Note the use of `¯2` instead of `2` when computing pairwise differences. Negative values reverse the arguments, and since the magnitude is 2, this amounts to a flip. We could've also written `2-⍨/`. Note also how we appended a `1`. That's a sentinel value that allows us to obtain the length of the final run.
 

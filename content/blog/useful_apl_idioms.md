@@ -18,6 +18,13 @@ Was OFF -trains=box
 
 An optimized expression will be colored differently. Examples: `⊃⌽` or `⊢/` or `+/∧\`. I use the Nord theme, and they're colored orange.
 
+Exit RIDE
+```apl
+⍝ Like all commands, these are case-insensitive
+⎕OFF
+)OFF
+```
+
 ## Miscellaneous array operations
 
 Turn a scalar into an array. Quite useful in situations like dealing with single-character strings, which APL treats as scalars.
@@ -329,6 +336,12 @@ Generate a random float between 0 and 1.
 Set the random seed.
 ```apl
 ⎕RL
+```
+
+Pascal's triangle
+```apl
+{{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
+(∘.!⍨0,⍳)  ⍝ From https://aplcart.info
 ```
 
 ## Time

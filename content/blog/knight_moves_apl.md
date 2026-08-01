@@ -48,3 +48,30 @@ Then we ravel the above, add to it the scalar-ified original position, and filte
 └───┴───┘
 ```
 And we're done.
+
+abrudz [presents](https://www.youtube.com/watch?v=K40CsPxYohM) a very cool solution in his video:
+
+```apl
+{⍸5=+⌿¨×⍨|(⍳8 8)-⊂⍵}
+```
+with the idea to select only squares whose squared Euclidean distance from the input is 5. I profiled the two methods:
+```apl
+      f←{⍸5=+⌿¨×⍨|(⍳8 8)-⊂⍵}
+      g←{m/⍨(∧/0∘<∧9∘>)¨m←(⊂⍵)+,(2 1)(1 2)∘.×∘.,⍨¯1 1}
+      'cmpx'⎕cy'dfns'
+      w←?1e2⍴⊂8 8
+      cmpx 'f¨ w' 'g¨ w'
+  f¨ w → 1.1E¯3 |   0% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕
+* g¨ w → 4.8E¯4 | -55% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕
+```
+
+and found that `g` is faster. This feels intuitive: generating 64 options and then eliminating (at least) 56 of them should be slower than directly generating 8 options. For a slight speed up we can store the deltas in a variable and look it up:
+```apl
+      deltas←,(2 1)(1 2)∘.×∘.,⍨¯1 1
+      h←{m/⍨(∧/0∘<∧9∘>)¨m←(⊂⍵)+deltas}  ⍝ NB. same definition as g, but with a variable lookup
+      cmpx 'g¨ w ' 'h¨ w'
+  g¨ w  → 5.0E¯4 |   0% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕
+  h¨ w  → 3.1E¯4 | -39% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕
+```
+
+which is faster but not impressively so.

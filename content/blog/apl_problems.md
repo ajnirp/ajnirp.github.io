@@ -3,6 +3,13 @@ title = "Solutions to some APL problems"
 date = 2026-07-14
 +++
 
+## Fun problems
+
+```apl
+{≠/¨2|⍳⍵ ⍵}  ⍝ checkerboard pattern
+{⍵-⌈/¨|⍵-⍳,⍨(2×⍵)-×⍵}  ⍝ 2022.6. Pyramid elevations seen from above.
+```
+
 ## Dyalog APL challenge
 
 ### 2026.2 - 9
@@ -23,7 +30,7 @@ Write a function that takes an uppercase word consisting of English letters and 
 ```
 As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call the result `v`. `v⍳1 0` gives us the indices of the first vowel and first consonant, and we pick those indices from `⍵`.
 
-## APL quest problems
+## APL quest
 
 ### 2014
 ```apl
@@ -39,8 +46,13 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 
 ### 2015
 ```apl
-(≡⍥{t[⍋t←s/⍨(s←1⎕C⍵)∊⎕A]})  ⍝ 2015.1
+⍝ 2015.1
+(≡⍥{t[⍋t←s/⍨(s←1⎕C⍵)∊⎕A]})
+≡⍥{t[⍋t←⎕A∩⍨1⎕C⍵]}
+≡⍥{⊂⍤⍋⍛⌷⎕A∩⍨1⎕C⍵}  ⍝ Works on my machine (TM) but not in https://apl.quest
+
 {0.5*⍨(×/⍴⍵)÷⍨+/(×⍨⊢-+/÷≢),⍵}  ⍝ 2015.5
+
 {(¯0.01∘+)@(13∘=)⍵}  ⍝ 2015.8
 ```
 
@@ -162,6 +174,8 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 {l←1+≢⍺ ⋄ 0@{l=⍵}⍺⍳⍵}  ⍝ 2021.2
 {1+≢⍺}|⍳  ⍝ Courtesy abrudz. Much nicer.
 
+4÷⍨(¯2+○1)××⍨  ⍝ 2021.4
+
 ⍝ 2021.7. Magic square check
 (∧/⊢=⊃)(+⌿),(+/),(+⌿1 1∘⍉∘⌽),(+⌿1 1∘⍉)
 ∧/⊢=⊃(+⌿),(+/),+/,⍥(1 1∘⍉)∘⌽  ⍝ Rephrasing of the above using ⍥ (over).
@@ -171,6 +185,17 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 ⍝ 2021.9. Max run length. Useful to know in run-length encoding (RLE).
 {{⍺←0 0 2 ⋄ ⍬≡⍵:⊃⍺ ⋄ (⊃⍵)=⍺[3]:(1↓⍵)∇⍨(⍺[1]⌈1+⍺[2]),(1+⍺[2]),⊃⍵ ⋄ (1↓⍵)∇⍨(1⌈⍺[1]),1,⊃⍵}×2-/⍵}  ⍝ My initial attempt. A direct translation of Scheme-like languages. Messy.
 {⌈/¯2-/⍸1,⍨1,2≠/×2-/⍵}  ⍝ Nice idea: ¯2-/ flips (⌽) the arguments in the n-wise reduction.
+```
+
+### 2022
+```apl
+{⍵-⌈/¨|⍵-⍳,⍨(2×⍵)-×⍵}  ⍝ 2022.6
+
+{∊(≢⍴+/÷≢)¨⍵⊆⍳≢⍵}  ⍝ 2022.7
+
+⍝ 2022.9
+{(+⌿÷≢)¨(1+2×⍺),/(⍺⍴⊃⍵),⍵,⍺⍴⊢/⍵}
+(+⌿÷≢)¨(1+2×⊣),/(⍴∘⊃,⊢,⍴∘(⊢/))  ⍝ Tacit rephrasing of the above
 ```
 
 ### 2022.5

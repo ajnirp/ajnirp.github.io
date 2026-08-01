@@ -8,7 +8,7 @@ Let's solve a [Leetcode problem](https://leetcode.com/problems/maximum-nesting-d
 My approach:
 
 ```apl
-{+\¯1+2×'('=⍵∩'()'}
+{⌈⌿+\¯1+2×'('=⍵∩'()'}
 ```
 
 In plain language:

@@ -11,6 +11,12 @@ My approach:
 {⌈⌿+\¯1+2×'('=⍵∩'()'}
 ```
 
+An example of calling this function:
+```apl
+      {⌈⌿+\¯1+2×'('=⍵∩'()'} '(())(()(()))'
+3
+```
+
 In plain language:
 1. Discard all non-paren characters.
 2. Create a mask of `(` characters.

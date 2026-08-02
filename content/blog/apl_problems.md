@@ -189,7 +189,7 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 
 ### 2022
 ```apl
-{⍵-⌈/¨|⍵-⍳,⍨(2×⍵)-×⍵}  ⍝ 2022.6
+{⍵-⌈/¨|⍵-⍳,⍨(2×⍵)-×⍵}  ⍝ 2022.6. A nice trick to set the width of the square: 2⍵-sign(⍵). Yields 0 for 0, 2⍵-1 for everything else.
 
 {∊(≢⍴+/÷≢)¨⍵⊆⍳≢⍵}  ⍝ 2022.7
 
@@ -216,27 +216,9 @@ Similary:
 ⌽⍤↑'⎕'/¨⍨⍳  ⍝ Tacit version of the above
 ```
 
-### 2023.3
-
-[Link to problem](https://apl.quest/2023/3/). Write a Caesar cipher. Use `' ',⎕A` as the alphabet.
+### 2023
 
 ```apl
-      4 (your_function) 'HELLO WORLDS'
-LIPPSD SVPHW
-
-      ¯4 (your_function) 'HELLO WORLDS' ⍝ negative shifts are okay
-DAHHKWSKNH O 
-
-      0 (your_function) 'HELLO WORLDS' ⍝ no shift is okay
-HELLO WORLDS
-
-      27 (your_function) 'HELLO WORLDS'
-HELLO WORLDS
-
-      ¯10 (your_function) '' ⍝ returns an empty vector
+(1-∘≢⊣)⌽⍷  ⍝ 2023.2
+{a[⍵⍳⍨(-⍺)⌽a←' ',⎕A]}  ⍝ 2023.3. Search for `⍵` in the rotated alphabet and pick the resultant indices from the original alphabet.
 ```
-My solution:
-```apl
-{a[⍵⍳⍨(-⍺)⌽a←' ',⎕A]}
-```
-Create the alphabet, search for `⍵` in the rotated alphabet, and then pick the resultant indices from the original alphabet.

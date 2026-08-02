@@ -23,7 +23,7 @@ In plain language:
 3. Multiply by 2 and subtract 1 to get a mask of `1` and `¯1` instead of `1` and `0`.
 4. Return the maximum prefix sum.
 
-The idea in the last two steps is that we increment the depth when we see a `(`, decrement it when we see a `)`, and look for the maximum value we attain at any point.
+The idea is we increment the depth when we see a `(`, decrement it when we see a `)`, and look for the maximum value we attain at any point. The runtime is linear because each of the above steps is linear. Note that the idiom `+\` is optimized by the compiler to run in linear time, while scanning in general is quadratic (see [this video by Richard Park](https://www.youtube.com/watch?v=f0qhOKW0iw0) for more discussion).
 
 I also quite like the trick in step 3 in which we convert a Boolean mask to a mask of `1` and `¯1`. [The video](https://www.youtube.com/watch?v=zrOIQEN3Wkk) mentions another a way to do it: the fork `(⊢-~)`, which simply subtracts from a mask its negation, yielding the same result. We can compare the runtimes of the two approaches.
 
@@ -32,7 +32,7 @@ I also quite like the trick in step 3 in which we convert a Boolean mask to a ma
       g←{¯1+2×⍵}
       w←¯1+?10000⍴2
       'cmpx'⎕cy'dfns'
-      cmpx 'f w' 'g w'
+      cmpx 'f w' 'g w'  ⍝ Or just ]runtime -c 'f w' 'g w'
   f w → 1.0E¯6 |   0% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕
   g w → 8.8E¯7 | -14% ⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕     
 ```

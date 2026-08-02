@@ -163,7 +163,7 @@ code {
 
 code[data-lang="apl"] {
     font-family: "APL385 Unicode", monospace;
-    src: local("APL385 Unicode"), url(../fonts/Apl385.ttf) format("ttf");
+    src: local("APL385 Unicode"), url(./fonts/Apl385.ttf) format("ttf");
     font-size: $apl-code-font-size;
 }
 

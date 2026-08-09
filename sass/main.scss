@@ -161,9 +161,15 @@ code {
     font-family: monospace;
 }
 
+@font-face {
+    font-family: "APL385 Unicode";
+    src: local("APL385 Unicode"),
+         url("./fonts/Apl385.ttf") format("ttf");
+    // font-display: swap;
+}
+
 code[data-lang="apl"] {
     font-family: "APL385 Unicode", monospace;
-    src: local("APL385 Unicode"), url("./fonts/Apl385.ttf") format("ttf");
     font-size: $apl-code-font-size;
 }
 

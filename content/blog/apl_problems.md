@@ -53,7 +53,11 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 
 {0.5*⍨(×/⍴⍵)÷⍨+/(×⍨⊢-+/÷≢),⍵}  ⍝ 2015.5
 
-{(¯0.01∘+)@(13∘=)⍵}  ⍝ 2015.8
+⍝ 2015.8
+{(¯0.01∘+)@(13∘=)⍵}
+{⍵+¯0.01×13=⍵}
+
+{1≥≢⍵: ⍵ ⋄ ∊⌽¨⍵⊂⍨1,1,⍨(¯2+≢⍵)⍴1 0}  ⍝ 2015.9
 ```
 
 ### 2016
@@ -173,6 +177,8 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 ⍝ 2021.2
 {l←1+≢⍺ ⋄ 0@{l=⍵}⍺⍳⍵}  ⍝ 2021.2
 {1+≢⍺}|⍳  ⍝ Courtesy abrudz. Much nicer.
+
+{(/∘⍵)¨↓0=⍺∘.|⍵}∘,  ⍝ 2021.3
 
 4÷⍨(¯2+○1)××⍨  ⍝ 2021.4
 

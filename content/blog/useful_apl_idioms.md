@@ -301,6 +301,19 @@ A very clever way to do this is as follows. We decode the signum'd array of `1`s
 ×2⊥×⍤-
 ```
 
+Join a vector of words into a sentence, separated by spaces.
+```apl
+      ⊃(⊣,' ',⊢)/ 'this' 'is' 'a' 'vector' 'of' 'words'
+this is a vector of words
+```
+
+Reverse individual words within a sentence while preserving the word order. The result is always a vector.
+```apl
+{⍵≡'': ⍵ ⋄ ⊃(⊣,' ',⊢)/⌽¨(' '∘≠⊆⊢),⍵}
+      {⍵≡'': ⍵ ⋄ ⊃(⊣,' ',⊢)/⌽¨(' '∘≠⊆⊢),⍵}'this is a sentence'
+siht si a ecnetnes
+```
+
 Convert an Excel column identifier to a number.
 ```apl
 {26⊥⎕A⍳⍵}

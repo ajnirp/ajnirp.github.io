@@ -351,7 +351,7 @@ Set the random seed.
 ⎕RL
 ```
 
-Pascal's triangle
+Pascal's triangle.
 ```apl
 {{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
 (∘.!⍨0,⍳)  ⍝ From https://aplcart.info

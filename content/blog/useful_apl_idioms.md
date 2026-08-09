@@ -357,7 +357,7 @@ Pascal's triangle.
 {{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
 (∘.!⍨0,⍳)  ⍝ From https://aplcart.info
 ```
-{% end raw %}
+{% endraw %}
 
 ## Time
 

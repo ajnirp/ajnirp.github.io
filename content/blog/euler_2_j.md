@@ -182,9 +182,11 @@ end.
 
 and we could've used some syntactic sugar and taken advantage of the way control structures are parsed to squeeze it into one line:
 
+{% raw %}
 ```j
 solve =. {{ a =. 0 1 2 while. y > {: a do. a =. step a end. {. a }}
 ```
+{% endraw %}
 
 I haven't profiled this method compared with the previous one, but if I had to hazard a guess, I suspect this `while.` would be less efficient, because the J interpreter knows how to optimize common patterns like `(u^:v)^:_ y`. Plus, `while.` is considered unidiomatic in J anyway.
 
@@ -198,9 +200,11 @@ E_n = 4E_{n-1} + E_{n-2}
 
 Here, {{ katex(body="E_n") }} is the n-th **even** Fibonacci number, with {{ katex(body="E_1 = 0") }} and {{ katex(body="E_2 = 2" )}}. This allows us to rewrite our `step` verb...
 
+{% raw %}
 ```j
 step =. ({. + {:) , ({: , ({.@}. + 4*{:))
 ```
+{% endraw %}
 
 ...and our `solve` verb...
 

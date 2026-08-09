@@ -352,10 +352,12 @@ Set the random seed.
 ```
 
 Pascal's triangle.
+{% raw %}
 ```apl
 {{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
 (∘.!⍨0,⍳)  ⍝ From https://aplcart.info
 ```
+{% end raw %}
 
 ## Time
 

@@ -23,7 +23,5 @@ theme = "gruvbox-light-medium"
 author = "Rohan Prinja"
 description = "loriculus.org"
 default_language = "en"
-
 katex_enable = true
-
 title = "Loriculus"

@@ -352,12 +352,11 @@ Set the random seed.
 ```
 
 Pascal's triangle.
-{% raw %}
 ```apl
 {{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
-(∘.!⍨0,⍳)  ⍝ From https://aplcart.info
+((⊢!⍨i)¨i←0,⍳)  ⍝ My favorite, courtesy abrudz. Concise and readable.
+(∘.!⍨0,⍳)  ⍝ From https://aplcart.info. A little inefficient because it computes a lot of unnecessary 0s.
 ```
-{% endraw %}
 
 ## Time
 

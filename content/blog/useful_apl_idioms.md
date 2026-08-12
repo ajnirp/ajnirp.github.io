@@ -3,7 +3,7 @@ title = "Useful APL snippets"
 date = 2026-07-13
 +++
 
-## Editors
+## Dyalog, RIDE
 
 In RIDE, to display function trains in tree format:
 ```apl
@@ -23,6 +23,12 @@ Exit RIDE
 ⍝ Like all commands, these are case-insensitive
 ⎕OFF
 )OFF
+```
+
+Obtain a vector of names representing all the functions available to us in the current namespace, and filter for the functions that start with a capital letter.
+```apl
+⎕NL¯3
+⎕A⎕NL¯3
 ```
 
 ## Miscellaneous array operations
@@ -356,6 +362,17 @@ Pascal's triangle.
 {{(⍵-1)!⍨¯1+⍳¨⍵}⍳⍵}
 ((⊢!⍨i)¨i←0,⍳)  ⍝ My favorite, courtesy abrudz. Concise and readable.
 (∘.!⍨0,⍳)  ⍝ From https://aplcart.info. A little inefficient because it computes a lot of unnecessary 0s.
+```
+
+Fibonacci sequence / Hemachandra numbers.
+```apl
+{⍵≡0: ⍬ ⋄ ({⍵,+/¯2↑⍵}⍣(⍵-1)),1}
+```
+
+Fun idea: use the base function to sum the elements of an array.
+```apl
+      1⊥⍳10
+55
 ```
 
 ## Time

@@ -35,21 +35,48 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 ### 2013
 ```apl
 {1=∧/~s←' '≠⍵: 0 ⋄ ≢s⊆⍵}  ⍝ 2013.3
-{''≡⍵: 1 ⋄ ((0=⊢/)∧(∧/0∘≤))+\-⌿'()'∘.=⍵}  ⍝ 2013.4
+
+⍝ 2013.4
+⍝ Increment for opening, decrement for closing. The result should only contain
+⍝ positive numbers and end in a 0.
+{''≡⍵: 1 ⋄ ((0=⊢/)∧(∧/0∘≤))+\-⌿'()'∘.=⍵}
+
 {⍵/⍨⍵≠⌊⍵}  ⍝ 2013.7
+
 ∘.×⍨⍳  ⍝ 2013.8
+
 (+/÷≢)¨(⊣,/⊢)  ⍝ 2013.9
+
+{(⌹⍵)+.×⍺}  ⍝ 2013.10
 ```
 
 ### 2014
 ```apl
-{(×⍨⍵)=+.×⍨⍺}  ⍝ 2014.1.
-{(⍵×⍵)=+/⍺×⍺}  ⍝ 2014.1. More readable
-{⍵=|+/¯9 ¯11○⍺}  ⍝ 2014.2. Interpret the left argument as a complex number.
+⍝ 2014.1
+{(×⍨⍵)=+.×⍨⍺}
+{(⍵×⍵)=+/⍺×⍺}  ⍝ More readable IMO
+
+⍝ 2014.2
+⍝ Prepend and append a space and call this w. Then keep all characters that satisfy ANY of the following:
+⍝ * not a vowel
+⍝ * vowel and has a space to its left
+⍝ * vowel and has a space to its right
+⍝ Here, n is a mask of non-vowels. We OR its negation with a left and right shift of s, which is a mask
+⍝ of spaces, and OR that with n. The resultant mask is then applied to w.
+⍝ The use of ⌽¨⊂ was inspired by John Scholes' implementation of Conway's Game of Life.
+{n←~'AEIOUaeiou'∊⍨w←' ',⍵,' ' ⋄ 1↓¯1↓w/⍨∨⌿n⍪↑~n∘∨¨(1 ¯1)⌽¨⊂' '≠w}
+
 {⍵=0:⍬ ⋄ ({⍵,+/¯2↑⍵}⍣(⍵-1)),1}  ⍝ 2014.3
+
 {(⊢≡⌽)⍵/⍨⍵∊⎕A,⎕UCS 96+⍳26}  ⍝ 2014.5
-{0.5*⍨+.×⍨⍺-⍵}  ⍝ 2014.8
+
+⍝ 2014.8
+{⍵=|+/¯9 ¯11○⍺}  ⍝ Interpret the left argument as a complex number.
+{(⍵×⍵)=+.×⍨⍺}  ⍝ Straightforward
+{0.5*⍨+.×⍨⍺-⍵}  ⍝ Also straightforward
+
 {9.8÷⍨(1○○⍵÷90)×⍺×⍺}  ⍝ 2014.9
+
 {100×⌈⌿(¯1↓⍵)÷⍨1↓⍵-¯1⌽⍵}  ⍝ 2014.10
 ```
 
@@ -72,16 +99,20 @@ As before `∨⌿'AEIOU'∘.=⍵` generates an array of vowel occurrences. Call 
 ### 2016
 
 ```apl
-{h ← (≢ ⍺) ⌊ (≢ ⍵) ⋄ (h ↓ ⍺) ,⍨ (h ↓ ⍵) ,⍨ , ⍉ ↑ (h ↑ ⍺) (h ↑ ⍵)}  ⍝ 2016.4. My initial approach
++/÷1⌈≢  ⍝ 2016.1
+
+⍝ 2016.4
+{h ← (≢ ⍺) ⌊ (≢ ⍵) ⋄ (h ↓ ⍺) ,⍨ (h ↓ ⍵) ,⍨ , ⍉ ↑ (h ↑ ⍺) (h ↑ ⍵)}  ⍝ My initial approach, rather clumsy
+{(⍺,⍵)[⍋(⍳≢⍺),⍳≢⍵]}  ⍝ Neat use of grade
 
 {⊃(//,⌿{⍺,⍨1=≢⍵}⌸⍵)}  ⍝ 2016.5
 
 {⍵[⍋≢¨⍵]}  ⍝ 2016.6
 
-{⍵/⍨⊃∨/0=3 5|⍵ ⍵}  ⍝ 2016.7
+{⍵/⍨∨⌿0=3 5∘.|⍵}  ⍝ 2016.7
 
 {/∘⍵¨(,⍥⊂∘~⍨)0>⍵}  ⍝ 2016.8
-{(⍵/⍨m)(⍵/⍨~m←0>⍵)}  ⍝ 2016.8. A lot more readable IMO
+{(⍵/⍨m)(⍵/⍨~m←0>⍵)}  ⍝ 2016.8. A little more readable, but not as cool
 
 {1↓¨x⊂⍨⍺∊⍨x←⍵,⍨⊃⍺}  ⍝ 2016.9. Split on a set of delimiters, keeping empty strings.
 
@@ -177,6 +208,12 @@ but this runs into trouble with inputs like `'d'` which APL treats as scalars. R
 (∧/≤/)2⊥⍣¯1,  ⍝ Much nicer - why use AND and compare against the original when you can just use ≤
 
 {∧/¯1=2×/×2-/(10∘⊥⍣¯1) ⍵}  ⍝ 2020.8
+
+⍝ 2020.9
+⍝ The consecutive comparisons should yield an array that has zero or more 1s followed by zero or more 0s. Such an array has the property
+⍝ that it equals its AND-scan. Conversely if an array doesn't satisfy this property then it's not of that form. 
+{⍵≡⍬:1 ⋄ (⊢≡∧\)2≤/,⍵}
+{(⊢≡∧\)2≤/0,⍵}  ⍝ This works only if the argument is guaranteed to only contain positive numbers. It's a hack to avoid special-casing.
 ```
 
 ### 2021
@@ -234,6 +271,13 @@ Similary:
 ### 2023
 
 ```apl
+{⍵/⍨⍵=⌈\⍵}  ⍝ 2023.1
+
 (1-∘≢⊣)⌽⍷  ⍝ 2023.2
+
 {a[⍵⍳⍨(-⍺)⌽a←' ',⎕A]}  ⍝ 2023.3. Search for `⍵` in the rotated alphabet and pick the resultant indices from the original alphabet.
+
+{↑⍺[2]{⍺(≠⊆⊢)⍵}¨⍺[1](≠⊆⊢)⍵}  ⍝ 2023.6
+
+{(n÷⍵),⍨n←1∧⍵}  ⍝ 2023.7. Neat idea: The numerator of the rational representation of a fraction ⍵ is 1∧⍵.
 ```

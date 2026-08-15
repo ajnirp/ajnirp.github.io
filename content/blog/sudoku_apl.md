@@ -13,7 +13,7 @@ occur←9 9 9⍴(⍳9)∘.=board
 ∧/ (all+/occur) (all+/[2]occur) (all+/(⍳9)∘.=board[9 9⍴⍋,box])
 ```
 
-The final line evaluates to `1` if the Sudoku board is valid, else `0`. Let's dissect the solution, line by line. First we create our input board. Then we define `box` to be a `9×9` table with each cell carrying the index of the box it lies in. `all` is a function that returns `1` if all elements in its input table are `0` or `1`.
+The final line evaluates to `1` if the Sudoku board is valid, else `0`. Let's dissect the solution. First we create our input board. `all` returns `1` if all elements in its input table are `0` or `1`. `box` is a `9×9` table with each cell carrying the index of the box it lies in:
 
 ```apl
       box
@@ -105,6 +105,15 @@ And this, AND-ed together with the row sum validation column sum validation give
 which we can make slightly shorter by pulling out the `all`:
 
 ```apl
+∧/all¨ (+/occur) (+/[2]occur) (+/(⍳9)∘.=board[9 9⍴⍋,box])
+```
+
+Putting it all together:
+
+```apl
+box←3⌿3/3 3⍴⍳9
+all←{∧/∧/1≥⍵}
+occur←9 9 9⍴(⍳9)∘.=board
 ∧/all¨ (+/occur) (+/[2]occur) (+/(⍳9)∘.=board[9 9⍴⍋,box])
 ```
 

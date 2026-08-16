@@ -148,7 +148,7 @@ box←,3⌿3/3 3⍴⍳9
 ∧/∧/(≢=≢∘∪)¨{⍺≡0: ⊂¨1 1 1 ⋄ (row[⍵]) (col[⍵]) (box[⍵])}⌸board
 ```
 
-For more terseness, we can also make use of slim quad `⌷` instead of the regular square-bracket indexing, noting that to select multiple indices we must first enclose `⊂` the left argument.
+For further brevity, we can use slim quad `⌷` instead of square brackets. Note that to select multiple indices we must first enclose `⊂` the left argument.
 
 ```apl
 row←9/⍳9

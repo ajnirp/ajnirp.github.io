@@ -113,7 +113,7 @@ moves←{c~⍨⍸⍺⍺(⍳8 8)-c←⊂⍵}
 knight←{5=+⌿¨×⍨|⍵}
 king←{2≥+⌿¨×⍨⍵}  ⍝ similar to knight
 rook←0∘∊¨
-bishop←(=/)¨|
+bishop←=/¨|
 queen←rook∨bishop
 ```
 

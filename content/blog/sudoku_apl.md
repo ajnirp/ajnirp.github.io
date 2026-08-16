@@ -5,6 +5,8 @@ date = 2026-08-12
 
 Given a (possibly partially) filled-in Sudoku board, how can you tell if the board is valid? Assume our input is a vector of `81` numbers, with `0` representing blank cells and filled-in cells carrying one of the numbers `1` through `9`. Here's how I'd do it in APL, as a beginner to the language.
 
+## A first approach: Outer Product
+
 ```apl
 board←5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9
 box←3⌿3/3 3⍴⍳9
@@ -31,7 +33,7 @@ The final line evaluates to `1` if the Sudoku board is valid, else `0`. Let's di
 `occur` is a 3D array in which each major cell is a `9×9` mask of the occurrences of each number. For example, the 5th major cell of `occur` tells you where all the `5`s are:
 
 ```apl
-      (9 9⍴board) (occur[5;;])
+      (9 9⍴board) (5⌷occur)  ⍝ The second term is equivalent to occur[5;;]
 ┌─────────────────┬─────────────────┐
 │5 3 0 0 7 0 0 0 0│1 0 0 0 0 0 0 0 0│
 │6 0 0 1 9 5 0 0 0│0 0 0 0 0 1 0 0 0│
@@ -117,4 +119,40 @@ occur←9 9 9⍴(⍳9)∘.=board
 ∧/all¨ (+/occur) (+/[2]occur) (+/(⍳9)∘.=board[9 9⍴⍋,box])
 ```
 
-The coolest thing about this solution, I think, was going from `box` to the board box indices via a ravel and grade — just an example of how flexible `⍋` can be. For a problem that calls for a similar usage of `⍋`, check out [APL Quest 2016.4](https://apl.quest/2016/4/).
+The coolest thing about this solution IMO was going from `box` to the board box indices via a ravel (`,`) and grade (`⍋`) — just an example of how flexible `⍋` can be. For a problem that calls for a similar usage of `⍋`, check out [APL Quest 2016.4](https://apl.quest/2016/4/).
+
+## A better approach: Key
+
+The limitation of the outer product approach is we create an intermediate `9×9×9` array that we then reduce. This is a little wasteful of memory, plus we iterate over the input board once for each valid digit. To do this in a single pass we can use `⌸`:
+
+```apl
+board←5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9
+box←,3⌿3/3 3⍴⍳9
+∧/∧/(≢=≢∘∪)¨{⍺≡0: ⊂¨1 1 1 ⋄ (⌈⍵÷9) (9@(0∘=)9|⍵) (box[⍵])}⌸board
+```
+
+This method walks over the input board once and creates three boxed vectors for each digit from `1` to `9`:
+
+* The first is a vector containing every row index (divide by 9, round up: `⌈⍵÷9`) where that digit was found.
+* The other two are the same, but for column indices (residue modulo 9, but 9 if it's a 0: `9@(0∘=)9|⍵`)...
+* ...and for box indices (just `box[⍵]`).
+
+For `0`, the output is just three boxes each containing a single scalar `1`. Then we ask if every box contains only unique elements. I like this method because it's a fairly direct translation of the problem statement while also being more efficient _and_ concise.
+
+If we want a more symmetrical-looking solution, we can get rid of the arithmetic and do the same thing for rows and columns that we did for boxes, namely, generate a vector of `81` elements carrying the row/col indices.
+
+```apl
+row←9/⍳9
+col←∊9/⊂⍳9
+box←,3⌿3/3 3⍴⍳9
+∧/∧/(≢=≢∘∪)¨{⍺≡0: ⊂¨1 1 1 ⋄ (row[⍵]) (col[⍵]) (box[⍵])}⌸board
+```
+
+For more terseness, we can also make use of slim quad `⌷` instead of the regular square-bracket indexing, noting that to select multiple indices we must first enclose `⊂` the left argument.
+
+```apl
+row←9/⍳9
+col←∊9/⊂⍳9
+box←,3⌿3/3 3⍴⍳9
+∧/∧/(≢=≢∘∪)¨{⍺≡0: ⊂¨1 1 1 ⋄ (⊂⍵)∘⌷¨ row col box}⌸board
+```

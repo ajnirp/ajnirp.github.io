@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Maximum nested paren depth in APL</h1>
+
+<p class=post-date>Aug 01 2026</p>
+
+
+
+<p>Let's solve a <a rel="external" href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/description/">Leetcode problem</a> in APL. This blog post is inspired by this <a rel="external" href="https://www.youtube.com/watch?v=zrOIQEN3Wkk">code report video</a>. Given a valid parentheses string <code>s</code>, return the nesting depth of <code>s</code>. The nesting depth is the maximum number of nested parentheses.</p>
+<p>My approach:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⌈⌿+\</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">+</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">×</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">(</span><span style="color: #7C6F64;">&#39;</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">∩</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">()</span><span style="color: #7C6F64;">&#39;}</span></span></code></pre>
+<p>An example of calling this function:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #427B58;">⌈⌿+\</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">+</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">×</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">(</span><span style="color: #7C6F64;">&#39;</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">∩</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">()</span><span style="color: #7C6F64;">&#39;} &#39;</span><span style="color: #79740E;">(())(()(()))</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">3</span></span></code></pre>
+<p>In plain language:</p>
+<ol>
+<li>Discard all non-paren characters.</li>
+<li>Create a mask of <code>(</code> characters.</li>
+<li>Multiply by 2 and subtract 1 to get a mask of <code>1</code> and <code>¯1</code> instead of <code>1</code> and <code>0</code>.</li>
+<li>Return the maximum prefix sum.</li>
+</ol>
+<p>The idea is we increment the depth when we see a <code>(</code>, decrement it when we see a <code>)</code>, and look for the maximum value we attain at any point. The runtime is linear because each of the above steps is linear. Note that the idiom <code>+\</code> is optimized by the compiler to run in linear time, while scanning in general is quadratic (see <a rel="external" href="https://www.youtube.com/watch?v=f0qhOKW0iw0">this video by Richard Park</a> for more discussion).</p>
+<p>I also quite like the trick in step 3 in which we convert a Boolean mask to a mask of <code>1</code> and <code>¯1</code>. <a rel="external" href="https://www.youtube.com/watch?v=zrOIQEN3Wkk">The video</a> mentions another a way to do it: the fork <code>(⊢-~)</code>, which simply subtracts from a mask its negation, yielding the same result. We can compare the runtimes of the two approaches.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">      f</span><span style="color: #427B58;">←⊢-~</span></span>
+<span class="giallo-l"><span style="color: #076678;">      g</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">+</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">×</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">      w</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">+?</span><span style="color: #8F3F71;">10000</span><span style="color: #427B58;">⍴</span><span style="color: #8F3F71;">2</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">      &#39;</span><span style="color: #79740E;">cmpx</span><span style="color: #7C6F64;">&#39;⎕</span><span>cy</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">dfns</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">      cmpx</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">f w</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">g w</span><span style="color: #7C6F64;">&#39;</span><span style="color: #928374;font-style: italic;">  ⍝ Or just ]runtime -c &#39;f w&#39; &#39;g w&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">  f w</span><span style="color: #9D0006;"> →</span><span style="color: #8F3F71;"> 1.0E¯6</span><span style="color: #427B58;"> |</span><span style="color: #8F3F71;">   0</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span></span>
+<span class="giallo-l"><span style="color: #076678;">  g w</span><span style="color: #9D0006;"> →</span><span style="color: #8F3F71;"> 8.8E¯7</span><span style="color: #427B58;"> | -</span><span style="color: #8F3F71;">14</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span><span>     </span></span></code></pre>
+<p>which tells us that both approaches are identically fast within a margin of error.</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

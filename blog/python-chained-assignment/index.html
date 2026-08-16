@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Chained assignment in Python bytecode</h1>
+
+<p class=post-date>Feb 12 2026</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/python-chained-assignment/#chained-assignment-has-a-footgun">Chained assignment has a footgun</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/python-chained-assignment/#inspecting-the-bytecode">Inspecting the bytecode</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/python-chained-assignment/#understanding-the-bytecode">Understanding the bytecode</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/python-chained-assignment/#doing-it-the-right-way">Doing it the right way</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/python-chained-assignment/#references">References</a>
+      
+    </li>
+  
+  </ul>
+
+
+<h2 id="chained-assignment-has-a-footgun">Chained assignment has a footgun<a class="zola-anchor" href="#chained-assignment-has-a-footgun" aria-label="Anchor link for: chained-assignment-has-a-footgun">🔗</a></h2>
+<p>In Python, chained assignment has a subtle (though well-known) footgun. The following function returns <code>True</code>:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">1</span><span style="color: #9D0006;">def</span><span style="color: #427B58;"> example</span><span style="color: #7C6F64;">():</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">2</span><span>    a</span><span style="color: #427B58;"> =</span><span> b</span><span style="color: #427B58;"> =</span><span style="color: #7C6F64;"> []</span><span style="color: #928374;font-style: italic;">  # &lt;-- oops!</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">3</span><span>    a</span><span style="color: #7C6F64;">.</span><span style="color: #076678;">append</span><span style="color: #7C6F64;">(</span><span style="color: #8F3F71;">1</span><span style="color: #7C6F64;">)</span><span style="color: #928374;font-style: italic;">  # b gets modified as well</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">4</span><span style="color: #9D0006;">    return</span><span> b</span><span style="color: #427B58;"> ==</span><span style="color: #7C6F64;"> [</span><span style="color: #8F3F71;">1</span><span style="color: #7C6F64;">]</span><span style="color: #928374;font-style: italic;">  # True</span></span></code></pre>
+<p>I've known of this behavior for a long time, but every once in a while it catches me unaware. The problem is that in the line <code>a = b = []</code>, a Python list object is constructed <strong>once</strong> and assigned to both variables. When <code>a.append(1)</code> is called, the underlying list is modified, and <code>b</code> points back to that common underlying list. This is a bug if your intent was for <code>a</code> and <code>b</code> to refer to separate lists.</p>
+<p>The most recent time I shot myself in the foot with this bug, I got curious: I know what happens at a semantic level when I write <code>a = b = []</code>, but what happens at the <em>bytecode level</em>? A quick Google search led me to the <a rel="external" href="https://docs.python.org/3/library/dis.html">dis module</a>, which allows you to inspect disassembled <a rel="external" href="https://en.wikipedia.org/wiki/CPython">CPython</a> bytecode.</p>
+<h2 id="inspecting-the-bytecode">Inspecting the bytecode<a class="zola-anchor" href="#inspecting-the-bytecode" aria-label="Anchor link for: inspecting-the-bytecode">🔗</a></h2>
+<p>Let's write a simple program in a new file <code>chained-assignment-example.py</code> using the <code>dis</code> module...</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">1</span><span style="color: #9D0006;">import</span><span> dis</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">2</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">3</span><span style="color: #9D0006;">def</span><span style="color: #427B58;"> example</span><span style="color: #7C6F64;">():</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">4</span><span>    a</span><span style="color: #427B58;"> =</span><span> b</span><span style="color: #427B58;"> =</span><span style="color: #7C6F64;"> []</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">5</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">6</span><span>dis</span><span style="color: #7C6F64;">.</span><span style="color: #076678;">dis</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">example</span><span style="color: #7C6F64;">)</span></span></code></pre>
+<p>...and then run <code>python chained-assignment-example.py</code> on it. On my machine, running Python 3.12.6, the output is:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>  3           0 RESUME                   0</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>  4           2 BUILD_LIST               0</span></span>
+<span class="giallo-l"><span>              4 COPY                     1</span></span>
+<span class="giallo-l"><span>              6 STORE_FAST               0 (a)</span></span>
+<span class="giallo-l"><span>              8 STORE_FAST               1 (b)</span></span>
+<span class="giallo-l"><span>             10 RETURN_CONST             0 (None)</span></span></code></pre><h2 id="understanding-the-bytecode">Understanding the bytecode<a class="zola-anchor" href="#understanding-the-bytecode" aria-label="Anchor link for: understanding-the-bytecode">🔗</a></h2>
+<p>At this point, we're fairly close to understanding what chained assignment looks like at the bytecode level. A few important concepts we'll need to know:</p>
+<ul>
+<li>CPython is a <strong>stack-based</strong> virtual machine (VM). As it happens, the CPython implementation consists of two stacks, one of which is the <strong>evaluation stack</strong>, where data lives. In the remainder of this post, when I say "stack" I mean the evaluation stack. The other one is the <strong>block stack</strong>, which isn't relevant to this discussion.</li>
+<li>The numbers in the leftmost column refer to the <strong>source code line numbers</strong>. We asked for the disassembled bytecode for the <code>example</code> function, so our first line number was <code>3</code>, which matches what we wrote in our source file.</li>
+<li>The blocks next to the source code line numbers are the <strong>bytecode instructions</strong> corresponding to each line. So for example, line <code>4</code>, which is where we do our chained assignment, expands out into four bytecode instructions.</li>
+<li>The numbers in the second column are the <strong>byte offsets into the generated bytecode</strong>. So for example, the fifth (index = 4) byte in our generated bytecode is the <code>COPY</code> instruction. It's not a coincidence that all the byte offsets are even. Since Python 3.6, every Python instruction has been given an odd number of arguments (even if it doesn't need any) so that the byte offsets are always even.</li>
+<li>The numbers in the third column are <strong>instruction arguments</strong>, and so their meaning depends on the instruction itself.</li>
+<li>Each function object has a <code>__code__</code> attribute that stores all the information the Python VM needs in order to execute that function. This code object contains, among other things, a tuple of <code>varnames</code> which is all the <strong>local variable names</strong> in the function. To access it, you can use the expression <code>example.__code__.co_varnames</code>. In our example, this evaluates to <code>(a, b)</code>.</li>
+</ul>
+<p>Let's go over the instructions for line <strong>4</strong> (<code>a = b = []</code>) one-by-one.</p>
+<ul>
+<li><code>BUILD_LIST 0</code></li>
+</ul>
+<p><code>BUILD_LIST N</code> pops <code>N</code> items from the stack, turns them into a list, and then pushes a <strong>C pointer</strong> to the resultant list onto the evaluation stack (<a rel="external" href="https://github.com/python/cpython/blob/fdbc135f9cf57599cca8aeeed947d0b736fdb197/Python/executor_cases.c.h#L8146">see code</a>). To precise, it creates a <code>PyListObject</code>, casts it to a <code>PyObject</code>, and then returns it (<a rel="external" href="https://github.com/python/cpython/blob/fdbc135f9cf57599cca8aeeed947d0b736fdb197/Objects/listobject.c#L3269-L3287">see code</a>). In this case, we have <code>BUILD_LIST 0</code> which creates an empty list and pushes it onto the stack.</p>
+<ul>
+<li><code>COPY 0</code></li>
+</ul>
+<p><code>COPY N</code> copies the <code>N</code>-th last item from the stack and pushes it onto the stack. In this example we have <code>COPY 1</code> which means we copy the 1-th last item (i.e. the item at the top, the reference to the list) and push it to the top of the stack. So we now have two references to the same list on the stack.</p>
+<ul>
+<li><code>STORE_FAST 0</code></li>
+</ul>
+<p><code>STORE_FAST N</code> pops the stack and stores the popped value into the <code>N</code>-th varname. In this example we have <code>STORE_FAST 0</code>. What's the <code>0</code>-th varname? Recall that <code>example.__code__.co_varnames</code> was <code>(a, b)</code>. So the <code>0</code>-th varname is just <code>a</code>, which the <code>dis.dis()</code> function has already helpfully identified for us!</p>
+<p>So now <code>a</code> refers to the newly created list.</p>
+<ul>
+<li><code>STORE_FAST 1</code></li>
+</ul>
+<p>The next instruction is <code>STORE 1</code>. Again, we pop the stack but this time we store the popped value — which is a pointer to the above list — in the <code>1</code>-th varname, which is the variable <code>b</code>.</p>
+<p>So now <code>b</code> refers to the <em>same</em> list object as before.</p>
+<h2 id="doing-it-the-right-way">Doing it the right way<a class="zola-anchor" href="#doing-it-the-right-way" aria-label="Anchor link for: doing-it-the-right-way">🔗</a></h2>
+<p>The crux of our analysis is that in the compiled bytecode for the <code>example()</code> function there was only a <strong>single</strong> <code>BUILD_LIST</code> instruction. That means we only allocated a single <code>PyListObject</code> on the heap, which the Python VM then dutifully assigned to two different variable names. A recipe for subtle and annoying behavior that might cause someone to waste 10 minutes of their time. Not that I'd know anything about that.</p>
+<p>What if we didn't use chained assignment? As above, let's write some code and inspect its disassembled bytecode. In a new file <code>regular-assignment.py</code>:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">1</span><span style="color: #9D0006;">import</span><span> dis</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">2</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">3</span><span style="color: #9D0006;">def</span><span style="color: #427B58;"> example</span><span style="color: #7C6F64;">():</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">4</span><span>    a</span><span style="color: #427B58;"> =</span><span style="color: #7C6F64;"> []</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">5</span><span>    b</span><span style="color: #427B58;"> =</span><span style="color: #7C6F64;"> []</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">6</span></span>
+<span class="giallo-l"><span aria-hidden="true" class="giallo-ln" style="color: #BDAE93;">7</span><span>dis</span><span style="color: #7C6F64;">.</span><span style="color: #076678;">dis</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">example</span><span style="color: #7C6F64;">)</span></span></code></pre>
+<p>Running <code>python regular-assignment.py</code>, we get:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>  3           0 RESUME                   0</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>  4           2 BUILD_LIST               0</span></span>
+<span class="giallo-l"><span>              4 STORE_FAST               0 (a)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>  5           6 BUILD_LIST               0</span></span>
+<span class="giallo-l"><span>              8 STORE_FAST               1 (b)</span></span>
+<span class="giallo-l"><span>             10 RETURN_CONST             0 (None)</span></span></code></pre>
+<p>There are two distinct <code>BUILD_LIST</code> instructions in the output bytecode, each followed by a <code>STORE_FAST</code> instructions! Two distinct list objects will be heap-allocated, each referred to by two different variable names.</p>
+<h2 id="references">References<a class="zola-anchor" href="#references" aria-label="Anchor link for: references">🔗</a></h2>
+<ul>
+<li>While reading up on the Python VM I found <a rel="external" href="https://www.youtube.com/watch?v=cSSpnq362Bk">James Bennett's PyCon 2018 talk</a> to be very educational. He briefly discusses what a virtual machine is in the context of CPython, talks about how one can use the <code>dis</code> module to inspect the internals (consts, varnames, names and code) of a function object, and then walks the listener through some of the disassembled bytecode for a simple Fibonacci number function. A must-watch, IMO.</li>
+<li><a rel="external" href="https://docs.python.org/3/library/dis.html#python-bytecode-instructions">This section</a> in the dis module docs has explanations for each bytecode instruction, along with some nice pseudocode to illustrate how the instructions actually work.</li>
+</ul>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Chess moves in APL</h1>
+
+<p class=post-date>Aug 16 2026</p>
+
+
+
+<p>I've been learning APL recently, and when I found <a rel="external" href="https://apl.quest/">APL quest</a> recently, I was addicted. It's a collection of bite-sized problems each meant to be solved with an APL one-liner. In this blog post I'll discuss my solution to <a rel="external" href="https://apl.quest/2019/4/">2019-4</a>, which asks us to return all valid knight moves given a 2-element vector representing the knight's current position on an empty chessboard.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      ]</span><span style="color: #B57614;">box</span><span style="color: #076678;"> ON</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">      (</span><span style="color: #076678;">your_function</span><span style="color: #7C6F64;">)</span><span style="color: #8F3F71;">5 4</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">3 3</span><span>│</span><span style="color: #8F3F71;">3 5</span><span>│</span><span style="color: #8F3F71;">4 2</span><span>│</span><span style="color: #8F3F71;">4 6</span><span>│</span><span style="color: #8F3F71;">6 2</span><span>│</span><span style="color: #8F3F71;">6 6</span><span>│</span><span style="color: #8F3F71;">7 3</span><span>│</span><span style="color: #8F3F71;">7 5</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┘</span></span></code></pre>
+<p>My solution is</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #076678;">m</span><span style="color: #427B58;">/⍨</span><span>(</span><span style="color: #427B58;">∧/</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘&lt;∧</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">∘&gt;</span><span>)</span><span style="color: #427B58;">¨</span><span style="color: #076678;">m</span><span style="color: #427B58;">←</span><span>(</span><span style="color: #427B58;">⊂</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">+,</span><span>(</span><span style="color: #8F3F71;">2 1</span><span>)(</span><span style="color: #8F3F71;">1 2</span><span>)</span><span style="color: #427B58;">∘.×∘.,⍨</span><span style="color: #8F3F71;">¯1 1</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>which I like because it uses the outer product <code>∘.</code> twice. First with the selfie operator:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">      ∘.,⍨</span><span style="color: #8F3F71;">1 ¯1</span></span>
+<span class="giallo-l"><span>┌────┬─────┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 1</span><span> │</span><span style="color: #8F3F71;">1 ¯1</span><span> │</span></span>
+<span class="giallo-l"><span>├────┼─────┤</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">¯1 1</span><span>│</span><span style="color: #8F3F71;">¯1 ¯1</span><span>│</span></span>
+<span class="giallo-l"><span>└────┴─────┘</span></span></code></pre>
+<p>And then to obtain all possible knight's move deltas:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      (</span><span style="color: #8F3F71;">2 1</span><span style="color: #7C6F64;">)(</span><span style="color: #8F3F71;">1 2</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.×∘.,⍨</span><span style="color: #8F3F71;">¯1 1</span></span>
+<span class="giallo-l"><span>┌─────┬────┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">¯2 ¯1</span><span>│</span><span style="color: #8F3F71;">¯2 1</span><span>│</span></span>
+<span class="giallo-l"><span>├─────┼────┤</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">2 ¯1</span><span> │</span><span style="color: #8F3F71;">2 1</span><span> │</span></span>
+<span class="giallo-l"><span>└─────┴────┘</span></span>
+<span class="giallo-l"><span>┌─────┬────┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">¯1 ¯2</span><span>│</span><span style="color: #8F3F71;">¯1 2</span><span>│</span></span>
+<span class="giallo-l"><span>├─────┼────┤</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 ¯2</span><span> │</span><span style="color: #8F3F71;">1 2</span><span> │</span></span>
+<span class="giallo-l"><span>└─────┴────┘</span></span></code></pre>
+<p>Then we ravel the above, add to it the scalar-ified original position, and filter the result for all positions that contain only valid cell indices.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #076678;">m</span><span style="color: #427B58;">/⍨</span><span>(</span><span style="color: #427B58;">∧/</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘&lt;∧</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">∘&gt;</span><span>)</span><span style="color: #427B58;">¨</span><span style="color: #076678;">m</span><span style="color: #427B58;">←</span><span>(</span><span style="color: #427B58;">⊂</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">+,</span><span>(</span><span style="color: #8F3F71;">2 1</span><span>)(</span><span style="color: #8F3F71;">1 2</span><span>)</span><span style="color: #427B58;">∘.×∘.,⍨</span><span style="color: #8F3F71;">¯1 1</span><span style="color: #7C6F64;">}</span><span style="color: #8F3F71;">1 1</span></span>
+<span class="giallo-l"><span>┌───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">3 2</span><span>│</span><span style="color: #8F3F71;">2 3</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┘</span></span></code></pre>
+<p>And we're done.</p>
+<p>abrudz <a rel="external" href="https://www.youtube.com/watch?v=K40CsPxYohM">presents</a> a very cool solution in his video:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⍸</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">=+⌿¨×⍨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>with the idea to select only squares whose squared Euclidean distance from the input is 5. I profiled the two methods:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">      f</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⍸</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">=+⌿¨×⍨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">      g</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #076678;">m</span><span style="color: #427B58;">/⍨</span><span>(</span><span style="color: #427B58;">∧/</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘&lt;∧</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">∘&gt;</span><span>)</span><span style="color: #427B58;">¨</span><span style="color: #076678;">m</span><span style="color: #427B58;">←</span><span>(</span><span style="color: #427B58;">⊂</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">+,</span><span>(</span><span style="color: #8F3F71;">2 1</span><span>)(</span><span style="color: #8F3F71;">1 2</span><span>)</span><span style="color: #427B58;">∘.×∘.,⍨</span><span style="color: #8F3F71;">¯1 1</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">      &#39;</span><span style="color: #79740E;">cmpx</span><span style="color: #7C6F64;">&#39;⎕</span><span>cy</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">dfns</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">      w</span><span style="color: #427B58;">←?</span><span style="color: #8F3F71;">1e2</span><span style="color: #427B58;">⍴⊂</span><span style="color: #8F3F71;">8 8</span></span>
+<span class="giallo-l"><span style="color: #076678;">      cmpx</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">f¨ w</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">g¨ w</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">  f</span><span style="color: #427B58;">¨</span><span style="color: #076678;"> w</span><span style="color: #9D0006;"> →</span><span style="color: #8F3F71;"> 1.1E¯3</span><span style="color: #427B58;"> |</span><span style="color: #8F3F71;">   0</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span></span>
+<span class="giallo-l"><span style="color: #427B58;">*</span><span style="color: #076678;"> g</span><span style="color: #427B58;">¨</span><span style="color: #076678;"> w</span><span style="color: #9D0006;"> →</span><span style="color: #8F3F71;"> 4.8E¯4</span><span style="color: #427B58;"> | -</span><span style="color: #8F3F71;">55</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span></span></code></pre>
+<p>and found that <code>g</code> is faster. This feels intuitive: generating 64 options and then eliminating (at least) 56 of them should be slower than directly generating 8 options. For a slight speed up we can store the deltas in a variable and look it up:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">      deltas</span><span style="color: #427B58;">←,</span><span style="color: #7C6F64;">(</span><span style="color: #8F3F71;">2 1</span><span style="color: #7C6F64;">)(</span><span style="color: #8F3F71;">1 2</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.×∘.,⍨</span><span style="color: #8F3F71;">¯1 1</span></span>
+<span class="giallo-l"><span style="color: #076678;">      h</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #076678;">m</span><span style="color: #427B58;">/⍨</span><span>(</span><span style="color: #427B58;">∧/</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘&lt;∧</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">∘&gt;</span><span>)</span><span style="color: #427B58;">¨</span><span style="color: #076678;">m</span><span style="color: #427B58;">←</span><span>(</span><span style="color: #427B58;">⊂</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">+</span><span style="color: #076678;">deltas</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ NB. same definition as g, but with a variable lookup</span></span>
+<span class="giallo-l"><span style="color: #076678;">      cmpx</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">g¨ w </span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">h¨ w</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">  g</span><span style="color: #427B58;">¨</span><span style="color: #076678;"> w</span><span style="color: #9D0006;">  →</span><span style="color: #8F3F71;"> 5.0E¯4</span><span style="color: #427B58;"> |</span><span style="color: #8F3F71;">   0</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span></span>
+<span class="giallo-l"><span style="color: #076678;">  h</span><span style="color: #427B58;">¨</span><span style="color: #076678;"> w</span><span style="color: #9D0006;">  →</span><span style="color: #8F3F71;"> 3.1E¯4</span><span style="color: #427B58;"> | -</span><span style="color: #8F3F71;">39</span><span>% </span><span style="color: #7C6F64;">⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕⎕</span></span></code></pre>
+<p>which is faster but not impressively so.</p>
+<p>How about rooks and bishops? I find the elimination idea yields some very readable solutions:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∊¨</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #8F3F71;">4 5</span><span style="color: #928374;font-style: italic;">  ⍝ rook</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 5</span><span>│</span><span style="color: #8F3F71;">2 5</span><span>│</span><span style="color: #8F3F71;">3 5</span><span>│</span><span style="color: #8F3F71;">4 1</span><span>│</span><span style="color: #8F3F71;">4 2</span><span>│</span><span style="color: #8F3F71;">4 3</span><span>│</span><span style="color: #8F3F71;">4 4</span><span>│</span><span style="color: #8F3F71;">4 6</span><span>│</span><span style="color: #8F3F71;">4 7</span><span>│</span><span style="color: #8F3F71;">4 8</span><span>│</span><span style="color: #8F3F71;">5 5</span><span>│</span><span style="color: #8F3F71;">6 5</span><span>│</span><span style="color: #8F3F71;">7 5</span><span>│</span><span style="color: #8F3F71;">8 5</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span>(</span><span style="color: #427B58;">=/</span><span>)</span><span style="color: #427B58;">¨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #8F3F71;">4 5</span><span style="color: #928374;font-style: italic;">  ⍝ bishop</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 2</span><span>│</span><span style="color: #8F3F71;">1 8</span><span>│</span><span style="color: #8F3F71;">2 3</span><span>│</span><span style="color: #8F3F71;">2 7</span><span>│</span><span style="color: #8F3F71;">3 4</span><span>│</span><span style="color: #8F3F71;">3 6</span><span>│</span><span style="color: #8F3F71;">5 4</span><span>│</span><span style="color: #8F3F71;">5 6</span><span>│</span><span style="color: #8F3F71;">6 3</span><span>│</span><span style="color: #8F3F71;">6 7</span><span>│</span><span style="color: #8F3F71;">7 2</span><span>│</span><span style="color: #8F3F71;">7 8</span><span>│</span><span style="color: #8F3F71;">8 1</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘</span></span></code></pre>
+<p>The elimination idea for knights looks similar, but lacks the step at the end where we remove the input. Let's add that step anyway, with no loss of correctness, so that it looks more like the rook / bishop functions:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">=+⌿¨×⍨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #8F3F71;">4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">2 4</span><span>│</span><span style="color: #8F3F71;">2 6</span><span>│</span><span style="color: #8F3F71;">3 3</span><span>│</span><span style="color: #8F3F71;">3 7</span><span>│</span><span style="color: #8F3F71;">5 3</span><span>│</span><span style="color: #8F3F71;">5 7</span><span>│</span><span style="color: #8F3F71;">6 4</span><span>│</span><span style="color: #8F3F71;">6 6</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┘</span></span></code></pre>
+<p>Now we have three very similar-looking functions.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∊¨</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ rook</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span>(</span><span style="color: #427B58;">=/</span><span>)</span><span style="color: #427B58;">¨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ bishop</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">=+⌿¨×⍨|</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ knight</span></span></code></pre>
+<p>Let's extract out the common part, which is "subtract, apply a filter, apply a where <code>⍸</code>, and remove the input", and encode the piece-specific elimination logic separately.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">moves</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #076678;">c</span><span style="color: #427B58;">~⍨⍸</span><span style="color: #8F3F71;">⍺⍺</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">8 8</span><span>)</span><span style="color: #427B58;">-</span><span style="color: #076678;">c</span><span style="color: #427B58;">←⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">knight</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">=+⌿¨×⍨|</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">king</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">≥+⌿¨×⍨</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ similar to knight</span></span>
+<span class="giallo-l"><span style="color: #076678;">rook</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘∊¨</span></span>
+<span class="giallo-l"><span style="color: #076678;">bishop</span><span style="color: #427B58;">←=/¨|</span></span>
+<span class="giallo-l"><span style="color: #076678;">queen</span><span style="color: #427B58;">←</span><span style="color: #076678;">rook</span><span style="color: #427B58;">∨</span><span style="color: #076678;">bishop</span></span></code></pre>
+<p>I love how the definition of <code>queen</code> is simply a Boolean OR over two other predicates, expressed as a fork. We can test this out:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">      king moves</span><span style="color: #8F3F71;"> 4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">3 4</span><span>│</span><span style="color: #8F3F71;">3 5</span><span>│</span><span style="color: #8F3F71;">3 6</span><span>│</span><span style="color: #8F3F71;">4 4</span><span>│</span><span style="color: #8F3F71;">4 6</span><span>│</span><span style="color: #8F3F71;">5 4</span><span>│</span><span style="color: #8F3F71;">5 5</span><span>│</span><span style="color: #8F3F71;">5 6</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┘</span></span>
+<span class="giallo-l"><span style="color: #076678;">      knight moves</span><span style="color: #8F3F71;"> 4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">2 4</span><span>│</span><span style="color: #8F3F71;">2 6</span><span>│</span><span style="color: #8F3F71;">3 3</span><span>│</span><span style="color: #8F3F71;">3 7</span><span>│</span><span style="color: #8F3F71;">5 3</span><span>│</span><span style="color: #8F3F71;">5 7</span><span>│</span><span style="color: #8F3F71;">6 4</span><span>│</span><span style="color: #8F3F71;">6 6</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┘</span></span>
+<span class="giallo-l"><span style="color: #076678;">      rook moves</span><span style="color: #8F3F71;"> 4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 5</span><span>│</span><span style="color: #8F3F71;">2 5</span><span>│</span><span style="color: #8F3F71;">3 5</span><span>│</span><span style="color: #8F3F71;">4 1</span><span>│</span><span style="color: #8F3F71;">4 2</span><span>│</span><span style="color: #8F3F71;">4 3</span><span>│</span><span style="color: #8F3F71;">4 4</span><span>│</span><span style="color: #8F3F71;">4 6</span><span>│</span><span style="color: #8F3F71;">4 7</span><span>│</span><span style="color: #8F3F71;">4 8</span><span>│</span><span style="color: #8F3F71;">5 5</span><span>│</span><span style="color: #8F3F71;">6 5</span><span>│</span><span style="color: #8F3F71;">7 5</span><span>│</span><span style="color: #8F3F71;">8 5</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘</span></span>
+<span class="giallo-l"><span style="color: #076678;">      bishop moves</span><span style="color: #8F3F71;"> 4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 2</span><span>│</span><span style="color: #8F3F71;">1 8</span><span>│</span><span style="color: #8F3F71;">2 3</span><span>│</span><span style="color: #8F3F71;">2 7</span><span>│</span><span style="color: #8F3F71;">3 4</span><span>│</span><span style="color: #8F3F71;">3 6</span><span>│</span><span style="color: #8F3F71;">5 4</span><span>│</span><span style="color: #8F3F71;">5 6</span><span>│</span><span style="color: #8F3F71;">6 3</span><span>│</span><span style="color: #8F3F71;">6 7</span><span>│</span><span style="color: #8F3F71;">7 2</span><span>│</span><span style="color: #8F3F71;">7 8</span><span>│</span><span style="color: #8F3F71;">8 1</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘</span></span>
+<span class="giallo-l"><span style="color: #076678;">      queen moves</span><span style="color: #8F3F71;"> 4 5</span></span>
+<span class="giallo-l"><span>┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">1 2</span><span>│</span><span style="color: #8F3F71;">1 5</span><span>│</span><span style="color: #8F3F71;">1 8</span><span>│</span><span style="color: #8F3F71;">2 3</span><span>│</span><span style="color: #8F3F71;">2 5</span><span>│</span><span style="color: #8F3F71;">2 7</span><span>│</span><span style="color: #8F3F71;">3 4</span><span>│</span><span style="color: #8F3F71;">3 5</span><span>│</span><span style="color: #8F3F71;">3 6</span><span>│</span><span style="color: #8F3F71;">4 1</span><span>│</span><span style="color: #8F3F71;">4 2</span><span>│</span><span style="color: #8F3F71;">4 3</span><span>│</span><span style="color: #8F3F71;">4 4</span><span>│</span><span style="color: #8F3F71;">4 6</span><span>│</span><span style="color: #8F3F71;">4 7</span><span>│</span><span style="color: #8F3F71;">4 8</span><span>│</span><span style="color: #8F3F71;">5 4</span><span>│</span><span style="color: #8F3F71;">5 5</span><span>│</span><span style="color: #8F3F71;">5 6</span><span>│</span><span style="color: #8F3F71;">6 3</span><span>│</span><span style="color: #8F3F71;">6 5</span><span>│</span><span style="color: #8F3F71;">6 7</span><span>│</span><span style="color: #8F3F71;">7 2</span><span>│</span><span style="color: #8F3F71;">7 5</span><span>│</span><span style="color: #8F3F71;">7 8</span><span>│</span><span style="color: #8F3F71;">8 1</span><span>│</span><span style="color: #8F3F71;">8 5</span><span>│</span></span>
+<span class="giallo-l"><span>└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘</span></span></code></pre>
+<p>I think this is a good place to stop. A few things not covered in this article:</p>
+<ol>
+<li>Pieces not being able to move to a square because another piece is blocking the way.</li>
+<li>Pieces capturing opposing pieces.</li>
+<li>Pawn movement, including en passant.</li>
+<li>Castling - checking whether it's possible, and implementing castling assuming it's possible.</li>
+</ol>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Solving Project Euler #2 in J</h1>
+
+<p class=post-date>Jun 20 2026</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#problem-statement">Problem statement</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#a-direct-solution">A direct solution</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/euler-2-j/#the-while-pattern">The while pattern</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#doesn-t-j-have-a-while-keyword">Doesn&#x27;t J have a while. keyword?</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#beating-the-odds">Beating the odds</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#keeping-less-state">Keeping less state</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#closing-thoughts">Closing thoughts</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#references">References</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/euler-2-j/#appendix">Appendix</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>In this post I discuss a fun problem I recently solved using <a rel="external" href="https://www.jsoftware.com/#/README">the J programming language</a>. The problem is <a rel="external" href="https://projecteuler.net/problem=2">number 2</a> in Project Euler.</p>
+<p>First, a quick disclaimer:</p>
+<div role="warning">
+From the Project Euler <a href=https://projecteuler.net>FAQ</a>: "[...] the rule about sharing solutions outside of Project Euler does not apply to <b>the first one-hundred problems</b>, as long as any discussion clearly aims to instruct methods, not just provide answers, and does not directly threaten to undermine the enjoyment of solving later problems. Problems 1 to 100 provide a wealth of helpful introductory teaching material and if you are able to respect our requirements, then we give permission for those problems and their solutions to be discussed elsewhere."
+</div>
+<h2 id="problem-statement">Problem statement<a class="zola-anchor" href="#problem-statement" aria-label="Anchor link for: problem-statement">🔗</a></h2>
+<p>Paraphrasing, the problem asks us to</p>
+<div role="highlight">Find the sum of all even Fibonacci numbers that are under 4,000,000.</div>
+<p>The solution to this is straightforward in a programming language that supports the imperative paradigm. For example, in Python:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span style="color: #9D0006;">def</span><span style="color: #427B58;"> solve</span><span style="color: #7C6F64;">() -&gt;</span><span style="color: #B57614;"> int</span><span style="color: #7C6F64;">:</span></span>
+<span class="giallo-l"><span>    prev</span><span style="color: #7C6F64;">,</span><span> curr</span><span style="color: #7C6F64;">,</span><span> result</span><span style="color: #427B58;"> =</span><span style="color: #8F3F71;"> 1</span><span style="color: #7C6F64;">,</span><span style="color: #8F3F71;"> 2</span><span style="color: #7C6F64;">,</span><span style="color: #8F3F71;"> 0</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">    while</span><span> curr</span><span style="color: #427B58;"> &lt;</span><span style="color: #8F3F71;"> 4e6</span><span style="color: #7C6F64;">:</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">        if</span><span> curr</span><span style="color: #427B58;"> %</span><span style="color: #8F3F71;"> 2</span><span style="color: #427B58;"> ==</span><span style="color: #8F3F71;"> 0</span><span style="color: #7C6F64;">:</span></span>
+<span class="giallo-l"><span>            result</span><span style="color: #427B58;"> +=</span><span> curr</span></span>
+<span class="giallo-l"><span>        prev</span><span style="color: #7C6F64;">,</span><span> curr</span><span style="color: #427B58;"> =</span><span> curr</span><span style="color: #7C6F64;">,</span><span> prev</span><span style="color: #427B58;"> +</span><span> curr</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">    return</span><span> result</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #AF3A03;">print</span><span style="color: #7C6F64;">(</span><span style="color: #076678;">solve</span><span style="color: #7C6F64;">())</span></span></code></pre>
+<p>The result is <code>4613732</code>. How would we solve this problem in J?</p>
+<h2 id="a-direct-solution">A direct solution<a class="zola-anchor" href="#a-direct-solution" aria-label="Anchor link for: a-direct-solution">🔗</a></h2>
+<p>Here's a direct solution. I'm still learning the language, so it's probably not very polished.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>step =. monad define</span></span>
+<span class="giallo-l"><span>delta =. (curr , 0) {~ 2 | curr =. {: y</span></span>
+<span class="giallo-l"><span>(delta + {. y) , curr , curr + 1 { y</span></span>
+<span class="giallo-l"><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>{. (step^:(4e6 &gt; {:))^:_ (0 1 2)</span></span></code></pre>
+<p>This is a straightforward translation of the problem statement into code. Let's dissect it, starting with <code>step</code>.</p>
+<p><code>step</code> takes as input a <strong>3-element array representing an accumulated value and two consecutive Fibonnaci numbers</strong>. It returns <strong>a new accumulated value and slides the two Fibonacci numbers forward</strong>. The new accumulated value is the same as the old one if the old second Fibonacci number was odd. Otherwise, it's increased by the old second Fibonacci number.</p>
+<p>Let's run this at the J REPL:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>   step 0 1 2</span></span>
+<span class="giallo-l"><span>2 2 3</span></span>
+<span class="giallo-l"><span>   step 2 2 3</span></span>
+<span class="giallo-l"><span>2 3 5</span></span>
+<span class="giallo-l"><span>   step 2 3 5</span></span>
+<span class="giallo-l"><span>2 5 8</span></span>
+<span class="giallo-l"><span>   step 2 5 8</span></span>
+<span class="giallo-l"><span>10 8 13</span></span></code></pre>
+<p>The indented lines are our queries, and the non-indented lines are the result. We start with an accumulated value of <code>0</code>, and increase it only if we see an even Fibonacci number in the third position of the array.</p>
+<p>The 2-line function translates this behavior directly. Starting with the first line:</p>
+<ul>
+<li><code>y</code> represents the right-hand argument to <code>step</code>.</li>
+<li><code>{:</code> takes the last element of an array.</li>
+<li><code>curr =. {: y</code> assigns that value to <code>curr</code>.</li>
+<li><code>2 | curr</code> computes the remainder of <code>curr</code> when divided by <code>2</code>.</li>
+<li><code>(curr , 0)</code> is a 2-element array consisting of <code>curr</code> and <code>0</code>.</li>
+<li><code>(2 | curr) { (curr , 0)</code> returns the <code>(2 | curr)</code>-th element of <code>(curr , 0)</code>.</li>
+<li><code>~</code> is an adverb (function modifier) that flips its verb (function)'s operands (arguments). If <code>x</code> and <code>y</code> are two nouns (variables), then <code>x f~ y</code> is the same as <code>y f x</code>.</li>
+<li>And so <code>(curr , 0) {~ 2 | curr</code> is the same as <code>(2 | curr) { (curr , 0)</code>. I wrote it with the <code>~</code> because it reads more naturally to me.</li>
+<li>The above result is assigned to <code>delta</code>. This is what we'll add to the accumulated value.</li>
+</ul>
+<p>Onto the next line.</p>
+<ul>
+<li>The result is composed of 3 elements joined by the <code>,</code> verb. They are: <code>delta + {. y</code>, and <code>curr</code>, and <code>curr + 1 { y</code>. Let's look at each one of them.</li>
+<li><code>{. y</code> is the first element of the 3-element array <code>y</code>. This is the accumulated value, to which we add <code>delta</code>, and that's the 1st element of the result.</li>
+<li><code>curr</code> is the 2nd element of the result.</li>
+<li><code>1 { y</code> is the 2nd element of the 3-element array <code>y</code>.</li>
+<li><code>curr + 1 { y</code> is <code>curr</code> summed with that 2nd element. This becomes the 3rd element of the result.</li>
+</ul>
+<p>That concludes our analysis of <code>step</code>. Nothing too fancy there. Onto the next line:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>{. (step^:(4e6 &gt; {:))^:_ (0 1 2)</span></span></code></pre>
+<p>This line is an instance of a common J pattern <code>(u^:v)^:_ y</code>, where:</p>
+<ul>
+<li><code>y</code> is a noun (variable).</li>
+<li><code>u</code> is a monadic verb (single-argument function),</li>
+<li><code>v</code> is a monadic boolean verb (single-argument function that returns either <code>0</code> or <code>1</code>), and</li>
+</ul>
+<p>Here:</p>
+<ul>
+<li><code>y</code> is (initially) the 3-element array <code>0 1 2</code> discussed earlier.</li>
+<li><code>u</code> is the <code>step</code> function discussed earlier.</li>
+<li><code>v</code> is <code>(4e6 &gt; {:)</code>. It's a boolean verb that checks if the last element of an array (obtained by <code>{:</code>) is less than 4 million.</li>
+</ul>
+<p>How does this pattern work?</p>
+<h3 id="the-while-pattern">The while pattern<a class="zola-anchor" href="#the-while-pattern" aria-label="Anchor link for: the-while-pattern">🔗</a></h3>
+<p>Let's discuss the pattern <code>(u^:v)^:_ y</code>. What's up with the two <code>^:</code>s and the underscore <code>_</code>?</p>
+<p><code>^:</code> is the <strong>power</strong> adverb. When coupled with a numeric noun it applies a function as many times as the noun specifies.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>    *: 3  NB. *: is the &quot;square&quot; verb.</span></span>
+<span class="giallo-l"><span>9</span></span>
+<span class="giallo-l"><span>    *: *: 3  NB. Square 3, and then square the result.</span></span>
+<span class="giallo-l"><span>81</span></span>
+<span class="giallo-l"><span>    (*:^:2) 3  NB. Same as the previous line. Square 3, and then square the result.</span></span>
+<span class="giallo-l"><span>81</span></span>
+<span class="giallo-l"><span>    (*:^:3) 3  NB. Apply the &quot;square&quot; verb thrice to 3.</span></span>
+<span class="giallo-l"><span>6561</span></span>
+<span class="giallo-l"><span>    (*:^:4) 3  NB. Apply the &quot;square&quot; verb four times to 3.</span></span>
+<span class="giallo-l"><span>43046721</span></span></code></pre>
+<p>Side note: in J, <code>*:^:3 3</code> is not the same as <code>(*:^:3) 3</code>, which is why we added the parentheses. The former supplies an array <code>3 3</code> to the adverb <code>^:</code> and yields an unapplied verb. This behavior is not relevant here, so let's move on.</p>
+<p>Let's give our boolean function <code>(4e6 &gt; {:)</code> a nice name, <code>shouldContinue</code>. The final line of our J solution is then:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>{. (step^:shouldContinue)^:_ (0 1 2)</span></span></code></pre>
+<p>What does <code>step^:shouldContinue</code> do? <code>shouldContinue</code> is a verb and not a numeric noun, so the above explanation doesn't apply to it!</p>
+<p>In plain language, for some argument <code>y</code>, the pattern <code>(step^:shouldContinue) y</code> evaluates as follows: <strong>apply <code>shouldContinue</code> to <code>y</code>. Take the result, which should be a numeric noun, and attach it to the <code>^:</code> that modifies <code>step</code></strong>.</p>
+<p>This bears examining. <code>shouldContinue</code> is boolean, so it will yield either <code>0</code> or <code>1</code>. If <code>shouldContinue y</code> yields <code>1</code>, we apply <code>step</code> to <code>y</code>. If it yields <code>0</code>, we do nothing and just return <code>y</code>. In Python, this would be:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span style="color: #9D0006;">def</span><span style="color: #427B58;"> conditional_execution</span><span style="color: #7C6F64;">(</span><span style="color: #076678;">u</span><span style="color: #7C6F64;">,</span><span style="color: #076678;"> v</span><span style="color: #7C6F64;">,</span><span style="color: #076678;"> y</span><span style="color: #7C6F64;">):</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">    return</span><span style="color: #076678;"> u</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">y</span><span style="color: #7C6F64;">)</span><span style="color: #9D0006;"> if</span><span style="color: #076678;"> v</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">y</span><span style="color: #7C6F64;">)</span><span style="color: #9D0006;"> else</span><span> y</span></span></code></pre>
+<p>The fun part is when we attach a <code>^:_</code> adverb to this verb <code>step^:shouldContinue</code>. In J, <code>_</code> is <strong>positive infinity</strong>. When <code>^:_</code> is attached to a verb, it means: <strong>keep applying this verb until you reach a <a rel="external" href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fixed point of the function</a></strong>.</p>
+<p>And so <code>(step^:shouldContinue)^:_</code> is a verb that runs <code>step^:shouldContinue</code> on its input until its output equals its input. And when does that happen? When <code>shouldContinue</code> yields <code>0</code>, and <code>y</code> is returned. At that point we've reached the fixed point of <code>step^:shouldContinue</code>, and we break out of the iteration!</p>
+<p>In general, the J sentence <code>(u^:v)^:_ y</code> is interpreted as follows: repeatedly apply the verb <code>u</code> to the noun <code>y</code>, as long as the boolean verb <code>v</code> applied to the noun <code>y</code> returns <code>1</code> (true). This is the <code>while</code> loop we all know and love. Translating this to Python, this would be:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="python"><span class="giallo-l"><span style="color: #9D0006;">def</span><span style="color: #427B58;"> while_in_j</span><span style="color: #7C6F64;">(</span><span style="color: #076678;">u</span><span style="color: #7C6F64;">,</span><span style="color: #076678;"> v</span><span style="color: #7C6F64;">,</span><span style="color: #076678;"> y</span><span style="color: #7C6F64;">):</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">    while</span><span style="color: #8F3F71;"> True</span><span style="color: #7C6F64;">:</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">        if not</span><span style="color: #076678;"> v</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">y</span><span style="color: #7C6F64;">):</span></span>
+<span class="giallo-l"><span style="color: #9D0006;">            return</span><span> y</span></span>
+<span class="giallo-l"><span>        y</span><span style="color: #427B58;"> =</span><span style="color: #076678;"> u</span><span style="color: #7C6F64;">(</span><span style="color: #504945;">y</span><span style="color: #7C6F64;">)</span></span></code></pre>
+<p>With all this in mind, we can translate the final line of the solution:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>{. (step^:(4e6 &gt; {:))^:_ (0 1 2)</span></span></code></pre>
+<p>into plain language as follows:</p>
+<div role="highlight">Run the <code>step</code> function until the rightmost element of the input array (the "next" Fibonacci number) is <b>no longer</b> less than 4 million. Finally, return the leftmost element of the array (the accumulated value).</div>
+<h2 id="doesn-t-j-have-a-while-keyword">Doesn't J have a while. keyword?<a class="zola-anchor" href="#doesn-t-j-have-a-while-keyword" aria-label="Anchor link for: doesn-t-j-have-a-while-keyword">🔗</a></h2>
+<p>J does have a <code>while.</code> keyword. We <em>could</em> have written something like this.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>solve =. monad define</span></span>
+<span class="giallo-l"><span>a =. 0 1 2</span></span>
+<span class="giallo-l"><span>while. y &gt; {: a do.</span></span>
+<span class="giallo-l"><span>  a =. step a</span></span>
+<span class="giallo-l"><span>end.</span></span>
+<span class="giallo-l"><span>{. a</span></span>
+<span class="giallo-l"><span>)</span></span></code></pre>
+<p>and we could've used some syntactic sugar and taken advantage of the way control structures are parsed to squeeze it into one line:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>solve =. {{ a =. 0 1 2 while. y &gt; {: a do. a =. step a end. {. a }}</span></span></code></pre>
+<p>I haven't profiled this method compared with the previous one, but if I had to hazard a guess, I suspect this <code>while.</code> would be less efficient, because the J interpreter knows how to optimize common patterns like <code>(u^:v)^:_ y</code>. Plus, <code>while.</code> is considered unidiomatic in J anyway.</p>
+<h2 id="beating-the-odds">Beating the odds<a class="zola-anchor" href="#beating-the-odds" aria-label="Anchor link for: beating-the-odds">🔗</a></h2>
+<p>The method above considers each Fibonacci number, asks if it is even, and adds it if yes. It would be nice to iterate in such a way that we skip all the odd numbers entirely. Does there exist a recurrence relation for the even Fibonacci numbers? I searched around and sure enough:</p>
+<script type="math/tex;mode=display">E_n = 4E_{n-1} + E_{n-2}</script>
+<p>Here, <script type="math/tex">E_n</script> is the n-th <strong>even</strong> Fibonacci number, with <script type="math/tex">E_1 = 0</script> and <script type="math/tex">E_2 = 2</script>. This allows us to rewrite our <code>step</code> verb...</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>step =. ({. + {:) , ({: , ({.@}. + 4*{:))</span></span></code></pre>
+<p>...and our <code>solve</code> verb...</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>{. (step^:(4e6 &gt; {.))^:_ (0 0 2)</span></span></code></pre>
+<p>...with the added bonus that <code>step</code> is now a tacit verb, meaning it makes no explicit reference to its operand!</p>
+<p>The key to understanding <code>step</code> is to recognize that it's a fork, which is a way to compose three verbs. Suppose <code>f</code>, <code>g</code> and <code>h</code> are 3 monadic verbs, and <code>y</code> is a noun. The following two lines of J code are exactly identical.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>(f g h) y</span></span>
+<span class="giallo-l"><span>(f y) g (h y)</span></span></code></pre>
+<p>In plain language:</p>
+<div role="highlight">Separately apply <code>f</code> to <code>y</code> and <code>h</code> to <code>y</code>. Use both values as operands to <code>g</code>.</div>
+<p>In the code above:</p>
+<ul>
+<li><code>f</code> is <code>{. + {:</code> (itself a fork: add the first and last elements of an array).</li>
+<li><code>g</code> is <code>,</code> (join two values into an array).</li>
+<li><code>h</code> is itself a fork.
+<ul>
+<li>The first two verbs are <code>{:</code> (return the last element of an array) and <code>,</code> (join two nouns into an array).</li>
+<li>The last one is <code>({.@}. + 4*{:)</code>, another fork (we're three levels deep now!).
+<ul>
+<li>The first verb is <code>{.@}.</code> (return the second element of an array).</li>
+<li>The second is <code>+</code> (add two elements).</li>
+<li>The third is <code>4*{:</code> (multiply the last element by 4).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>We're doing essentially the same thing as in the first method:</p>
+<ul>
+<li>unconditionally add the old "second Fibonacci number" to the accumulated value.</li>
+<li>copy over the old "second Fibonacci number" to the new "first Fibonacci number".</li>
+<li>compute <script type="math/tex">E_n = 4E_{n-1} + E_{n-2}</script> and copy it over to the new "second Fibonacci number".</li>
+</ul>
+<p>Our starter value is now the array <code>0 0 2</code>.</p>
+<p>The difference from the first method is now there's no check on the even-ness of the second Fibonacci number. It's always even!</p>
+<h2 id="keeping-less-state">Keeping less state<a class="zola-anchor" href="#keeping-less-state" aria-label="Anchor link for: keeping-less-state">🔗</a></h2>
+<p>Do we really need to store an accumulator value at every step of the iteration?</p>
+<p>While searching around, I stumbled across this <a rel="external" href="https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/">article</a> which demonstrates how to write the <strong>sum</strong> of the first <script type="math/tex">N</script> Fibonacci numbers in terms of a linear combination of a constant number of Fibonacci numbers:</p>
+<script type="math/tex;mode=display">\sum_{i=1}^{n} F_i = F_{n+2} - 1</script>
+<p>My first thought was if we could do the same for the sum of the first <script type="math/tex">N</script> even Fibonacci numbers as well. I grabbed a pen and paper, and was able to derive:</p>
+<script type="math/tex;mode=display">\sum_{i=1}^{n} E_i = \frac{E_{n+1} + E_n - 2}{4}</script>
+<p>(If you're interested in the derivation, it's in the <a href="https://loriculus.org/blog/euler-2-j/#appendix">appendix</a>.)</p>
+<p>This permits us to write our solve logic another way. Say <script type="math/tex">k</script> is the last even Fibonacci number to be under 4 million. Then the sum of this number and all smaller even Fibonacci numbers is</p>
+<script type="math/tex;mode=display">\frac{E_{k+1} + E_k - 2}{4}</script>
+<p>and so, as before, we stop our iteration once the second Fibonacci number is not less than 4 million:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>(step^:(4e6 &gt; {:))^:_ (0 2)</span></span></code></pre>
+<p>Note that this time our starter value is just <code>0 2</code> — we've gotten rid of the accumulated value!</p>
+<p>The output array contains two numbers, the first being the last even Fibonacci number under 4 million, and the second being the one just after it. We apply the formula above: sum them up, subtract <code>2</code>, and divide by <code>4</code>. In J, this would be:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>x: 4 %~ _2 + +/ (step^:(4e6 &gt; {:))^:_ (0 2)</span></span></code></pre>
+<p>The <code>x:</code> at the beginning forces higher precision. Without it, the result renders as <code>4.61373e6</code> instead of <code>4613732</code>.</p>
+<p>Putting it all together, our third solution, and the shortest so far, is:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>step =. {: , ({. + 4*{:)</span></span>
+<span class="giallo-l"><span>x: 4 %~ _2 + +/ (step^:(4e6 &gt; {:))^:_ (0 2)</span></span></code></pre>
+<p>Notice how the <code>step</code> definition is much shorter now. We only need to advance the two Fibonacci numbers. No bothering with the accumulated value.</p>
+<p>We can go one step further and get rid of the parentheses in the definition of <code>step</code>. As it happens, the <a rel="external" href="https://www.jsoftware.com/help/learning/09.htm"><strong>train</strong></a> of five verbs in a row <code>(a b c d e f)</code> (when applied monadically i.e. with only a right argument) is evaluated like so:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>(a b c d e) y</span></span>
+<span class="giallo-l"><span>(a y) b ((c d e) y)</span></span>
+<span class="giallo-l"><span>(a y) b ((c y) d (e y))</span></span></code></pre>
+<p>In other words, a train of 5 verbs resolves into a fork whose right argument is a nested fork.</p>
+<p>This is an instance of a more general rule, which is when you have an odd-length train of verbs <code>(a b c ...)</code> it is equivalent to a fork with the first verb being monadic <code>a</code>, the second verb being dyadic (i.e. with a left and right argument) <code>b</code>, and the third verb being monadic <code>(c ...)</code>. The last one is <em>another</em> monadic odd-length train of verbs, and we can expand this recursively, as we did above for the train of 5 verbs.</p>
+<p>Here, <code>a</code> is <code>{:</code> (take the rightmost element of an array), <code>b</code> is dyadic <code>,</code> (combine two elements into an array), <code>c</code> is <code>{.</code> (take the leftmost element of an array), <code>d</code> is dyadic <code>+</code> (sum two numbers), and <code>e</code> is <code>4*{:</code> (multiply the rightmost element of an array by 4).</p>
+<p>And so we can discard the parentheses and just write</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>step =. {: , {. + 4*{:</span></span>
+<span class="giallo-l"><span>x: 4 %~ _2 + +/ (step^:(4e6 &gt; {:))^:_ (0 2)</span></span></code></pre>
+<p>We can also get rid of one set of parentheses in the second line, turning <code>(u^:(v))^:_</code> into just <code>u^:(v)^:_</code>:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>step =. {: , {. + 4*{:</span></span>
+<span class="giallo-l"><span>x: 4 %~ _2 + +/ step^:(4e6 &gt; {:)^:_ (0 2)</span></span></code></pre>
+<p>In the interest of code golfing, we can combine the two lines and get rid of as many spaces as possible. We'd end up with:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>x:4%~_2++/({:,{.+4*{:)^:(4e6&gt;{:)^:_(0 2)</span></span></code></pre>
+<p>There are likely better ways to solve this problem. Maybe I'll revisit this article in the future, when I know more J. For now, this is a good place to stop!</p>
+<h2 id="closing-thoughts">Closing thoughts<a class="zola-anchor" href="#closing-thoughts" aria-label="Anchor link for: closing-thoughts">🔗</a></h2>
+<p>There were some very cool ideas at play here. To list a few:</p>
+<ul>
+<li>iteration recast as a fixed point search</li>
+<li>iteration without explicit iteration variables</li>
+<li>tacit verb definitions and nested forks</li>
+<li>a recurrence for even Fibonacci numbers, and a summation formula for them</li>
+</ul>
+<p>It's hard to pick a winner, but IMO the most interesting idea was that we can rephrase a <code>while</code> loop with a boolean breakout condition as a search for a fixed point of a function. This is part of the reason I love J, and languages like it. They encourage, or in some cases actively push you to look at computational patterns in a wholly different way.</p>
+<h2 id="references">References<a class="zola-anchor" href="#references" aria-label="Anchor link for: references">🔗</a></h2>
+<ul>
+<li>A great article by Jordan Scales on <a rel="external" href="https://thatjdanisso.cool/j-fibonacci">Fibonacci numbers in J</a>. I adapted the method in the post to incorporate an accumulated value.</li>
+<li>The excellent <a rel="external" href="https://www.jsoftware.com/help/jforc/contents.htm">J for C Programmers</a> book by Henry Rich. I can't recommend it enough. I read it to understand the <code>(u^:v)^:_</code> pattern.</li>
+<li><a rel="external" href="https://www.jsoftware.com/help/learning/09.htm">Verb trains in J</a>.</li>
+<li>GeeksForGeeks
+<ul>
+<li><a rel="external" href="https://www.geeksforgeeks.org/dsa/nth-even-fibonacci-number/">Summing the first N Fibonacci numbers</a></li>
+<li><a rel="external" href="https://www.geeksforgeeks.org/dsa/sum-fibonacci-numbers/">A recurrence relation for even Fibonacci numbers</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="appendix">Appendix<a class="zola-anchor" href="#appendix" aria-label="Anchor link for: appendix">🔗</a></h2>
+<p>To derive the identity for the sum of the first <script type="math/tex">N</script> even Fibonacci numbers, we start from:</p>
+<script type="math/tex;mode=display">E_n = 4E_{n-1} + E_{n-2} \\
+\implies E_n - E_{n-1} = 3E_{n-1} + E_{n-2}</script>
+<p>And plug in different values for <script type="math/tex">n</script>, from <script type="math/tex">3</script> up to <script type="math/tex">n</script>:</p>
+<script type="math/tex;mode=display">E_n - E_{n-1} = 3E_{n-1} + E_{n-2} \\
+E_{n-1} - E_{n-2} = 3E_{n-2} + E_{n-3} \\
+... \\
+E_3 - E_2 = 3E_2 + E_1 \\</script>
+<p>Adding these all up, we get:
+<script type="math/tex;mode=display">E_n - E_2 = 3\sum_{i=2}^{n-1} E_i + \sum_{i=1}^{n-2} E_i</script></p>
+<p>Adjusting the indices a bit:</p>
+<script type="math/tex;mode=display">E_n - E_2 = 3\sum_{i=1}^{n-1} E_i + \sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\
+\implies E_n - E_2 = 4\sum_{i=1}^{n-1} E_i - 3E_1 - E_{n-1} \\</script>
+<p>And now rearranging:</p>
+<script type="math/tex;mode=display">4\sum_{i=1}^{n-1} E_i = E_n + E_{n-1} - E_2 + 3E_1</script>
+<p>Recall that <script type="math/tex">E_1 = 0</script> and <script type="math/tex">E_2 = 2</script>. Substituting these in, and replacing <script type="math/tex">n</script> by <script type="math/tex">n + 1</script> in the final expression, we get:</p>
+<script type="math/tex;mode=display">4\sum_{i=1}^{n} E_i = E_{n+1} + E_n - 2 \\
+\implies \sum_{i=1}^{n} E_i = \frac{E_{n+1} + E_n - 2}{4}</script>
+<p>and we're done!</p>
+
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

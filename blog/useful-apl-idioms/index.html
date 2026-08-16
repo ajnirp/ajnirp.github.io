@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Useful APL snippets</h1>
+
+<p class=post-date>Jul 13 2026</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#dyalog-ride">Dyalog, RIDE</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#miscellaneous-array-operations">Miscellaneous array operations</a>
+      
+        <ul>
+          
+              <li>
+                  <a href="https://loriculus.org/blog/useful-apl-idioms/#boolean-arrays">Boolean arrays</a>
+              </li>
+          
+        </ul>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#numbers">Numbers</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#profiling">Profiling</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#sorting">Sorting</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#strings">Strings</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#mathematics">Mathematics</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/useful-apl-idioms/#time">Time</a>
+      
+    </li>
+  
+  </ul>
+
+
+<h2 id="dyalog-ride">Dyalog, RIDE<a class="zola-anchor" href="#dyalog-ride" aria-label="Anchor link for: dyalog-ride">🔗</a></h2>
+<p>In RIDE, to display function trains in tree format:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    ]</span><span style="color: #B57614;">box</span><span style="color: #076678;"> ON</span><span style="color: #7C6F64;"> -</span><span style="color: #B57614;">trains</span><span style="color: #7C6F64;">=</span><span style="color: #076678;">tree</span></span>
+<span class="giallo-l"><span style="color: #076678;">Was OFF</span><span style="color: #427B58;"> -</span><span style="color: #076678;">trains</span><span style="color: #427B58;">=</span><span style="color: #076678;">box</span></span>
+<span class="giallo-l"><span style="color: #427B58;">    +/÷≢</span></span>
+<span class="giallo-l"><span>  ┌─┼─┐</span></span>
+<span class="giallo-l"><span style="color: #427B58;">  / ÷</span><span style="color: #9D0006;"> ≢</span></span>
+<span class="giallo-l"><span>┌─┘</span></span>
+<span class="giallo-l"><span style="color: #427B58;">+</span></span></code></pre>
+<p>An optimized expression will be colored differently. Examples: <code>⊃⌽</code> or <code>⊢/</code> or <code>+/∧\</code>. I use the Nord theme, and they're colored orange.</p>
+<p>Exit RIDE</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #928374;font-style: italic;">⍝ Like all commands, these are case-insensitive</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">⎕</span><span>OFF</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">)</span><span style="color: #B57614;">OFF</span></span></code></pre>
+<p>Obtain a vector of names representing all the functions available to us in the current namespace, and filter for the functions that start with a capital letter.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">⎕</span><span>NL</span><span style="color: #8F3F71;">¯3</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">⎕</span><span>A</span><span style="color: #7C6F64;">⎕</span><span>NL</span><span style="color: #8F3F71;">¯3</span></span></code></pre><h2 id="miscellaneous-array-operations">Miscellaneous array operations<a class="zola-anchor" href="#miscellaneous-array-operations" aria-label="Anchor link for: miscellaneous-array-operations">🔗</a></h2>
+<p>Turn a scalar into an array. Quite useful in situations like dealing with single-character strings, which APL treats as scalars.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">   ,</span><span style="color: #8F3F71;">5</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">5</span></span>
+<span class="giallo-l"><span style="color: #427B58;">   ⍴,</span><span style="color: #8F3F71;">5</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1</span></span></code></pre>
+<p>First element of an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊃</span></span></code></pre>
+<p>Last element of an array. Note the lack of symmetry with <code>⊃</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊢/</span></span></code></pre>
+<p>Flatten an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">,</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Select multiple indices from an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">abcd</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">3 1 4 2</span><span style="color: #7C6F64;">]</span></span>
+<span class="giallo-l"><span style="color: #076678;">cadb</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">    3 1 4 2</span><span style="color: #427B58;"> ⌷⍤</span><span style="color: #8F3F71;">0 99</span><span style="color: #427B58;">⊢</span><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">abcd</span><span style="color: #7C6F64;">&#39;</span><span style="color: #928374;font-style: italic;">  ⍝ 99 is a conventional value to use for array ranks greater than Dyalog&#39;s maximum of 15</span></span>
+<span class="giallo-l"><span style="color: #076678;">cadb</span></span></code></pre>
+<p>Check that an array is a palindrome.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⌽≡⊢</span></span></code></pre>
+<p>Empty out an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">⍬</span><span style="color: #427B58;">⍨</span><span style="color: #928374;font-style: italic;">  ⍝ Using a constant function</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">0</span><span style="color: #427B58;">/</span><span style="color: #928374;font-style: italic;">  ⍝ Using replicate</span></span></code></pre>
+<p>Zero out selected indices from an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #427B58;">←⍳</span><span style="color: #8F3F71;"> 4</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 2 3 4</span></span>
+<span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">2 3</span><span style="color: #7C6F64;">]</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">0</span></span>
+<span class="giallo-l"><span style="color: #076678;">    a</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 0 0 4</span></span></code></pre>
+<p>Mean of a numeric array. Note that we do a <code>1⌈</code> on the <code>≢</code>. This ensures that for <code>0⍴0</code> the denominator is <code>1</code> rather than <code>0</code>, and so we evalute <code>0÷1</code> rather than <code>0÷0</code> which APL would compute as <code>1</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">+⌿÷</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">⌈≢</span></span></code></pre>
+<p>Find the first index of occurrence for each element of an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">    ⍳⍨</span><span style="color: #8F3F71;"> 2 3 3 1 5 2</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 2 2 4 5 1</span></span></code></pre>
+<p>Find the <em>endings</em> of occurrences of array <code>⍺</code> in array <code>⍵</code>. Recall that if we want the <em>beginnings</em> we can just use <code>⍷</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span>(</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">-≢</span><span style="color: #8F3F71;">⍺</span><span>)</span><span style="color: #427B58;">⌽</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">⍷</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Mode of an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #076678;">m</span><span style="color: #427B58;">←⍉</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">,≢</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⌸,</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;"> ⋄</span><span style="color: #076678;"> m</span><span>[</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">;</span><span>]</span><span style="color: #427B58;">/⍨</span><span>(</span><span style="color: #427B58;">⊢=⌈/</span><span>)</span><span style="color: #076678;">m</span><span>[</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">;</span><span>]</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⊃</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">/⍨</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">=⌈/</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">/,⌿,∘≢⌸</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ A more elegant formulation by abrudz</span></span></code></pre>
+<p>Standard deviation of an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">0.5</span><span style="color: #427B58;">*⍨</span><span>(</span><span style="color: #427B58;">×/⍴</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">÷⍨+/</span><span>(</span><span style="color: #427B58;">×⍨⊢-+/÷≢</span><span>)</span><span style="color: #427B58;">,</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Prefixes of an array</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span>(</span><span style="color: #427B58;">⍳≢</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">↑¨⊂</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #427B58;">,\</span><span style="color: #928374;font-style: italic;">  ⍝ very bad performance, like 3 orders of magnitude worse</span></span></code></pre>
+<p>Check if a table is a magic square.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">∧/⊢=⊃</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">+⌿</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">,</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">+/</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">,+/,⍥</span><span style="color: #7C6F64;">(</span><span style="color: #8F3F71;">1 1</span><span style="color: #427B58;">∘⍉</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘⌽</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">(</span><span style="color: #427B58;">∧/⊢=⊃</span><span style="color: #7C6F64;">)(</span><span style="color: #427B58;">+⌿</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">,</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">+/</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">,</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">+⌿</span><span style="color: #8F3F71;">1 1</span><span style="color: #427B58;">∘⍉∘⌽</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">,</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">+⌿</span><span style="color: #8F3F71;">1 1</span><span style="color: #427B58;">∘⍉</span><span style="color: #7C6F64;">)</span><span style="color: #928374;font-style: italic;">  ⍝ Identical to the above, but more verbose</span></span></code></pre>
+<p>Run-length encoding (RLE) / run-length packing.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="plain"><span class="giallo-l"><span>&#39;packR&#39;⎕cy&#39;dfns&#39;</span></span>
+<span class="giallo-l"><span>packR  ⍝ To study the source code</span></span>
+<span class="giallo-l"><span>⍝ See also {⌈/¯2-/⍸1,⍨1,2≠/×2-/⍵} which is the solution to https://apl.quest/2021/9/</span></span>
+<span class="giallo-l"><span>⍝ The high-level idea is: pairwise differences, signum, pairwise inequality, pad left and right with 1,</span></span>
+<span class="giallo-l"><span>⍝ find indices of 1s, then find the consecutive differences. These are the starts of the runs.</span></span>
+<span class="giallo-l"><span>⍝ packR does some extra stuff which I haven&#39;t looked at yet.</span></span></code></pre><h3 id="boolean-arrays">Boolean arrays<a class="zola-anchor" href="#boolean-arrays" aria-label="Anchor link for: boolean-arrays">🔗</a></h3>
+<p>Convert a positive number to binary by using the inverse of the decode function.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">2</span><span style="color: #427B58;">⊥⍣</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">⊢</span></span></code></pre>
+<p>Pad a number with a desired number of <code>0</code>s.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">    11</span><span style="color: #427B58;">↑</span><span style="color: #8F3F71;">1</span><span style="color: #928374;font-style: italic;"> ⍝ 1 followed by ten 0&#39;s.</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 0 0 0 0 0 0 0 0 0 0</span></span></code></pre>
+<p>Find the number of leading <code>1</code>s in a boolean array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">+/∧\</span></span></code></pre>
+<p>Find the corner elements of a table.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊃</span><span style="color: #928374;font-style: italic;">     ⍝ top left</span></span>
+<span class="giallo-l"><span style="color: #427B58;">⊃⌽</span><span style="color: #928374;font-style: italic;">    ⍝ top right</span></span>
+<span class="giallo-l"><span style="color: #427B58;">⊃⊖</span><span style="color: #928374;font-style: italic;">    ⍝ bottom left</span></span>
+<span class="giallo-l"><span style="color: #427B58;">⊃⌽⍤⊖</span><span style="color: #928374;font-style: italic;">  ⍝ bottom right</span></span></code></pre>
+<p>Two ways to sum a boolean array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">+/</span></span>
+<span class="giallo-l"><span style="color: #427B58;">≢⍸</span></span></code></pre>
+<p>Generate a random array of <code>0</code>s and <code>1</code>s with length <code>1000</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">    v</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{⎕</span><span>IO</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;"> ⋄ ?</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">⍴</span><span style="color: #8F3F71;">2</span><span style="color: #7C6F64;">}</span><span style="color: #8F3F71;">1000</span></span></code></pre>
+<p>Find the first <code>1</code> in a Boolean vector.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">&lt;\</span></span></code></pre>
+<p>At first glance, this looks like it would run in quadratic time, but APL interpreters optimize for this and the actual runtime is linear.</p>
+<h2 id="numbers">Numbers<a class="zola-anchor" href="#numbers" aria-label="Anchor link for: numbers">🔗</a></h2>
+<p>Sign of a number.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">×</span></span></code></pre>
+<p>Get the integral and fractional part of a non-negative real number.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">0 1</span><span style="color: #427B58;">∘⊤</span></span></code></pre>
+<p>Convert a positive number to its digits. See <a rel="external" href="https://stackoverflow.com/a/44990891">this StackOverflow answer</a>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">10</span><span style="color: #427B58;">∘⊥⍣</span><span style="color: #8F3F71;">¯1</span></span></code></pre><h2 id="profiling">Profiling<a class="zola-anchor" href="#profiling" aria-label="Anchor link for: profiling">🔗</a></h2>
+<p>Compare the performance of 3 functions <code>F</code>, <code>G</code> and <code>H</code> on the same input <code>s</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">&#39;</span><span style="color: #79740E;">cmpx</span><span style="color: #7C6F64;">&#39; ⎕</span><span>CY</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">dfns</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">cmpx</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">F s</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">G s</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">H s</span><span style="color: #7C6F64;">&#39;</span></span></code></pre><h2 id="sorting">Sorting<a class="zola-anchor" href="#sorting" aria-label="Anchor link for: sorting">🔗</a></h2>
+<p>Sort an array in ascending order.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍵</span><span>[</span><span style="color: #427B58;">⍋</span><span style="color: #8F3F71;">⍵</span><span>]</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Order the rows of a matrix according to the sorted order of the second row.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">    ⊢</span><span style="color: #076678;"> mat</span><span style="color: #9D0006;"> ←</span><span style="color: #8F3F71;"> 2 3</span><span style="color: #427B58;"> ⍴</span><span style="color: #8F3F71;"> 1 4 2 5 9 7</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 4 2</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">5 9 7</span></span>
+<span class="giallo-l"><span style="color: #076678;">    mat</span><span style="color: #7C6F64;">[</span><span style="color: #427B58;">; ⍋</span><span style="color: #076678;">mat</span><span>[</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">;</span><span style="color: #7C6F64;">]</span><span>]</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 2 4</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">5 7 9</span></span></code></pre>
+<p>Find the index of the maximum element of an array. Recall that in APL indices start at <code>1</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊃⍒</span></span></code></pre><h2 id="strings">Strings<a class="zola-anchor" href="#strings" aria-label="Anchor link for: strings">🔗</a></h2>
+<p>All uppercase English letters.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    ⎕</span><span>A</span></span>
+<span class="giallo-l"><span style="color: #076678;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</span></span></code></pre>
+<p>All lowercase English letters.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    ⎕</span><span>UCS</span><span style="color: #8F3F71;"> 96</span><span style="color: #427B58;">+⍳</span><span style="color: #8F3F71;">26</span></span>
+<span class="giallo-l"><span style="color: #076678;">abcdefghijklmnopqrstuvwxyz</span></span></code></pre>
+<p>All digits from <code>0</code> to <code>9</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    ⎕</span><span>D</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">0123456789</span></span></code></pre>
+<p>Discard all characters except English letters.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #9D0006;"> ←</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">The quick brown fox! Jumps over the lazy... dog?</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">    a</span><span style="color: #427B58;">∩</span><span style="color: #7C6F64;">⎕</span><span>A</span><span style="color: #427B58;">,</span><span style="color: #7C6F64;">⎕</span><span>UCS</span><span style="color: #8F3F71;"> 96</span><span style="color: #427B58;">+⍳</span><span style="color: #8F3F71;">26</span></span>
+<span class="giallo-l"><span style="color: #076678;">ThequickbrownfoxJumpsoverthelazydog</span></span></code></pre>
+<p>Convert a string to lowercase.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    ⎕</span><span>C</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #CC241D;">dYALog`</span></span>
+<span class="giallo-l"><span style="color: #076678;">dyalog</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">    ¯1</span><span style="color: #7C6F64;"> ⎕</span><span>C</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #CC241D;">dYALog`</span></span>
+<span class="giallo-l"><span style="color: #076678;">dyalog</span></span></code></pre>
+<p>Convert a string to uppercase.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">    1</span><span style="color: #7C6F64;"> ⎕</span><span>C</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #CC241D;">dYALog`</span></span>
+<span class="giallo-l"><span style="color: #076678;">dyalog</span></span></code></pre>
+<p>Case-insensitive string comparison. Note the use of <code>⍥</code> (over), which monadically applies its right function to both arguments, and then dyadically applies its left function to the results.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">    &#39;</span><span style="color: #79740E;">Dyalog</span><span style="color: #7C6F64;">&#39;</span><span style="color: #427B58;"> ≡⍥</span><span style="color: #7C6F64;">⎕</span><span>C</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">DYALOG</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1</span></span></code></pre>
+<p>Check if <code>⍺</code> is a prefix of <code>⍵</code> (works for numeric arrays too).</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊃⍷</span></span></code></pre>
+<p>For suffix, we use the same idea.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⊃</span><span>(</span><span style="color: #427B58;">⌽</span><span style="color: #8F3F71;">⍺</span><span>)</span><span style="color: #427B58;">⍷⌽</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Split a string <code>⍵</code> into a words on a delimiter <code>⍺</code>, discarding empty strings.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">+/</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">&lt;/</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">,⍨</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ We&#39;re looking for &quot;0 1&quot; subarrays in the is-mask. We add a 1 at the end to ensure there&#39;s a &quot;0 1&quot; subarray for the last word.</span></span></code></pre>
+<p>Split a string <code>⍵</code> into a words on any one of character vector of delimiters <code>⍺</code> (length 1 or more), keeping empty strings.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">↓¨</span><span style="color: #076678;">x</span><span style="color: #427B58;">⊂⍨</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">∊⍨</span><span style="color: #076678;">x</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">,⍨⊃</span><span style="color: #8F3F71;">⍺</span><span style="color: #7C6F64;">}</span><span style="color: #928374;font-style: italic;">  ⍝ 2016.9. Split on a set of delimiters, keeping empty strings.</span></span></code></pre>
+<p>Check that a string is a palindrome after discarding non-alphabet characters. We convert to uppercase, discard everything that is not an uppercase letter, and then check that the result is a palindrome.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span>(</span><span style="color: #427B58;">⌽≡⊢</span><span>) </span><span style="color: #7C6F64;">⎕</span><span>A</span><span style="color: #427B58;">∩⍨</span><span style="color: #8F3F71;">1</span><span style="color: #7C6F64;">⎕</span><span>C</span><span style="color: #8F3F71;"> ⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Compare semver strings, assuming they're represented as arrays of 3 numbers. Subtract, find the signs and return the first non-zero element (or just <code>0</code>).</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #427B58;">⊃</span><span style="color: #076678;">d</span><span style="color: #427B58;">/⍨</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">≠</span><span style="color: #076678;">d</span><span style="color: #427B58;">←×</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">-</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Another nice way. This relies on <code>⊃⍬</code> being <code>0</code>. Note also the use of <code>0⍨</code> as the right tine of the fork.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">⊃⍤×-~</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">⍨</span></span></code></pre>
+<p>A very clever way to do this is as follows. We decode the signum'd array of <code>1</code>s, <code>0</code>s and <code>¯1</code>s in base 2. If the result is negative it means the highest non-zero value must have been <code>¯1</code> and likewise if the result is positive then the highest non-zero value must have been <code>1</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">×</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">⊥×⍤-</span></span></code></pre>
+<p>Join a vector of words into a sentence, separated by spaces.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">      ⊃</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">⊣,</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #427B58;">,⊢</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">/</span><span style="color: #7C6F64;"> &#39;</span><span style="color: #79740E;">this</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">is</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">a</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">vector</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">of</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #79740E;">words</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">this is a vector of words</span></span></code></pre>
+<p>Reverse individual words within a sentence while preserving the word order. The result is always a vector.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">≡</span><span style="color: #7C6F64;">&#39;&#39;</span><span>: </span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;"> ⋄ ⊃</span><span>(</span><span style="color: #427B58;">⊣,</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #427B58;">,⊢</span><span>)</span><span style="color: #427B58;">/⌽¨</span><span>(</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #427B58;">∘≠⊆⊢</span><span>)</span><span style="color: #427B58;">,</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">      {</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">≡</span><span style="color: #7C6F64;">&#39;&#39;</span><span>: </span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;"> ⋄ ⊃</span><span>(</span><span style="color: #427B58;">⊣,</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #427B58;">,⊢</span><span>)</span><span style="color: #427B58;">/⌽¨</span><span>(</span><span style="color: #7C6F64;">&#39; &#39;</span><span style="color: #427B58;">∘≠⊆⊢</span><span>)</span><span style="color: #427B58;">,</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}&#39;</span><span style="color: #79740E;">this is a sentence</span><span style="color: #7C6F64;">&#39;</span></span>
+<span class="giallo-l"><span style="color: #076678;">siht si a ecnetnes</span></span></code></pre>
+<p>Convert an Excel column identifier to a number.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">26</span><span style="color: #427B58;">⊥</span><span style="color: #7C6F64;">⎕</span><span>A</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">26</span><span style="color: #427B58;">⊥</span><span style="color: #7C6F64;">⎕</span><span>A</span><span style="color: #427B58;">⍳⊢</span><span style="color: #928374;font-style: italic;">  ⍝ Tacit version of the above</span></span></code></pre><h2 id="mathematics">Mathematics<a class="zola-anchor" href="#mathematics" aria-label="Anchor link for: mathematics">🔗</a></h2>
+<p>Generate an identity matrix.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">∘.=⍨ ⍳</span></span></code></pre>
+<p>This is basically a tacit rephrasing of</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">∘.=⍳</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>The following method is about as fast as it gets for generating an identity matrix. Right-pad <code>1</code> with <code>⍵</code> zeroes and then repeat that array until the shape is <code>⍵ ⍵</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍵ ⍵</span><span style="color: #427B58;">⍴</span><span>(</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">+</span><span style="color: #8F3F71;">1</span><span>)</span><span style="color: #427B58;">↑</span><span style="color: #8F3F71;">1</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>This can be rephrased in tacit form as a 5-train. Note that we use <code>×</code> (sign) to replace the positive input with <code>1</code>. We could also use <code>1⍨</code> or <code>≢</code> instead of <code>×</code>.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">,⍨⍴+∘</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">↑×</span></span></code></pre>
+<p>Generate a random float between 0 and 1.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">?</span><span style="color: #8F3F71;">0</span></span></code></pre>
+<p>Set the random seed.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">⎕</span><span>RL</span></span></code></pre>
+<p>Pascal's triangle.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{{</span><span>(</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">-</span><span style="color: #8F3F71;">1</span><span>)</span><span style="color: #427B58;">!⍨</span><span style="color: #8F3F71;">¯1</span><span style="color: #427B58;">+⍳¨</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">(</span><span>(</span><span style="color: #427B58;">⊢!⍨</span><span style="color: #076678;">i</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">¨</span><span style="color: #076678;">i</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">,⍳</span><span>)  </span><span style="color: #928374;font-style: italic;">⍝ My favorite, courtesy abrudz. Concise and readable.</span></span>
+<span class="giallo-l"><span style="color: #7C6F64;">(</span><span style="color: #427B58;">∘.!⍨</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">,⍳</span><span style="color: #7C6F64;">)</span><span style="color: #928374;font-style: italic;">  ⍝ From https://aplcart.info. A little inefficient because it computes a lot of unnecessary 0s.</span></span></code></pre>
+<p>Fibonacci sequence / Hemachandra numbers.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">≡</span><span style="color: #8F3F71;">0</span><span>: </span><span style="color: #8F3F71;">⍬</span><span style="color: #427B58;"> ⋄</span><span> (</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">,+/</span><span style="color: #8F3F71;">¯2</span><span style="color: #427B58;">↑</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⍣</span><span>(</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">-</span><span style="color: #8F3F71;">1</span><span>))</span><span style="color: #427B58;">,</span><span style="color: #8F3F71;">1</span><span style="color: #7C6F64;">}</span></span></code></pre>
+<p>Fun idea: use the base function to sum the elements of an array.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">      1</span><span style="color: #427B58;">⊥⍳</span><span style="color: #8F3F71;">10</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">55</span></span></code></pre><h2 id="time">Time<a class="zola-anchor" href="#time" aria-label="Anchor link for: time">🔗</a></h2>
+<p>Get the current time.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">⎕</span><span>TS</span><span style="color: #928374;font-style: italic;">  ⍝  Returns a 7-element integer vector representing the current year, month, day, hour, minute, second, and millisecond in that order. </span></span></code></pre>
+<p>Compare two timestamps that are both in the format returned by <code>⎕TS</code>. Return <code>¯1</code> if the left timestamp is smaller, <code>0</code> if they're equal, and <code>1</code> if the left timestamp is greater.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">×</span><span style="color: #8F3F71;">2</span><span style="color: #427B58;">⊥×⍤-</span><span style="color: #928374;font-style: italic;">  ⍝ This is identical to the semver comparison algorithm!</span></span></code></pre>
+<p>Check if a year is a leap year</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">(</span><span>(</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">4</span><span style="color: #427B58;">∘|</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∧</span><span style="color: #7C6F64;">(</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">≠</span><span style="color: #8F3F71;">100</span><span style="color: #427B58;">∘|</span><span style="color: #7C6F64;">)</span><span>)</span><span style="color: #427B58;">∨</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">400</span><span style="color: #427B58;">∘|</span><span style="color: #928374;font-style: italic;">  ⍝ My first attempt - clumsy, in retrospect</span></span>
+<span class="giallo-l"><span style="color: #427B58;">≠⌿</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">=</span><span style="color: #8F3F71;">400 100 4</span><span style="color: #427B58;">∘.|⊢</span><span style="color: #928374;font-style: italic;">  ⍝ Key idea here is we have a yes-no-yes type of situation which is perfect for xor i.e. ≠</span></span></code></pre>
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>

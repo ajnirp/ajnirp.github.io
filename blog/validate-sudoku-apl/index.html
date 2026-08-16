@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Loriculus</title>
+  <meta name="description" content="loriculus.org">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Rohan Prinja">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+      
+    
+  
+
+  <link rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+ <header id="header">
+  <div id="home"><a href="/">Home</a></div>
+  <div id="header-links">
+    <ul>
+      <li><a href="https://loriculus.org/blog/">Blog</a></li>
+      <li><a href="https://loriculus.org/research/">Research</a></li>
+    </ul>
+  </div>
+</header>
+
+<body>
+  <section class="section">
+    <div class="container">
+      
+
+<h1 class="title">Validating a Sudoku board in APL</h1>
+
+<p class=post-date>Aug 12 2026</p>
+
+
+  <h2>Table of contents</h2>
+  <ul>
+  
+    <li>
+      <a href="https://loriculus.org/blog/validate-sudoku-apl/#a-first-approach-outer-product">A first approach: Outer Product</a>
+      
+    </li>
+  
+    <li>
+      <a href="https://loriculus.org/blog/validate-sudoku-apl/#a-better-approach-key">A better approach: Key</a>
+      
+    </li>
+  
+  </ul>
+
+
+<p>Given a (possibly partially) filled-in Sudoku board, how can you tell if the board is valid? Assume our input is a vector of <code>81</code> numbers, with <code>0</code> representing blank cells and filled-in cells carrying one of the numbers <code>1</code> through <code>9</code>. Here's how I'd do it in APL, as a beginner to the language.</p>
+<h2 id="a-first-approach-outer-product">A first approach: Outer Product<a class="zola-anchor" href="#a-first-approach-outer-product" aria-label="Anchor link for: a-first-approach-outer-product">🔗</a></h2>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">board</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9</span></span>
+<span class="giallo-l"><span style="color: #076678;">box</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">⌿</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">/</span><span style="color: #8F3F71;">3 3</span><span style="color: #427B58;">⍴⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">all</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #427B58;">∧/∧/</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">≥</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">occur</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">9 9 9</span><span style="color: #427B58;">⍴</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span></span>
+<span class="giallo-l"><span style="color: #427B58;">∧/</span><span style="color: #7C6F64;"> (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span>[</span><span style="color: #8F3F71;">2</span><span>]</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span><span>)</span></span></code></pre>
+<p>The final line evaluates to <code>1</code> if the Sudoku board is valid, else <code>0</code>. Let's dissect the solution. First we create our input board. <code>all</code> returns <code>1</code> if all elements in its input table are <code>0</code> or <code>1</code>. <code>box</code> is a <code>9×9</code> table with each cell carrying the index of the box it lies in:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">      box</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 1 1 2 2 2 3 3 3</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 1 1 2 2 2 3 3 3</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">1 1 1 2 2 2 3 3 3</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">4 4 4 5 5 5 6 6 6</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">4 4 4 5 5 5 6 6 6</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">4 4 4 5 5 5 6 6 6</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">7 7 7 8 8 8 9 9 9</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">7 7 7 8 8 8 9 9 9</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">7 7 7 8 8 8 9 9 9</span></span></code></pre>
+<p><code>occur</code> is a 3D array in which each major cell is a <code>9×9</code> mask of the occurrences of each number. For example, the 5th major cell of <code>occur</code> tells you where all the <code>5</code>s are:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      (</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">) (</span><span style="color: #8F3F71;">5</span><span style="color: #427B58;">⌷</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">)</span><span style="color: #928374;font-style: italic;">  ⍝ The second term is equivalent to occur[5;;]</span></span>
+<span class="giallo-l"><span>┌─────────────────┬─────────────────┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">5 3 0 0 7 0 0 0 0</span><span>│</span><span style="color: #8F3F71;">1 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">6 0 0 1 9 5 0 0 0</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 1 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 9 8 0 0 0 0 6 0</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">8 0 0 0 6 0 0 0 3</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">4 0 0 8 0 3 0 0 1</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">7 0 0 0 2 0 0 0 6</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 6 0 0 0 0 2 8 0</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 0 0 4 1 9 0 0 5</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 1</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 0 0 0 8 0 0 7 9</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>└─────────────────┴─────────────────┘</span></span></code></pre>
+<p>The shape of <code>occur</code> is <code>9×9×9</code>. The first <code>9</code> represents the number of digits. The next two represent the board dimensions.</p>
+<p>And now we can tackle the final line. It's a Boolean AND over three values: are the rows valid, are the columns valid, and are the boxes valid.</p>
+<ul>
+<li><code>all+/occur</code> asks if every row sum for every major cell is at most <code>1</code>. <code>/</code> reduces along the last dimension, which in <code>occur</code> is the individual rows for each mask.</li>
+<li><code>all+/[2]occur</code> asks if every <em>column</em> sum for every major cell is at most <code>1</code>. <code>/[2]</code> reduces along the second dimension, which in <code>occur</code> is the individual columns for each mask.</li>
+</ul>
+<p>The fun part is the final Boolean. We flatten and grade <code>box</code> to get a sort order representing our boxes, and reshape it to a table:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #8F3F71;">      9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;"> 1  2  3 10 11 12 19 20 21</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;"> 4  5  6 13 14 15 22 23 24</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;"> 7  8  9 16 17 18 25 26 27</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">28 29 30 37 38 39 46 47 48</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">31 32 33 40 41 42 49 50 51</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">34 35 36 43 44 45 52 53 54</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">55 56 57 64 65 66 73 74 75</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">58 59 60 67 68 69 76 77 78</span></span>
+<span class="giallo-l"><span style="color: #8F3F71;">61 62 63 70 71 72 79 80 81</span></span></code></pre>
+<p>We then index <code>board</code> with the tabular indices. This yields a table in which each row represents the boxes of the input board!</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">      (</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">) (</span><span style="color: #076678;">board</span><span>[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span>]</span><span style="color: #7C6F64;">)</span></span>
+<span class="giallo-l"><span>┌─────────────────┬─────────────────┐</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">5 3 0 0 7 0 0 0 0</span><span>│</span><span style="color: #8F3F71;">5 3 0 6 0 0 0 9 8</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">6 0 0 1 9 5 0 0 0</span><span>│</span><span style="color: #8F3F71;">0 7 0 1 9 5 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 9 8 0 0 0 0 6 0</span><span>│</span><span style="color: #8F3F71;">0 0 0 0 0 0 0 6 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">8 0 0 0 6 0 0 0 3</span><span>│</span><span style="color: #8F3F71;">8 0 0 4 0 0 7 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">4 0 0 8 0 3 0 0 1</span><span>│</span><span style="color: #8F3F71;">0 6 0 8 0 3 0 2 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">7 0 0 0 2 0 0 0 6</span><span>│</span><span style="color: #8F3F71;">0 0 3 0 0 1 0 0 6</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 6 0 0 0 0 2 8 0</span><span>│</span><span style="color: #8F3F71;">0 6 0 0 0 0 0 0 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 0 0 4 1 9 0 0 5</span><span>│</span><span style="color: #8F3F71;">0 0 0 4 1 9 0 8 0</span><span>│</span></span>
+<span class="giallo-l"><span>│</span><span style="color: #8F3F71;">0 0 0 0 8 0 0 7 9</span><span>│</span><span style="color: #8F3F71;">2 8 0 0 0 5 0 7 9</span><span>│</span></span>
+<span class="giallo-l"><span>└─────────────────┴─────────────────┘</span></span></code></pre>
+<p>Then, as before, we can obtain an <code>occur</code>-like mask with:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #7C6F64;">(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span></span></code></pre>
+<p>No reshaping required here, since <code>board[9 9⍴⍋,box]</code> was already of shape <code>9×9</code> and not <code>81</code>. Then, as before, we validate the "row sums", which are actually the input board's box sums:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span></span></code></pre>
+<p>And this, AND-ed together with the row sum validation column sum validation gives us our overall answer:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">∧/</span><span style="color: #7C6F64;"> (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span>[</span><span style="color: #8F3F71;">2</span><span>]</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #076678;">all</span><span style="color: #427B58;">+/</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span><span>)</span></span></code></pre>
+<p>which we can make slightly shorter by pulling out the <code>all</code>:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #427B58;">∧/</span><span style="color: #076678;">all</span><span style="color: #427B58;">¨</span><span style="color: #7C6F64;"> (</span><span style="color: #427B58;">+/</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #427B58;">+/</span><span>[</span><span style="color: #8F3F71;">2</span><span>]</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #427B58;">+/</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span><span>)</span></span></code></pre>
+<p>Putting it all together:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">box</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">⌿</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">/</span><span style="color: #8F3F71;">3 3</span><span style="color: #427B58;">⍴⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">all</span><span style="color: #427B58;">←</span><span style="color: #7C6F64;">{</span><span style="color: #427B58;">∧/∧/</span><span style="color: #8F3F71;">1</span><span style="color: #427B58;">≥</span><span style="color: #8F3F71;">⍵</span><span style="color: #7C6F64;">}</span></span>
+<span class="giallo-l"><span style="color: #076678;">occur</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">9 9 9</span><span style="color: #427B58;">⍴</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span></span>
+<span class="giallo-l"><span style="color: #427B58;">∧/</span><span style="color: #076678;">all</span><span style="color: #427B58;">¨</span><span style="color: #7C6F64;"> (</span><span style="color: #427B58;">+/</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #427B58;">+/</span><span>[</span><span style="color: #8F3F71;">2</span><span>]</span><span style="color: #076678;">occur</span><span style="color: #7C6F64;">) (</span><span style="color: #427B58;">+/</span><span>(</span><span style="color: #427B58;">⍳</span><span style="color: #8F3F71;">9</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">∘.=</span><span style="color: #076678;">board</span><span style="color: #7C6F64;">[</span><span style="color: #8F3F71;">9 9</span><span style="color: #427B58;">⍴⍋,</span><span style="color: #076678;">box</span><span style="color: #7C6F64;">]</span><span>)</span></span></code></pre>
+<p>The coolest thing about this solution IMO was going from <code>box</code> to the board box indices via a ravel (<code>,</code>) and grade (<code>⍋</code>) — just an example of how flexible <code>⍋</code> can be. For a problem that calls for a similar usage of <code>⍋</code>, check out <a rel="external" href="https://apl.quest/2016/4/">APL Quest 2016.4</a>.</p>
+<h2 id="a-better-approach-key">A better approach: Key<a class="zola-anchor" href="#a-better-approach-key" aria-label="Anchor link for: a-better-approach-key">🔗</a></h2>
+<p>The limitation of the outer product approach is we create an intermediate <code>9×9×9</code> array that we then reduce. This is a little wasteful of memory, plus we iterate over the input board once for each valid digit. To do this in a single pass we can use <code>⌸</code>:</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">board</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">5 3 0 0 7 0 0 0 0 6 0 0 1 9 5 0 0 0 0 9 8 0 0 0 0 6 0 8 0 0 0 6 0 0 0 3 4 0 0 8 0 3 0 0 1 7 0 0 0 2 0 0 0 6 0 6 0 0 0 0 2 8 0 0 0 0 4 1 9 0 0 5 0 0 0 0 8 0 0 7 9</span></span>
+<span class="giallo-l"><span style="color: #076678;">box</span><span style="color: #427B58;">←,</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">⌿</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">/</span><span style="color: #8F3F71;">3 3</span><span style="color: #427B58;">⍴⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #427B58;">∧/∧/</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">≢=≢∘∪</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">¨</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">≡</span><span style="color: #8F3F71;">0</span><span>: </span><span style="color: #427B58;">⊂¨</span><span style="color: #8F3F71;">1 1 1</span><span style="color: #427B58;"> ⋄</span><span> (</span><span style="color: #427B58;">⌈</span><span style="color: #8F3F71;">⍵</span><span style="color: #427B58;">÷</span><span style="color: #8F3F71;">9</span><span>) (</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">@</span><span>(</span><span style="color: #8F3F71;">0</span><span style="color: #427B58;">∘=</span><span>)</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">|</span><span style="color: #8F3F71;">⍵</span><span>) (</span><span style="color: #076678;">box</span><span>[</span><span style="color: #8F3F71;">⍵</span><span>])</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⌸</span><span style="color: #076678;">board</span></span></code></pre>
+<p>This method walks over the input board once and creates three boxed vectors for each digit from <code>1</code> to <code>9</code>:</p>
+<ul>
+<li>The first is a vector containing every row index (divide by 9, round up: <code>⌈⍵÷9</code>) where that digit was found.</li>
+<li>The other two are the same, but for column indices (residue modulo 9, but 9 if it's a 0: <code>9@(0∘=)9|⍵</code>)...</li>
+<li>...and for box indices (just <code>box[⍵]</code>).</li>
+</ul>
+<p>For <code>0</code>, the output is just three boxes each containing a single scalar <code>1</code>. Then we ask if every box contains only unique elements. I like this method because it's a fairly direct translation of the problem statement while also being more efficient <em>and</em> concise.</p>
+<p>If we want a more symmetrical-looking solution, we can get rid of the arithmetic and do the same thing for rows and columns that we did for boxes, namely, generate a vector of <code>81</code> elements carrying the row/col indices.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">row</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">/⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">col</span><span style="color: #427B58;">←∊</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">/⊂⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">box</span><span style="color: #427B58;">←,</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">⌿</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">/</span><span style="color: #8F3F71;">3 3</span><span style="color: #427B58;">⍴⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #427B58;">∧/∧/</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">≢=≢∘∪</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">¨</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">≡</span><span style="color: #8F3F71;">0</span><span>: </span><span style="color: #427B58;">⊂¨</span><span style="color: #8F3F71;">1 1 1</span><span style="color: #427B58;"> ⋄</span><span> (</span><span style="color: #076678;">row</span><span>[</span><span style="color: #8F3F71;">⍵</span><span>]) (</span><span style="color: #076678;">col</span><span>[</span><span style="color: #8F3F71;">⍵</span><span>]) (</span><span style="color: #076678;">box</span><span>[</span><span style="color: #8F3F71;">⍵</span><span>])</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⌸</span><span style="color: #076678;">board</span></span></code></pre>
+<p>For further brevity, we can use slim quad <code>⌷</code> instead of square brackets. Note that to select multiple indices we must first enclose <code>⊂</code> the left argument.</p>
+<pre class="giallo" style="color: #3C3836; background-color: #FBF1C7;"><code data-lang="apl"><span class="giallo-l"><span style="color: #076678;">row</span><span style="color: #427B58;">←</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">/⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">col</span><span style="color: #427B58;">←∊</span><span style="color: #8F3F71;">9</span><span style="color: #427B58;">/⊂⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #076678;">box</span><span style="color: #427B58;">←,</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">⌿</span><span style="color: #8F3F71;">3</span><span style="color: #427B58;">/</span><span style="color: #8F3F71;">3 3</span><span style="color: #427B58;">⍴⍳</span><span style="color: #8F3F71;">9</span></span>
+<span class="giallo-l"><span style="color: #427B58;">∧/∧/</span><span style="color: #7C6F64;">(</span><span style="color: #427B58;">≢=≢∘∪</span><span style="color: #7C6F64;">)</span><span style="color: #427B58;">¨</span><span style="color: #7C6F64;">{</span><span style="color: #8F3F71;">⍺</span><span style="color: #427B58;">≡</span><span style="color: #8F3F71;">0</span><span>: </span><span style="color: #427B58;">⊂¨</span><span style="color: #8F3F71;">1 1 1</span><span style="color: #427B58;"> ⋄</span><span> (</span><span style="color: #427B58;">⊂</span><span style="color: #8F3F71;">⍵</span><span>)</span><span style="color: #427B58;">∘⌷¨</span><span style="color: #076678;"> row col box</span><span style="color: #7C6F64;">}</span><span style="color: #427B58;">⌸</span><span style="color: #076678;">board</span></span></code></pre>
+
+<div id="link-to-top"><a href="#">Back to the top</a></div>
+
+
+    </div>
+  </section>
+</body>
+
+</html>
